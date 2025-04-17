@@ -1,0 +1,16 @@
+Drizzle ORM Commands
+=====================
+
+Genrtae the drizzle schema (Generate SQL Statements)
+----------------------------------------------------
+npx drizzle-kit generate  
+
+
+Open Drizzle Studio (Visula Editor)
+------------------------------------
+npx drizzle-kit studio
+
+
+Run the  Drizzle migration (Execute SQL Statements)
+----------------------------------------------------
+npm run db:migrate 

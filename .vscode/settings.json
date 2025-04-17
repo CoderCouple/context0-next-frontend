@@ -1,0 +1,36 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.organizeImports": "always"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.editor.customLabels.patterns": {
+    // Next JS
+    // "**/src/app/**/page.tsx": "${dirname} - Page",
+    // "**/src/app/**/index.tsx": "${dirname} - Index",
+    // "**/src/app/**/layout.tsx": "${dirname} - Layout",
+    // "**/src/app/**/template.tsx": "${dirname} - Template",
+    // "**/src/components/**/index.tsx": "${dirname} - Component"
+    "**/app/**/[[]*[]]/[[]*[]]/page.tsx": "${dirname(2)}/${dirname(1)}/${dirname} • page",
+    "**/app/**/[[]*[]]/page.tsx": "${dirname(1)}/${dirname} • page",
+    "**/app/**/page.tsx": "${dirname} • page",
+    "**/app/**/[[]*[]]/[[]*[]]/default.tsx": "${dirname(2)}/${dirname(1)}/${dirname} • default",
+    "**/app/**/[[]*[]]/default.tsx": "${dirname(1)}/${dirname} • default",
+    "**/app/**/default.tsx": "${dirname} • default",
+    "**/app/**/[[]*[]]/[[]*[]]/layout.tsx": "${dirname(2)}/${dirname(1)}/${dirname} • layout",
+    "**/app/**/[[]*[]]/layout.tsx": "${dirname(1)}/${dirname} • layout",
+    "**/app/**/layout.tsx": "${dirname} • layout",
+    "**/app/**/[[]*[]]/[[]*[]]/template.tsx": "${dirname(2)}/${dirname(1)}/${dirname} • template",
+    "**/app/**/[[]*[]]/template.tsx": "${dirname(1)}/${dirname} • template",
+    "**/app/**/template.tsx": "${dirname} • template",
+    "**/app/**/[[]*[]]/[[]*[]]/error.tsx": "${dirname(2)}/${dirname(1)}/${dirname} • error",
+    "**/app/**/[[]*[]]/error.tsx": "${dirname(1)}/${dirname} • error",
+    "**/app/**/error.tsx": "${dirname} • error"
+  }
+}
