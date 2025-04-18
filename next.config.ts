@@ -3,13 +3,20 @@ import type { NextConfig } from "next";
 import mdx from "@next/mdx";
 import createJiti from "jiti";
 import { fileURLToPath } from "node:url";
+import rehypePrism from "rehype-prism-plus";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
+jiti("./src/env/server"); // env validation
 
-// Import server-side env early
-jiti("./src/env/server");
+const withMDX = mdx({
+  extension: /\.mdx?$/,
+  options: {
+    providerImportSource: "@mdx-js/react",
+    rehypePlugins: [rehypePrism],
+  },
+});
 
-const baseConfig: NextConfig = {
+const nextConfig: NextConfig = {
   output: "standalone",
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   eslint: {
@@ -17,24 +24,15 @@ const baseConfig: NextConfig = {
   },
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   experimental: {
-    mdxRs: true, // enables Rust-based MDX loader for App Router
+    mdxRs: false, // ❌ Must be false to use rehype safely
   },
   images: {
     domains: [
-      "images.unsplash.com", // remove all this once you have your own images`
-      "ai-saas-template-aceternity.vercel.app", // also used in openGraph
-      "i.pravatar.cc", // ✅ Add this line
+      "images.unsplash.com",
+      "ai-saas-template-aceternity.vercel.app",
+      "i.pravatar.cc",
     ],
   },
 };
 
-const withMDX = mdx({
-  extension: /\.mdx?$/,
-  options: {
-    providerImportSource: "@mdx-js/react",
-  },
-});
-
-const finalConfig = withMDX(baseConfig);
-
-export default finalConfig;
+export default withMDX(nextConfig);
