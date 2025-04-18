@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 
-import { AlertCircle } from "lucide-react";
+import { InboxIcon } from "lucide-react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { waitFor } from "@/lib/utils";
+
+import CreateWorkflowDialog from "./_components/CreateWorkflowDialog";
 
 function page() {
   return (
@@ -14,6 +14,7 @@ function page() {
           <h1 className="text-3xl font-bold"> Workflows</h1>
           <p className="text-muted-foreground">Manage your workflows</p>
         </div>
+        <CreateWorkflowDialog triggerText="Create workflow" />
       </div>
 
       <div className="y-8 h-full">
@@ -36,20 +37,36 @@ function UserWorkflowSkeleton() {
 }
 
 async function UserWorkflows() {
-  await waitFor(3000); // This will trigger Suspense to show the fallback
-  const error = false;
-  if (!error) {
-    return (
-      <Alert variant={"destructive"}>
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle> Error </AlertTitle>
-        <AlertDescription className="text-md font-normal">
-          Something went wrong. Please try again later!
-        </AlertDescription>
-      </Alert>
-    );
-  }
-  return <div>Your workflows data is now available!</div>;
-}
+  //const workflows = await getUserWorkflowsAction();
+  // if (!workflows) {
+  //   return (
+  //     <Alert variant={"destructive"}>
+  //       <AlertCircle className="h-4 w-4" />
+  //       <AlertTitle>Error</AlertTitle>
+  //       <AlertDescription>
+  //         Something went wrong. Please try again later
+  //       </AlertDescription>
+  //     </Alert>
+  //   );
+  // }
 
+  // if (workflows.length === 0) {
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4">
+      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent">
+        <InboxIcon size={40} className="stroke-primary" />
+      </div>
+      <div className="flex flex-col gap-1 text-center">
+        <p className="font-bold">No workflow created yet</p>
+        <p className="text-sm text-muted-foreground">
+          Click the button below to create your first workflow
+        </p>
+      </div>
+      <CreateWorkflowDialog triggerText="Create your first workflow" />
+    </div>
+  );
+  //}
+
+  //return <div className="grid grid-cols-1 gap-4"></div>;
+}
 export default page;

@@ -3,6 +3,8 @@
 import React from "react";
 
 import { ClerkAppProvider } from "./clerk-provider";
+import { QueryProvider } from "./react-query-client-provider";
+import { ThemeProvider } from "./theme-provider";
 
 function AppProvider({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +17,16 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      {children}
+      <QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </QueryProvider>
     </ClerkAppProvider>
   );
 }

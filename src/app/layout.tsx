@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { ThemeProvider } from "next-themes";
-
 import AppProvider from "@/components/provider/app-provider";
 
 import "./globals.css";
@@ -20,19 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AppProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </AppProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <AppProvider>{children}</AppProvider>
+      </body>
+    </html>
   );
 }
