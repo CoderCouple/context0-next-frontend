@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 function Logo({
   fontSize = "text-2xl",
-  iconSize = 40,
+  iconSize = 20,
 }: {
   fontSize?: string;
   iconSize?: number;

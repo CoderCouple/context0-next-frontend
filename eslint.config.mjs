@@ -15,7 +15,11 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    ignores: ["**/node_modules/**", "**/src/components/ui/**", "middleware.ts"],
+    ignores: [
+      "**/node_modules/**",
+      "middleware.ts",
+      "src/app/(landing_page)/blog/**/*.mdx",
+    ],
     plugins: {
       "check-file": checkFilePlugin,
       n: nPlugin,
@@ -26,10 +30,12 @@ const eslintConfig = [
       "prefer-template": ["error"],
       semi: ["error", "always"],
       quotes: ["error", "double"],
+      "@typescript-eslint/no-explicit-any": ["off"],
       "n/no-process-env": ["error"],
       "@typescript-eslint/no-empty-object-type": ["warn"],
       "@typescript-eslint/no-unused-vars": ["error"],
       "react/no-unescaped-entities": ["off"],
+      "prefer-const": "off",
       // "check-file/filename-naming-convention": [
       //   "error",
       //   {

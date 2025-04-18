@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import "@/app/globals.css";
+import { Footer } from "@/components/footer";
+import { NavBar } from "@/components/navbar";
 
 export const metadata: Metadata = {
   title: "Context Zero AI",
@@ -16,8 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex flex-col" role="main">
+    <main>
+      <NavBar />
       {children}
+      <Footer />
     </main>
   );
 }

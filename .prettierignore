@@ -1,2 +1,2 @@
 src/db/migrations/*
-src/components/ui/**
+src/components/**

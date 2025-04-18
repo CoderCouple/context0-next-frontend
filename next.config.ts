@@ -1,21 +1,40 @@
+import type { NextConfig } from "next";
+
+import mdx from "@next/mdx";
 import createJiti from "jiti";
 import { fileURLToPath } from "node:url";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
-// Import env here to validate during build. Using jiti@^1 we can import .ts files :)
-jiti("./src/env/server"); // Changed from "./app/env" to "./src/env"
+// Import server-side env early
+jiti("./src/env/server");
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const baseConfig: NextConfig = {
   output: "standalone",
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: false,
+  },
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  experimental: {
+    mdxRs: true, // enables Rust-based MDX loader for App Router
+  },
+  images: {
+    domains: [
+      "images.unsplash.com", // remove all this once you have your own images`
+      "ai-saas-template-aceternity.vercel.app", // also used in openGraph
+      "i.pravatar.cc", // ✅ Add this line
+    ],
   },
 };
 
-// Using module.exports instead of export default as it's the recommended approach
-module.exports = nextConfig;
+const withMDX = mdx({
+  extension: /\.mdx?$/,
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
+});
+
+const finalConfig = withMDX(baseConfig);
+
+export default finalConfig;
