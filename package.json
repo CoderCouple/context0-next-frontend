@@ -87,6 +87,8 @@
     "recharts": "^2.15.1",
     "rehype-prism-plus": "^2.0.1",
     "sonner": "^2.0.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
@@ -113,9 +115,7 @@
     "husky": "^8.0.3",
     "postcss": "^8",
     "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.10",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "prettier-plugin-tailwindcss": "^0.6.10"
   },
   "eslintConfig": {
     "extends": []
