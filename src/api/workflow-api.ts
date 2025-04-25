@@ -1,81 +1,74 @@
-import { auth } from "@clerk/nextjs/server";
+"use client;";
 
-import { env } from "@/env/server";
+// api/workflow-api.ts
+import { useAuth } from "@clerk/nextjs";
+
+import axiosClient from "@/api/axios";
 import { AppError } from "@/lib/errors";
-import { GetWorkflowsRequest } from "@/types/workflow-request";
+import {
+  CreateWorkflowResponse,
+  GetWorkflowsResponse,
+  Workflow,
+} from "@/types/workflow-type";
 
-import { GetWorkflowsResponse } from "../types/workflow-response";
+// GET /api/v1/workflows
+// Authorization: Bearer <JWT>
+// This should internally filter by userId based on the JWT and return, no need to explicitly pass userId.
+export function useGetWorkflowsApi() {
+  const { getToken } = useAuth();
 
-export async function getWorkflowsFromAPI(userId: string) {
-  const { getToken } = await auth();
-  const token = await getToken();
+  return useCallback(async (): Promise<Workflow[]> => {
+    const token = await getToken({ template: "default" });
 
-  if (!token) {
-    throw new AppError("Unauthenticated", "UNAUTHENTICATED");
-  }
+    try {
+      const response = await axiosClient.get<GetWorkflowsResponse>(
+        "/workflow",
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
 
-  const requestBody: GetWorkflowsRequest = { userId };
+      console.log("[AXIOS URL]:", response.config.baseURL, response.config.url);
+      console.log("[AXIOS DATA]:", response.data);
 
-  let response: Response;
-  try {
-    response = await fetch(`${env.PYTHON_BACKEND_HOST}/api/workflows`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-  } catch {
-    throw new AppError("Failed to reach Python API", "PYTHON_API_CALL_FAILED");
-  }
+      return response.data.items;
+    } catch (err: any) {
+      const url = err.config?.baseURL + err.config?.url;
+      if (url) console.error(`[AXIOS FAILED URL]: ${url}`);
 
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "Unknown error");
-    throw new AppError(`Python API error: ${errorText}`, "PYTHON_API_ERROR");
-  }
+      if (err.response) {
+        throw new AppError(
+          `Python API error: ${err.response.data?.message || err.message}`,
+          "PYTHON_API_ERROR"
+        );
+      }
 
-  let json: GetWorkflowsResponse;
-  try {
-    json = await response.json();
-  } catch {
-    throw new AppError(
-      "Invalid JSON from Python API",
-      "PYTHON_API_INVALID_JSON"
-    );
-  }
-
-  return json.data;
+      return [];
+    }
+  }, [getToken]);
 }
 
-export async function createWorkflowInAPI(
+export async function createWorkflowApi(
   userId: string,
-  input: { name: string; description: string }
-) {
-  const { getToken } = await auth();
-  const token = await getToken();
-
-  if (!token) {
-    throw new AppError("Unauthenticated", "UNAUTHENTICATED");
-  }
-
-  const response = await fetch(
-    `${env.PYTHON_BACKEND_HOST}/api/workflows/create`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ userId, ...input }),
+  input: { name: string; description?: string }
+): Promise<CreateWorkflowResponse> {
+  try {
+    const response = await axiosClient.post<CreateWorkflowResponse>(
+      "/workflow/create",
+      { userId, ...input }
+    );
+    return response.data;
+  } catch (err: any) {
+    const url = err.config?.baseURL + err.config?.url;
+    if (url) console.error(`[AXIOS FAILED URL]: ${url}`);
+    if (err.response) {
+      throw new AppError(
+        `Python API error: ${err.response.data?.message || err.message}`,
+        "PYTHON_API_ERROR"
+      );
     }
-  );
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => "Unknown error");
-    throw new AppError(`Python API error: ${text}`, "PYTHON_API_ERROR");
+    throw new AppError("Create workflow failed", "API_FAILED");
   }
-
-  const json = await response.json();
-  return json.data;
 }

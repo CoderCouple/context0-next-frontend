@@ -70,12 +70,12 @@ export const DesktopNavbar = ({ navItems }: Props) => {
   <ModeToggle />
   <SignInButton mode="modal">
      <button className={cn(
-        "bg-gradient-to-r bg-primary/90 to-bg-primary/100  relative z-10 hover:bg-primary/10  text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center","bg-gradient-to-r to-bg-primary/90 to-bg-primary/100 relative z-10 bg-transparent hover:bg-primary/10  border border-transparent text-black text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center dark:text-white dark:hover:bg-neutral-800 dark:hover:shadow-xl"
+        "bg-gradient-to-r bg-primary/90 to-bg-primary/100  relative z-10 hover:bg-primary/10 text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center","bg-gradient-to-r to-bg-primary/90 to-bg-primary/100 relative z-10 bg-transparent hover:bg-primary/10  border border-transparent text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center dark:text-white dark:hover:bg-neutral-800 dark:hover:shadow-xl"
       )}>Sign In</button>
   </SignInButton>
   <SignUpButton mode="modal">
     <button className={cn(
-        "bg-gradient-to-r bg-primary/90 to-bg-primary/100  relative z-10 hover:bg-primary  text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center","bg-gradient-to-r bg-primary/90 to-bg-primary/100 relative z-10 hover:bg-primary  border border-transparent text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]"
+        "bg-gradient-to-r bg-primary/90 to-bg-primary/100  relative z-10 hover:bg-primary text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center","bg-gradient-to-r bg-primary/90 to-bg-primary/100 relative z-10 hover:bg-primary  border border-transparent text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]"
       )}>Sign Up</button>
   </SignUpButton>
 </div>

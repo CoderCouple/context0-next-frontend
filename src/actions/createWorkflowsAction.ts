@@ -1,38 +1,39 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { auth } from "@clerk/nextjs/server";
 
+import { createWorkflowApi } from "@/api/workflow-api";
+import { AppError } from "@/lib/errors";
 import {
+  CreateWorkflowInput,
   createWorkflowSchema,
-  createWorkflowSchemaType,
 } from "@/schema/workflow-schema";
-import { createWorkflowUseCase } from "@/use-case/workflow";
 
-export async function createWorkflowAction(form: createWorkflowSchemaType) {
-  const parsed = createWorkflowSchema.safeParse(form);
-  if (!parsed.success) {
-    throw new Error("Invalid form data");
-  }
-
+export async function createWorkflowAction(form: CreateWorkflowInput) {
   const { userId } = await auth();
   if (!userId) {
     throw new Error("Unauthenticated");
   }
 
-  const result = await createWorkflowUseCase(userId, {
-    ...parsed.data,
-    description: parsed.data.description || "", // Ensure description is never undefined
-  });
-
-  if (!result) {
-    throw new Error("Failed to create workflow");
+  const parsed = createWorkflowSchema.safeParse(form);
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: parsed.error.flatten().formErrors.join(", ") || "Invalid input",
+    };
   }
 
-  // ✅ Revalidate after mutation
-  revalidatePath("/workflow");
+  const validatedInput = parsed.data;
 
-  // ✅ Redirect to the editor
-  // redirect(`/workflow/editor/${result.id}`);
+  try {
+    const workflow = await createWorkflowApi(userId, validatedInput);
+    redirect(`/workflow/editor/${workflow.data.id}`);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return { success: false, message: err.message };
+    }
+    return { success: false, message: "Unexpected error" };
+  }
 }

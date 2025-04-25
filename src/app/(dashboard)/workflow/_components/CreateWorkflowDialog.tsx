@@ -23,16 +23,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
 import {
+  CreateWorkflowInput,
   createWorkflowSchema,
-  createWorkflowSchemaType,
-} from "../../../../schema/workflow-schema";
+} from "@/schema/workflow-schema";
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<createWorkflowSchemaType>({
+  const form = useForm<CreateWorkflowInput>({
     resolver: zodResolver(createWorkflowSchema),
     defaultValues: {},
   });
@@ -48,7 +47,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   });
 
   const onSubmit = useCallback(
-    (values: createWorkflowSchemaType) => {
+    (values: CreateWorkflowInput) => {
       toast.loading("Creating workflow...", { id: "create-workflow" });
       mutate(values);
     },
