@@ -1,31 +1,37 @@
-"use client";
+import { Suspense } from "react";
 
-import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, InboxIcon } from "lucide-react";
 
-import { useGetWorkflowsApi } from "@/api/api";
+import { getWorkflowsAction } from "@/actions/getWorkflowsAction";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import CreateWorkflowDialog from "./_components/CreateWorkflowDialog";
 
-export function UserWorkflows() {
-  const getWorkflows = useGetWorkflowsApi();
+function page() {
+  return (
+    <div className="mt-4 flex h-full flex-1 flex-col">
+      <div className="flex justify-between">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-bold">Workflows</h1>
+          <p className="text-muted-foreground">Manage your workflows</p>
+        </div>
+        <CreateWorkflowDialog />
+      </div>
 
-  const {
-    data: workflows,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["workflows"],
-    queryFn: getWorkflows,
-  });
+      <div className="h-full py-6">
+        <Suspense fallback={<UserWorkflowSkeleton />}>
+          <UserWorkflows />
+        </Suspense>
+      </div>
+    </div>
+  );
+}
 
-  if (isLoading) return <UserWorkflowSkeleton />;
+async function UserWorkflows() {
+  const workflows = await getWorkflowsAction();
 
-  console.log(workflows);
-
-  if (isError || !workflows) {
+  if (!workflows) {
     return (
       <Alert variant={"destructive"}>
         <AlertCircle className="h-4 w-4" />
@@ -74,11 +80,11 @@ export function UserWorkflows() {
 function UserWorkflowSkeleton() {
   return (
     <div className="space-y-2">
-      {[1, 2, 3, 4, 5].map((index) => {
+      {[1, 2, 3, 4, 5, 6].map((index) => {
         return <Skeleton key={index} className="h-32 w-full" />;
       })}
     </div>
   );
 }
 
-export default UserWorkflows;
+export default page;
