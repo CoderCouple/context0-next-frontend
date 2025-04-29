@@ -24,15 +24,25 @@ export interface Workflow {
   is_deleted: boolean;
 }
 
-export interface GetWorkflowsResponse {
-  items: Workflow[];
-}
+// ✅ When you GET workflows
 
-export interface CreateWorkflowRequest {
+export type GetWorkflowsResponse = {
+  result: Workflow[]; // 👈 inside result
+  status_code: number;
+  message: string;
+  success: boolean;
+};
+
+// ✅ When you CREATE a workflow
+export type CreateWorkflowRequest = {
   name: string;
-  description: string;
-}
+  description?: string; // make description optional here (backend allows it)
+};
 
-export interface CreateWorkflowResponse {
-  data: Workflow;
-}
+// ✅ After axios interceptor, you get Workflow directly
+export type CreateWorkflowResponse = {
+  result: Workflow;
+  status_code: number;
+  message: string;
+  success: boolean;
+};

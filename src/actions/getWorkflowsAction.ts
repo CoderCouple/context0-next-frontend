@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 
-import { getWorkflows } from "@/api/workflow-api";
+import { getWorkflowsApi } from "@/api/workflow-api";
 
 export async function getWorkflowsAction() {
   const { userId, getToken } = await auth();
@@ -12,8 +12,6 @@ export async function getWorkflowsAction() {
     throw new Error("Unauthenticated");
   }
 
-  console.log("userId", userId);
-  console.log("token", token);
-  const workflows = await getWorkflows(token);
-  return workflows;
+  const workflows = await getWorkflowsApi(token);
+  return workflows.result;
 }

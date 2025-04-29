@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,6 +31,7 @@ import {
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
+  const router = useRouter(); // ✅ Correct
 
   const form = useForm<CreateWorkflowInput>({
     resolver: zodResolver(createWorkflowSchema),
@@ -38,8 +40,21 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createWorkflowAction,
-    onSuccess: () => {
+    onSuccess: (workflow) => {
+      if (!workflow.success) {
+        toast.error(workflow.message || "Failed to create workflow", {
+          id: "create-workflow",
+        });
+        return;
+      }
+
       toast.success("Workflow created", { id: "create-workflow" });
+
+      // ✅ Better UX: reset and close first, then navigate
+      form.reset();
+      setOpen(false);
+      console.log(workflow.data);
+      router.push(`/workflow/editor/${workflow.data?.id}`);
     },
     onError: () => {
       toast.error("Failed to create workflow", { id: "create-workflow" });
@@ -90,7 +105,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                       <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                      Choose a descriptive and unique name
+                      Choose a descriptive and unique name.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -113,13 +128,13 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                     </FormControl>
                     <FormDescription>
                       Provide a brief description of what your workflow does.
-                      <br /> This is optional but can help you remember the
-                      workflow&apos;s purpose
+                      This is optional but helpful.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <Button type="submit" className="w-full" disabled={isPending}>
                 {!isPending && "Proceed"}
                 {isPending && <Loader2 className="animate-spin" />}
