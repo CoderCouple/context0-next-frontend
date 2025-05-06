@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 
 import { getWorkflowsApi } from "@/api/workflow-api";
 
-export async function getWorkflowsAction() {
+export async function GetWorkflowsAction() {
   const { userId, getToken } = await auth();
   const token = await getToken({ template: "default" });
 

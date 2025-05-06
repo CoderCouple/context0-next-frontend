@@ -3,6 +3,7 @@
 // lib/axios.ts
 import axios, { AxiosError } from "axios";
 import axiosRetry from "axios-retry";
+import camelcaseKeys from "camelcase-keys";
 import { toast } from "sonner";
 
 import { BaseResponse } from "@/types";
@@ -23,7 +24,10 @@ axiosRetry(axiosClient, {
 // Global response interceptor
 axiosClient.interceptors.response.use(
   (response) => {
-    const data: BaseResponse<any> = response.data;
+    // ✅ Transform to camelCase first
+    const camelData = camelcaseKeys(response.data, { deep: true });
+
+    const data: BaseResponse<any> = camelData;
 
     if (!data.success) {
       const error = new AxiosError(

@@ -1,34 +1,77 @@
+import { LucideProps } from "lucide-react";
+
+import { AppNode } from "./app-node";
+import { TaskParam, TaskType } from "./task";
+
 export enum WorkflowStatus {
   DRAFT = "DRAFT",
   PUBLISHED = "PUBLISHED",
 }
 
+export type WorkflowTask = {
+  label: string;
+  icon: React.FC<LucideProps>;
+  type: TaskType;
+  isEntryPoint?: boolean;
+  inputs: TaskParam[];
+  outputs: TaskParam[];
+  credits: number;
+  description?: string;
+  subTasks?: TaskType[];
+};
+
+export type WorkflowExecutionPlanPhase = {
+  phase: number;
+  nodes: AppNode[];
+};
+
+export type WorkflowExecutionPlan = WorkflowExecutionPlanPhase[];
+
+export enum WorkflowExecutionStatus {
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
+export enum WorkflowExecutionTrigger {
+  MANUAL = "MANUAL",
+  CRON = "CRON",
+}
+
+export enum ExecutionPhaseStatus {
+  CREATED = "CREATED",
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
 export interface Workflow {
   id: string;
-  user_id: string;
+  userId: string;
   name: string;
   description: string;
   definition: string | null;
-  execution_plan: string | null;
+  executionPlan: string | null;
   cron: string | null;
   status: WorkflowStatus;
-  credits_cost: string | null;
-  last_run_at: string | null;
-  last_run_id: string | null;
-  last_run_status: string | null;
-  next_run_at: string | null;
-  created_by: string;
-  updated_by: string;
-  created_at: string;
-  updated_at: string;
-  is_deleted: boolean;
+  creditsCost: string | null;
+  lastRunAt: string | null;
+  lastRunId: string | null;
+  lastRunStatus: string | null;
+  nextRunAt: string | null;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  isDeleted: boolean;
 }
 
 // ✅ When you GET workflows
-
 export type GetWorkflowsResponse = {
-  result: Workflow[]; // 👈 inside result
-  status_code: number;
+  result: Workflow[];
+  statusCode: number;
   message: string;
   success: boolean;
 };
@@ -36,13 +79,18 @@ export type GetWorkflowsResponse = {
 // ✅ When you CREATE a workflow
 export type CreateWorkflowRequest = {
   name: string;
-  description?: string; // make description optional here (backend allows it)
+  description?: string;
 };
 
-// ✅ After axios interceptor, you get Workflow directly
-export type CreateWorkflowResponse = {
+// ✅ When you get the response of CREATE a workflow
+export type WorkflowResponse = {
   result: Workflow;
-  status_code: number;
+  statusCode: number;
   message: string;
   success: boolean;
+};
+
+export type DeleteWorkflowRequest = {
+  workflowId: string;
+  isSoftDelete: boolean;
 };

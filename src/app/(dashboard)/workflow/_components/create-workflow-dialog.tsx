@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layers2Icon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createWorkflowAction } from "@/actions/createWorkflowsAction";
+import { CreateWorkflowAction } from "@/actions/workflow/create-workflow-action";
 import CustomDialogHeader from "@/components/custom-dialog-header";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -32,15 +32,20 @@ import {
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
   const router = useRouter(); // ✅ Correct
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateWorkflowInput>({
     resolver: zodResolver(createWorkflowSchema),
-    defaultValues: {},
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createWorkflowAction,
+    mutationFn: CreateWorkflowAction,
     onSuccess: (workflow) => {
+      queryClient.invalidateQueries({ queryKey: ["get-workflows"] });
       if (!workflow.success) {
         toast.error(workflow.message || "Failed to create workflow", {
           id: "create-workflow",
@@ -53,8 +58,11 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
       // ✅ Better UX: reset and close first, then navigate
       form.reset();
       setOpen(false);
-      console.log(workflow.data);
-      router.push(`/workflow/editor/${workflow.data?.id}`);
+      if (workflow.data?.id) {
+        router.push(`/workflow/editor/${workflow.data.id}`);
+      } else {
+        toast.error("Invalid workflow ID returned from server.");
+      }
     },
     onError: () => {
       toast.error("Failed to create workflow", { id: "create-workflow" });
@@ -73,7 +81,10 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
     <Dialog
       open={open}
       onOpenChange={(open) => {
-        form.reset();
+        if (!open) {
+          form.reset(); // ✅ reset form when closing
+          toast.dismiss("create-workflow"); // ✅ clear toasts
+        }
         setOpen(open);
       }}
     >
@@ -90,7 +101,11 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
           <Form {...form}>
             <form
               className="w-full space-y-8"
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit(onSubmit)(e);
+              }}
             >
               <FormField
                 control={form.control}
@@ -102,7 +117,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                       <p className="text-xs text-primary">(required)</p>
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input autoFocus {...field} />
                     </FormControl>
                     <FormDescription>
                       Choose a descriptive and unique name.
@@ -136,8 +151,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
               />
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {!isPending && "Proceed"}
-                {isPending && <Loader2 className="animate-spin" />}
+                {isPending ? <Loader2 className="animate-spin" /> : "Proceed"}
               </Button>
             </form>
           </Form>

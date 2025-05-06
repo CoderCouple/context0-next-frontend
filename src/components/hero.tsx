@@ -70,7 +70,7 @@ export const Hero = () => {
           duration: 0.5,
           delay: 0.2,
         }}
-        className="dark:text-white/80 text-neutral-800 relative z-10 mx-auto mt-7 max-w-3xl text-center text-base md:text-xl"
+        className="dark:text-white/80 text-neutral-800 relative z-10 mx-auto mt-7 text-muted max-w-3xl text-center text-base md:text-xl"
       >
         <Balancer>
           Context AI connects all your AI agents and MCP servers into one seamless platform — so you can build and deploy workflows with a single click.

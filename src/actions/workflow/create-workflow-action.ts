@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "@clerk/nextjs/server";
 
 import { createWorkflowApi } from "@/api/workflow-api";
@@ -12,7 +14,7 @@ import { Workflow } from "@/types/workflow-type";
 
 // ✅
 
-export async function createWorkflowAction(
+export async function CreateWorkflowAction(
   form: CreateWorkflowInput
 ): Promise<ActionResponse<Workflow>> {
   const { userId, getToken } = await auth();
@@ -37,12 +39,14 @@ export async function createWorkflowAction(
     const baseResponse = await createWorkflowApi(token, data);
     const workflow = baseResponse.result;
     console.log("[CREATE WORKFLOW]", workflow); // 🛠 dem
+    revalidatePath("/workflow");
     return {
       success: true,
       data: workflow,
     };
   } catch (err: any) {
     console.error("[CREATE WORKFLOW ERROR]", err); // 🛠
+    revalidatePath("/workflow");
     return {
       success: false,
       message: err.customMessage || "Unexpected error",

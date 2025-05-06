@@ -1,12 +1,8 @@
 "use client;";
 
-// api/workflow-api.ts
 import axiosClient from "@/api/axios";
 import { AppError } from "@/lib/errors";
-import {
-  CreateWorkflowResponse,
-  GetWorkflowsResponse,
-} from "@/types/workflow-type";
+import { GetWorkflowsResponse, WorkflowResponse } from "@/types/workflow-type";
 
 // GET /api/v1/workflows
 // Authorization: Bearer <JWT>
@@ -42,18 +38,49 @@ export async function getWorkflowsApi(
   }
   return {
     result: [],
-    status_code: 500,
+    statusCode: 500,
     message: "Get workflows failed",
     success: false,
   };
 }
 
+export async function getWorkflowByIdApi(
+  token: string,
+  workflowId: string
+): Promise<WorkflowResponse> {
+  try {
+    const response = await axiosClient.get<unknown, WorkflowResponse>(
+      `/workflow/${workflowId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("[AXIOS GET WORKFLOW RESPONSE]:", response);
+    return response;
+  } catch (err: any) {
+    const url = err.config?.baseURL + err.config?.url;
+    if (url) console.error(`[AXIOS FAILED URL]: ${url}`);
+
+    if (err.response) {
+      throw new AppError(
+        `Python API error: ${err.response.data?.message || err.message}`,
+        "PYTHON_API_ERROR"
+      );
+    }
+
+    throw new AppError("Get workflow failed", "API_FAILED");
+  }
+}
+
 export async function createWorkflowApi(
   token: string,
   input: { name: string; description?: string }
-): Promise<CreateWorkflowResponse> {
+): Promise<WorkflowResponse> {
   try {
-    const response = await axiosClient.post<unknown, CreateWorkflowResponse>(
+    const response = await axiosClient.post<unknown, WorkflowResponse>(
       "/workflow", // url : API endpoint
       { ...input }, // 1st : Request body (JSON payload)
       {
@@ -76,5 +103,41 @@ export async function createWorkflowApi(
       );
     }
     throw new AppError("Create workflow failed", "API_FAILED");
+  }
+}
+
+export async function deleteWorkflowApi(
+  token: string,
+  input: { workflowId: string; isSoftDelete: boolean }
+): Promise<WorkflowResponse> {
+  try {
+    const response = await axiosClient.delete<unknown, WorkflowResponse>(
+      "/workflow",
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
+        },
+        data: {
+          workflow_id: input.workflowId,
+          is_soft_delete: input.isSoftDelete,
+        },
+      }
+    );
+
+    console.log("[AXIOS DELETE RESPONSE]:", response);
+    return response;
+  } catch (err: any) {
+    const url = err.config?.baseURL + err.config?.url;
+    if (url) console.error(`[AXIOS FAILED URL]: ${url}`);
+
+    if (err.response) {
+      throw new AppError(
+        `Python API error: ${err.response.data?.message || err.message}`,
+        "PYTHON_API_ERROR"
+      );
+    }
+
+    throw new AppError("Delete workflow failed", "API_FAILED");
   }
 }

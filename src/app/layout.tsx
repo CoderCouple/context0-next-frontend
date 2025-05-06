@@ -22,8 +22,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <AppProvider>{children}</AppProvider>
+        <Toaster
+          theme="system"
+          className="toaster group"
+          toastOptions={{
+            duration: 3000,
+          }}
+        />
       </body>
-      <Toaster />
     </html>
   );
 }
