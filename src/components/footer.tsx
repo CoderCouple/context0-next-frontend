@@ -61,7 +61,7 @@ export const Footer = () => {
               {links.map((link) => (
                 <Link
                   key={link.name}
-                  className="dark:text-muted-dark text-xs text-muted transition-colors hover:text-black dark:hover:text-neutral-400 sm:text-sm"
+                  className="text-neutral-600 dark:text-neutral-300 text-xs transition-colors hover:text-black dark:hover:text-neutral-100 sm:text-sm"
                   href={link.href}
                 >
                   {link.name}
@@ -72,7 +72,7 @@ export const Footer = () => {
               {legal.map((link) => (
                 <Link
                   key={link.name}
-                  className="dark:text-muted-dark text-xs text-muted transition-colors hover:text-black dark:hover:text-neutral-400 sm:text-sm"
+                  className="text-neutral-600 dark:text-neutral-300 text-xs transition-colors hover:text-black dark:hover:text-neutral-100 sm:text-sm"
                   href={link.href}
                 >
                   {link.name}
@@ -83,7 +83,7 @@ export const Footer = () => {
               {socials.map((link) => (
                 <Link
                   key={link.name}
-                  className="dark:text-muted-dark text-xs text-muted transition-colors hover:text-black dark:hover:text-neutral-400 sm:text-sm"
+                  className="text-neutral-600 dark:text-neutral-300 text-xs transition-colors hover:text-black dark:hover:text-neutral-100 sm:text-sm"
                   href={link.href}
                 >
                   {link.name}
@@ -93,8 +93,8 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      <p className="inset-x-0 bg-gradient-to-b from-neutral-50 to-neutral-200 bg-clip-text text-center text-5xl font-bold text-transparent dark:from-neutral-950 dark:to-neutral-800 md:text-9xl lg:text-[18rem]">
-        CONTEXT AI
+      <p className="inset-x-0 bg-gradient-to-b from-neutral-50 to-neutral-200 bg-clip-text text-center text-3xl font-bold text-transparent dark:from-neutral-100 dark:to-neutral-400 md:text-5xl lg:text-[18rem] whitespace-nowrap px-4">
+        CONTEXT-0
       </p>
     </div>
   );

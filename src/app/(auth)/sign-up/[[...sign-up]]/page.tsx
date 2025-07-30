@@ -3,7 +3,12 @@ import React from "react";
 import { SignUp } from "@clerk/nextjs";
 
 function Page() {
-  return <SignUp />;
+  return (
+    <SignUp 
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/dashboard"
+    />
+  );
 }
 
 export default Page;

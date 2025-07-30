@@ -3,7 +3,7 @@ import UserWorkflows from "./_components/user-workflows";
 
 export default function Page() {
   return (
-    <div className="mt-4 flex h-full flex-1 flex-col">
+    <div className="m-6 flex h-full flex-1 flex-col">
       <div className="flex justify-between">
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold">Workflows</h1>

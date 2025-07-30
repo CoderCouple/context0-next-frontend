@@ -4,8 +4,8 @@ import Logo from "@/components/logo";
 import { BlogWithSlug } from "@/lib/blog";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { format } from "date-fns";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "./container";
 
 export function BlogLayout({
@@ -24,15 +24,11 @@ export function BlogLayout({
         </Link>
         <div className="flex space-x-2 items-center">
           <div className="flex space-x-2 items-center">
-            <Image
-              src={blog.author.src}
-              alt={blog.author.name ?? "Author"}
-              width={20}
-              height={20}
-              className="rounded-full h-5 w-5"
-            />
+            <div className="rounded-full h-5 w-5 bg-primary/10 flex items-center justify-center">
+              <span className="text-xs font-medium">{blog.author.charAt(0).toUpperCase()}</span>
+            </div>
             <p className="text-sm font-normal text-muted dark:text-muted-dark">
-              {blog.author.name}
+              {blog.author}
             </p>
           </div>
           <div className="h-5 rounded-lg w-0.5 bg-neutral-200 dark:bg-neutral-700" />
@@ -45,9 +41,9 @@ export function BlogLayout({
       </div>
 
       <div className="max-w-4xl mx-auto">
-        {blog.image ? (
+        {blog.images?.[0] ? (
           <Image
-            src={blog.image}
+            src={blog.images[0]}
             height={800}
             width={800}
             className="h-40 md:h-96 w-full aspect-square object-cover rounded-3xl"

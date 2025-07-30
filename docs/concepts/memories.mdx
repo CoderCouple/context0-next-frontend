@@ -1,0 +1,194 @@
+---
+title: 'Memories'
+description: 'Learn about Context Zero AI memories and how they work'
+---
+
+## What are Memories?
+
+Memories in Context Zero AI are structured pieces of information that capture and store personal context, experiences, and knowledge. They serve as the foundation for personalized AI interactions by providing relevant context when needed.
+
+## Memory Structure
+
+Each memory consists of several key components:
+
+<CardGroup cols={2}>
+  <Card
+    title="🧠 Content"
+    icon="brain"
+  >
+    The actual information or text that represents the memory
+  </Card>
+  <Card
+    title="🏷️ Metadata"
+    icon="tags"
+  >
+    Additional information like categories, timestamps, and custom tags
+  </Card>
+  <Card
+    title="🔗 Embeddings"
+    icon="vector-square"
+  >
+    Vector representations for semantic search and retrieval
+  </Card>
+  <Card
+    title="📊 Relationships"
+    icon="share-nodes"
+  >
+    Connections to other memories in the graph
+  </Card>
+</CardGroup>
+
+## Memory Lifecycle
+
+### 1. Creation
+Memories are created through various methods:
+- Direct API calls
+- Browser extension capture
+- Import from external sources
+- Automatic extraction from conversations
+
+### 2. Storage
+Memories are stored with:
+- End-to-end encryption
+- Distributed redundancy
+- Version control
+- Backup and recovery
+
+### 3. Indexing
+Upon storage, memories are:
+- Vectorized using state-of-the-art embeddings
+- Indexed for fast retrieval
+- Connected to related memories
+- Categorized automatically
+
+### 4. Retrieval
+Memories are retrieved based on:
+- Semantic similarity
+- Contextual relevance
+- Recency and frequency
+- User preferences
+
+## Memory Examples
+
+<Tabs>
+  <Tab title="Personal Memory">
+    ```json
+    {
+      "id": "mem_123",
+      "content": "I prefer to have meetings in the morning between 9-11 AM. I'm more focused and creative during this time.",
+      "metadata": {
+        "category": "personal",
+        "type": "preference",
+        "tags": ["work", "schedule", "meetings"]
+      },
+      "created_at": "2024-01-15T09:30:00Z",
+      "updated_at": "2024-01-15T09:30:00Z"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Knowledge Memory">
+    ```json
+    {
+      "id": "mem_456",
+      "content": "The Pythagorean theorem states that in a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides: a² + b² = c²",
+      "metadata": {
+        "category": "knowledge",
+        "type": "concept",
+        "subject": "mathematics",
+        "tags": ["geometry", "theorem", "triangle"]
+      },
+      "created_at": "2024-01-10T14:20:00Z",
+      "updated_at": "2024-01-10T14:20:00Z"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Experience Memory">
+    ```json
+    {
+      "id": "mem_789",
+      "content": "Had a great hiking experience at Mount Rainier last weekend. The weather was perfect, and I took the Wonderland Trail. Need to remember to bring more water next time.",
+      "metadata": {
+        "category": "experience",
+        "type": "activity",
+        "location": "Mount Rainier",
+        "tags": ["hiking", "outdoor", "travel", "lessons"]
+      },
+      "created_at": "2024-01-08T18:45:00Z",
+      "updated_at": "2024-01-08T18:45:00Z"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+### Memory Quality
+- **Be Specific**: Include relevant details and context
+- **Use Clear Language**: Write memories in clear, understandable language
+- **Add Metadata**: Use tags and categories for better organization
+- **Regular Updates**: Keep memories current and accurate
+
+### Organization
+- **Consistent Categorization**: Use standardized categories
+- **Meaningful Tags**: Apply relevant and searchable tags
+- **Logical Grouping**: Group related memories together
+- **Regular Cleanup**: Remove outdated or irrelevant memories
+
+### Privacy and Security
+- **Sensitive Information**: Be cautious with personal or confidential data
+- **Access Control**: Use appropriate permissions and sharing settings
+- **Regular Audits**: Review and update memory permissions periodically
+
+## Advanced Features
+
+### Memory Compression
+Context Zero AI automatically compresses similar memories to:
+- Reduce storage overhead
+- Improve retrieval efficiency
+- Maintain semantic coherence
+- Preserve important details
+
+### Temporal Decay
+Memories have built-in temporal characteristics:
+- Recent memories have higher retrieval priority
+- Frequently accessed memories gain importance
+- Unused memories gradually fade in priority
+- Important memories can be pinned to prevent decay
+
+### Cross-Memory Relationships
+Memories can be connected through:
+- **Semantic Similarity**: Content-based relationships
+- **Temporal Proximity**: Time-based connections  
+- **User-Defined Links**: Manual associations
+- **Contextual Relevance**: Situation-based connections
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🧩 Memory Types"
+    href="/concepts/memory-types"
+  >
+    Explore different types of memories and their use cases
+  </Card>
+  <Card
+    title="🕸️ Graph Memory"
+    href="/concepts/graph-memory"
+  >
+    Learn about memory relationships and graph structures
+  </Card>
+  <Card
+    title="🔍 Search & Retrieval"
+    href="/concepts/search"
+  >
+    Understand how memories are found and retrieved
+  </Card>
+  <Card
+    title="📊 Analytics"
+    href="/concepts/analytics"
+  >
+    Monitor and analyze your memory usage patterns
+  </Card>
+</CardGroup>

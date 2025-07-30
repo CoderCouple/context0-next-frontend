@@ -1,0 +1,353 @@
+---
+title: 'Memory Types'
+description: 'Understanding different types of memories in Context Zero AI'
+---
+
+## Overview
+
+Context Zero AI supports various types of memories, each designed for specific use cases and interaction patterns. Understanding these types helps you organize and retrieve information more effectively.
+
+## Personal Memories
+
+Personal memories capture individual preferences, experiences, and characteristics.
+
+### Profile Information
+Basic personal details and characteristics:
+
+```json
+{
+  "content": "I'm a software engineer at a tech startup. I have 5 years of experience in React and Node.js.",
+  "metadata": {
+    "type": "profile",
+    "category": "personal",
+    "tags": ["career", "skills", "experience"]
+  }
+}
+```
+
+### Preferences
+User preferences and choices:
+
+```json
+{
+  "content": "I prefer dark mode interfaces and minimal design aesthetics. I also like my coffee black.",
+  "metadata": {
+    "type": "preference", 
+    "category": "personal",
+    "tags": ["ui", "design", "coffee"]
+  }
+}
+```
+
+### Experiences
+Past experiences and events:
+
+```json
+{
+  "content": "I had a challenging debugging session last week with a React state issue. Turned out to be a closure problem in useEffect.",
+  "metadata": {
+    "type": "experience",
+    "category": "personal", 
+    "tags": ["debugging", "react", "programming"]
+  }
+}
+```
+
+## Knowledge Memories
+
+Knowledge memories store factual information, concepts, and learned material.
+
+### Concepts
+Technical or domain-specific concepts:
+
+```json
+{
+  "content": "React hooks allow functional components to use state and lifecycle features. useState manages local state, useEffect handles side effects.",
+  "metadata": {
+    "type": "concept",
+    "category": "knowledge",
+    "domain": "programming",
+    "tags": ["react", "hooks", "frontend"]
+  }
+}
+```
+
+### Facts
+Specific factual information:
+
+```json
+{
+  "content": "The company headquarters is located at 123 Tech Street, San Francisco, CA. Office hours are 9 AM to 6 PM PST.",
+  "metadata": {
+    "type": "fact",
+    "category": "knowledge",
+    "tags": ["company", "location", "hours"]
+  }
+}
+```
+
+### Procedures
+Step-by-step processes and workflows:
+
+```json
+{
+  "content": "To deploy the app: 1) Run tests with 'npm test', 2) Build with 'npm run build', 3) Deploy to staging, 4) Run integration tests, 5) Deploy to production",
+  "metadata": {
+    "type": "procedure",
+    "category": "knowledge",
+    "tags": ["deployment", "workflow", "process"]
+  }
+}
+```
+
+## Contextual Memories
+
+Contextual memories provide situational awareness and environmental context.
+
+### Project Context
+Information about current projects:
+
+```json
+{
+  "content": "Working on the user authentication system for the mobile app. Using Firebase Auth with custom claims for role-based access.",
+  "metadata": {
+    "type": "project",
+    "category": "contextual",
+    "project_id": "mobile-auth",
+    "tags": ["authentication", "firebase", "mobile"]
+  }
+}
+```
+
+### Temporal Context
+Time-sensitive information:
+
+```json
+{
+  "content": "This week I'm focused on the Q4 planning meeting preparation. Need to gather metrics on user engagement and revenue projections.",
+  "metadata": {
+    "type": "temporal",
+    "category": "contextual",
+    "timeframe": "this_week",
+    "tags": ["planning", "q4", "metrics"]
+  }
+}
+```
+
+### Environmental Context
+Location and situation-based memories:
+
+```json
+{
+  "content": "When working from the coffee shop on Market Street, I usually sit by the window and use noise-canceling headphones for focus.",
+  "metadata": {
+    "type": "environmental",
+    "category": "contextual",
+    "location": "coffee_shop_market_st",
+    "tags": ["workspace", "focus", "location"]
+  }
+}
+```
+
+## Relationship Memories
+
+Relationship memories capture information about people and social connections.
+
+### People
+Information about individuals:
+
+```json
+{
+  "content": "Sarah is the lead designer on our team. She has a background in UX research and prefers collaborative design sessions over individual reviews.",
+  "metadata": {
+    "type": "person",
+    "category": "relationship",
+    "person_id": "sarah_designer",
+    "tags": ["team", "designer", "collaboration"]
+  }
+}
+```
+
+### Teams
+Group dynamics and team information:
+
+```json
+{
+  "content": "Our development team has daily standups at 10 AM. We use Scrum methodology with 2-week sprints.",
+  "metadata": {
+    "type": "team",
+    "category": "relationship", 
+    "team_id": "dev_team",
+    "tags": ["scrum", "standup", "process"]
+  }
+}
+```
+
+### Organizations
+Company and organizational context:
+
+```json
+{
+  "content": "The company culture emphasizes innovation and work-life balance. We have flexible hours and unlimited PTO policy.",
+  "metadata": {
+    "type": "organization",
+    "category": "relationship",
+    "tags": ["culture", "policy", "benefits"]
+  }
+}
+```
+
+## Task Memories
+
+Task memories help with productivity and goal tracking.
+
+### Goals
+Objectives and targets:
+
+```json
+{
+  "content": "Goal for this quarter: Complete the API redesign project and improve response times by 40%. Currently at 25% improvement.",
+  "metadata": {
+    "type": "goal",
+    "category": "task",
+    "deadline": "2024-03-31",
+    "progress": 0.6,
+    "tags": ["api", "performance", "q1"]
+  }
+}
+```
+
+### To-Dos
+Action items and tasks:
+
+```json
+{
+  "content": "Need to update the documentation for the new authentication endpoints. Also schedule a code review session with the team.",
+  "metadata": {
+    "type": "todo",
+    "category": "task",
+    "priority": "high",
+    "tags": ["documentation", "code-review", "auth"]
+  }
+}
+```
+
+### Reminders
+Time-based reminders and alerts:
+
+```json
+{
+  "content": "Reminder: Team retrospective meeting every Friday at 3 PM. Prepare feedback on this sprint's challenges and wins.",
+  "metadata": {
+    "type": "reminder",
+    "category": "task",
+    "recurring": "weekly",
+    "tags": ["meeting", "retrospective", "feedback"]
+  }
+}
+```
+
+## Memory Type Selection Guide
+
+<Tabs>
+  <Tab title="Personal Use">
+    **Best Memory Types:**
+    - Personal (preferences, experiences)
+    - Knowledge (concepts, facts)
+    - Task (goals, reminders)
+    
+    **Use Cases:**
+    - Personal AI assistant
+    - Learning and education
+    - Productivity tracking
+  </Tab>
+  
+  <Tab title="Team Collaboration">
+    **Best Memory Types:**
+    - Relationship (people, teams)
+    - Contextual (projects, temporal)
+    - Knowledge (procedures, facts)
+    
+    **Use Cases:**
+    - Team knowledge sharing
+    - Project management
+    - Onboarding new members
+  </Tab>
+  
+  <Tab title="Customer Support">
+    **Best Memory Types:**
+    - Relationship (customers, organizations)
+    - Knowledge (procedures, facts)
+    - Contextual (cases, history)
+    
+    **Use Cases:**
+    - Customer interaction history
+    - Support case tracking
+    - Knowledge base maintenance
+  </Tab>
+</Tabs>
+
+## Advanced Memory Features
+
+### Automatic Classification
+Context Zero AI automatically suggests memory types based on content:
+- Natural language processing
+- Pattern recognition
+- Context analysis
+- User behavior learning
+
+### Type-Specific Retrieval
+Different memory types have optimized retrieval patterns:
+- Personal memories prioritize recency
+- Knowledge memories focus on relevance
+- Task memories consider deadlines
+- Relationship memories use connection strength
+
+### Cross-Type Relationships
+Memories can span multiple types and create rich contextual networks:
+- A project memory might reference team members
+- A task memory might relate to personal goals
+- Knowledge memories can inform experiences
+
+## Best Practices
+
+### Choosing the Right Type
+1. **Consider the Primary Purpose**: What is the main use of this information?
+2. **Think About Retrieval**: When and how will you need this memory?
+3. **Plan for Relationships**: How might this connect to other memories?
+4. **Consider Longevity**: How long will this information remain relevant?
+
+### Metadata Optimization
+- Use consistent tag vocabularies
+- Include relevant temporal information
+- Add priority or importance indicators
+- Specify relationships explicitly
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🕸️ Graph Memory"
+    href="/concepts/graph-memory"
+  >
+    Learn how different memory types connect in the graph
+  </Card>
+  <Card
+    title="🔍 Search Strategies"
+    href="/concepts/search"
+  >
+    Optimize search for different memory types
+  </Card>
+  <Card
+    title="📊 Memory Analytics"
+    href="/concepts/analytics"
+  >
+    Analyze usage patterns across memory types
+  </Card>
+  <Card
+    title="🔌 Integration Examples"
+    href="/integrations/overview"
+  >
+    See memory types in action across integrations
+  </Card>
+</CardGroup>

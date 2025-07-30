@@ -1,0 +1,159 @@
+---
+title: "Log Event"
+api: "POST /api/v1/event/"
+description: "Create a new event log entry for tracking user actions and system events"
+---
+
+## Overview
+
+This endpoint allows you to log events for analytics, debugging, and user behavior tracking. Events are used to build user context and improve memory retrieval.
+
+## Request Body
+
+<ParamField body="event_type" type="string" required>
+  The type of event being logged (e.g., "memory_created", "search_performed", "user_login")
+</ParamField>
+
+<ParamField body="user_id" type="string" required>
+  The ID of the user associated with this event
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Additional data associated with the event
+  <Expandable title="Metadata Object">
+    <ParamField body="source" type="string">
+      Source of the event (e.g., "web", "mobile", "api")
+    </ParamField>
+    <ParamField body="context" type="object">
+      Contextual information about the event
+    </ParamField>
+    <ParamField body="session_id" type="string">
+      Session identifier for grouping related events
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="timestamp" type="string">
+  ISO timestamp when the event occurred (defaults to current time)
+</ParamField>
+
+## Response
+
+<ResponseField name="event_id" type="string">
+  Unique identifier for the logged event
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Status of the event logging operation
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/api/v1/event/" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event_type": "memory_created",
+    "user_id": "user_12345",
+    "metadata": {
+      "source": "web",
+      "memory_id": "mem_67890",
+      "context": {
+        "page": "/dashboard",
+        "feature": "quick_add"
+      },
+      "session_id": "sess_abc123"
+    }
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/event/', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    event_type: 'memory_created',
+    user_id: 'user_12345',
+    metadata: {
+      source: 'web',
+      memory_id: 'mem_67890',
+      context: {
+        page: '/dashboard',
+        feature: 'quick_add'
+      },
+      session_id: 'sess_abc123'
+    }
+  })
+});
+
+const result = await response.json();
+```
+
+```python Python
+import requests
+from datetime import datetime
+
+response = requests.post(
+    "https://api.contextzero.ai/api/v1/event/",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    json={
+        "event_type": "memory_created",
+        "user_id": "user_12345",
+        "metadata": {
+            "source": "web",
+            "memory_id": "mem_67890",
+            "context": {
+                "page": "/dashboard",
+                "feature": "quick_add"
+            },
+            "session_id": "sess_abc123"
+        },
+        "timestamp": datetime.now().isoformat()
+    }
+)
+
+result = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "event_id": "evt_98765",
+  "status": "logged",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+</ResponseExample>
+
+## Common Event Types
+
+<AccordionGroup>
+  <Accordion title="User Actions">
+    - `user_login`, `user_logout`
+    - `memory_created`, `memory_updated`, `memory_deleted`
+    - `search_performed`, `context_retrieved`
+  </Accordion>
+
+  <Accordion title="System Events">
+    - `embedding_generated`, `index_updated`
+    - `sync_completed`, `backup_created`
+    - `error_occurred`, `performance_warning`
+  </Accordion>
+
+  <Accordion title="Integration Events">
+    - `integration_connected`, `integration_synced`
+    - `webhook_received`, `api_call_made`
+    - `data_imported`, `data_exported`
+  </Accordion>
+</AccordionGroup>

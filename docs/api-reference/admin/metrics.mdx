@@ -1,0 +1,635 @@
+---
+title: 'Usage Metrics'
+description: 'Get comprehensive system usage metrics for Context Zero AI'
+api: 'GET https://api.contextzero.ai/v1/admin/metrics'
+---
+
+## Overview
+
+The usage metrics endpoint provides comprehensive system-wide analytics including memory usage, search performance, and operational logs. This data is essential for monitoring system health, capacity planning, and understanding user behavior patterns.
+
+## Request
+
+### Headers
+
+| Header | Value | Required |
+|--------|--------|----------|
+| `Authorization` | `Bearer {admin_api_key}` | Yes |
+
+### Query Parameters
+
+<ParamField query="time_range" type="string">
+  Time range for metrics collection
+  
+  **Options:** `1h`, `24h`, `7d`, `30d`, `90d`, `1y`
+  **Default:** `24h`
+</ParamField>
+
+<ParamField query="granularity" type="string">
+  Data point granularity for time-series metrics
+  
+  **Options:** `minute`, `hour`, `day`, `week`
+  **Default:** `hour` (for 24h), `day` (for longer periods)
+</ParamField>
+
+<ParamField query="metrics" type="array">
+  Specific metrics to include in the response
+  
+  **Options:** `memory`, `search`, `users`, `api`, `performance`, `errors`
+  **Default:** All metrics
+</ParamField>
+
+<ParamField query="format" type="string">
+  Response format for the metrics data
+  
+  **Options:** `json`, `csv`, `prometheus`
+  **Default:** `json`
+</ParamField>
+
+<ParamField query="organizations" type="array">
+  Filter metrics by specific organizations
+  
+  **Format:** Comma-separated organization IDs
+</ParamField>
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "status": "OK",
+  "message": "Memory, search, and log usage metrics returned",
+  "data": {
+    "time_range": {
+      "start": "2024-01-14T10:30:00Z",
+      "end": "2024-01-15T10:30:00Z",
+      "granularity": "hour"
+    },
+    "summary": {
+      "total_memories": 1250000,
+      "total_searches": 45680,
+      "active_users": 15420,
+      "api_requests": 892340,
+      "average_response_time": 120,
+      "error_rate": 0.025
+    },
+    "memory_metrics": {
+      "total_count": 1250000,
+      "created_today": 8940,
+      "updated_today": 15620,
+      "deleted_today": 234,
+      "average_size_kb": 1.2,
+      "categories": {
+        "personal": 450000,
+        "work": 380000,
+        "learning": 220000,
+        "other": 200000
+      },
+      "storage_usage": {
+        "total_gb": 1540.5,
+        "embeddings_gb": 890.2,
+        "content_gb": 650.3
+      }
+    },
+    "search_metrics": {
+      "total_searches": 45680,
+      "successful_searches": 44950,
+      "failed_searches": 730,
+      "average_latency_ms": 85,
+      "cache_hit_rate": 0.68,
+      "top_queries": [
+        {"query": "project updates", "count": 1240},
+        {"query": "meeting notes", "count": 980},
+        {"query": "client information", "count": 750}
+      ],
+      "search_types": {
+        "semantic": 35680,
+        "keyword": 8900,
+        "graph_traversal": 1100
+      }
+    },
+    "user_metrics": {
+      "total_users": 25000,
+      "active_users": 15420,
+      "new_users": 340,
+      "user_segments": {
+        "free": 18000,
+        "starter": 5200,
+        "pro": 1500,
+        "enterprise": 300
+      },
+      "engagement": {
+        "daily_active_users": 8900,
+        "weekly_active_users": 18200,
+        "monthly_active_users": 22400
+      }
+    },
+    "api_metrics": {
+      "total_requests": 892340,
+      "successful_requests": 883590,
+      "failed_requests": 8750,
+      "rate_limited_requests": 1250,
+      "average_response_time": 120,
+      "endpoints": {
+        "/v1/memories": 450000,
+        "/v1/memories/search": 285000,
+        "/v1/users": 89000,
+        "/v1/admin": 12340
+      }
+    },
+    "performance_metrics": {
+      "cpu_usage": {
+        "average": 45.2,
+        "peak": 78.5,
+        "current": 42.1
+      },
+      "memory_usage": {
+        "average_gb": 12.4,
+        "peak_gb": 18.9,
+        "current_gb": 11.8
+      },
+      "disk_usage": {
+        "total_gb": 2048,
+        "used_gb": 1540.5,
+        "available_gb": 507.5
+      },
+      "network": {
+        "inbound_mbps": 145.2,
+        "outbound_mbps": 189.7,
+        "total_gb": 1240.8
+      }
+    },
+    "error_metrics": {
+      "total_errors": 8750,
+      "error_rate": 0.025,
+      "error_types": {
+        "authentication": 2340,
+        "rate_limiting": 1890,
+        "validation": 1650,
+        "server_error": 890,
+        "timeout": 1980
+      },
+      "top_errors": [
+        {
+          "error": "INVALID_API_KEY",
+          "count": 1540,
+          "percentage": 17.6
+        },
+        {
+          "error": "RATE_LIMITED",
+          "count": 1250,
+          "percentage": 14.3
+        }
+      ]
+    },
+    "time_series": {
+      "memory_creation": [
+        {"timestamp": "2024-01-15T00:00:00Z", "value": 245},
+        {"timestamp": "2024-01-15T01:00:00Z", "value": 189},
+        {"timestamp": "2024-01-15T02:00:00Z", "value": 156}
+      ],
+      "api_requests": [
+        {"timestamp": "2024-01-15T00:00:00Z", "value": 34500},
+        {"timestamp": "2024-01-15T01:00:00Z", "value": 28900},
+        {"timestamp": "2024-01-15T02:00:00Z", "value": 31200}
+      ]
+    }
+  }
+}
+```
+
+## Examples
+
+### Basic Metrics Retrieval
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZeroAdmin
+
+admin_client = ContextZeroAdmin(api_key="admin_api_key")
+
+# Get 24-hour metrics
+metrics = admin_client.admin.get_usage_metrics()
+
+print(f"Total memories: {metrics.summary.total_memories:,}")
+print(f"Total searches: {metrics.summary.total_searches:,}")
+print(f"Active users: {metrics.summary.active_users:,}")
+print(f"API requests: {metrics.summary.api_requests:,}")
+print(f"Error rate: {metrics.summary.error_rate:.2%}")
+
+# Print top search queries
+print("\nTop search queries:")
+for query in metrics.search_metrics.top_queries[:5]:
+    print(f"  {query.query}: {query.count} searches")
+```
+
+```javascript JavaScript
+import { ContextZeroAdmin } from '@contextzero/admin-sdk';
+
+const adminClient = new ContextZeroAdmin({ apiKey: 'admin_api_key' });
+
+// Get 24-hour metrics
+const metrics = await adminClient.admin.getUsageMetrics();
+
+console.log(`Total memories: ${metrics.summary.totalMemories.toLocaleString()}`);
+console.log(`Total searches: ${metrics.summary.totalSearches.toLocaleString()}`);
+console.log(`Active users: ${metrics.summary.activeUsers.toLocaleString()}`);
+console.log(`API requests: ${metrics.summary.apiRequests.toLocaleString()}`);
+console.log(`Error rate: ${(metrics.summary.errorRate * 100).toFixed(2)}%`);
+
+// Print storage usage
+console.log('\nStorage usage:');
+console.log(`  Total: ${metrics.memoryMetrics.storageUsage.totalGb} GB`);
+console.log(`  Content: ${metrics.memoryMetrics.storageUsage.contentGb} GB`);
+console.log(`  Embeddings: ${metrics.memoryMetrics.storageUsage.embeddingsGb} GB`);
+```
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/v1/admin/metrics" \
+  -H "Authorization: Bearer admin_api_key"
+
+# Get specific metrics for the last 7 days
+curl -X GET "https://api.contextzero.ai/v1/admin/metrics?time_range=7d&metrics=memory,search,users" \
+  -H "Authorization: Bearer admin_api_key"
+```
+</CodeGroup>
+
+### Advanced Metrics Analysis
+
+<CodeGroup>
+```python Advanced Analytics
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+
+def analyze_system_trends(admin_client):
+    """Comprehensive system trend analysis"""
+    
+    # Get weekly metrics
+    metrics = admin_client.admin.get_usage_metrics(
+        time_range="7d",
+        granularity="day"
+    )
+    
+    # Analyze memory growth
+    memory_growth = []
+    search_volume = []
+    timestamps = []
+    
+    for data_point in metrics.time_series.memory_creation:
+        timestamps.append(datetime.fromisoformat(data_point.timestamp.replace('Z', '+00:00')))
+        memory_growth.append(data_point.value)
+    
+    for data_point in metrics.time_series.api_requests:
+        search_volume.append(data_point.value)
+    
+    # Calculate growth rate
+    if len(memory_growth) > 1:
+        growth_rate = (memory_growth[-1] - memory_growth[0]) / memory_growth[0] * 100
+        print(f"Memory creation growth rate: {growth_rate:.1f}%")
+    
+    # Identify peak usage hours
+    peak_hour = max(metrics.time_series.api_requests, key=lambda x: x.value)
+    print(f"Peak usage: {peak_hour.value:,} requests at {peak_hour.timestamp}")
+    
+    # Storage efficiency analysis
+    avg_memory_size = metrics.memory_metrics.average_size_kb
+    if avg_memory_size > 2.0:
+        print("⚠️  Warning: Average memory size is high - consider optimization")
+    
+    # Error rate analysis
+    if metrics.summary.error_rate > 0.05:  # 5%
+        print("⚠️  Warning: High error rate detected")
+        for error in metrics.error_metrics.top_errors[:3]:
+            print(f"  - {error.error}: {error.percentage:.1f}%")
+    
+    return {
+        "growth_rate": growth_rate if len(memory_growth) > 1 else 0,
+        "peak_usage": peak_hour.value,
+        "storage_efficiency": avg_memory_size,
+        "error_rate": metrics.summary.error_rate
+    }
+
+# Usage
+trends = analyze_system_trends(admin_client)
+```
+
+```javascript Performance Dashboard
+class MetricsDashboard {
+  constructor(adminClient) {
+    this.adminClient = adminClient;
+  }
+  
+  async generateReport(timeRange = '7d') {
+    const metrics = await this.adminClient.admin.getUsageMetrics({
+      timeRange,
+      granularity: 'day'
+    });
+    
+    const report = {
+      summary: this.generateSummary(metrics),
+      trends: this.analyzeTrends(metrics),
+      alerts: this.checkAlerts(metrics),
+      recommendations: this.generateRecommendations(metrics)
+    };
+    
+    return report;
+  }
+  
+  generateSummary(metrics) {
+    return {
+      totalMemories: metrics.memoryMetrics.totalCount,
+      dailyGrowth: this.calculateDailyGrowth(metrics.timeSeries.memoryCreation),
+      searchSuccessRate: (metrics.searchMetrics.successfulSearches / metrics.searchMetrics.totalSearches * 100).toFixed(2),
+      avgResponseTime: metrics.apiMetrics.averageResponseTime,
+      storageUsage: metrics.memoryMetrics.storageUsage.totalGb
+    };
+  }
+  
+  analyzeTrends(metrics) {
+    // Analyze various trends in the data
+    const memoryGrowth = this.calculateGrowthRate(metrics.timeSeries.memoryCreation);
+    const searchTrend = this.calculateGrowthRate(metrics.timeSeries.apiRequests);
+    
+    return {
+      memoryGrowth: `${memoryGrowth > 0 ? '+' : ''}${memoryGrowth.toFixed(1)}%`,
+      searchTrend: `${searchTrend > 0 ? '+' : ''}${searchTrend.toFixed(1)}%`,
+      peakHours: this.identifyPeakHours(metrics.timeSeries.apiRequests)
+    };
+  }
+  
+  checkAlerts(metrics) {
+    const alerts = [];
+    
+    if (metrics.summary.errorRate > 0.05) {
+      alerts.push({
+        level: 'warning',
+        message: `High error rate: ${(metrics.summary.errorRate * 100).toFixed(2)}%`
+      });
+    }
+    
+    if (metrics.performanceMetrics.cpuUsage.average > 80) {
+      alerts.push({
+        level: 'critical',
+        message: `High CPU usage: ${metrics.performanceMetrics.cpuUsage.average}%`
+      });
+    }
+    
+    return alerts;
+  }
+  
+  generateRecommendations(metrics) {
+    const recommendations = [];
+    
+    if (metrics.searchMetrics.cacheHitRate < 0.5) {
+      recommendations.push('Consider optimizing search cache configuration');
+    }
+    
+    if (metrics.memoryMetrics.averageSizeKb > 2.0) {
+      recommendations.push('Large memory sizes detected - consider content optimization');
+    }
+    
+    return recommendations;
+  }
+}
+
+// Usage
+const dashboard = new MetricsDashboard(adminClient);
+const report = await dashboard.generateReport('30d');
+console.log(JSON.stringify(report, null, 2));
+```
+</CodeGroup>
+
+### Export Metrics Data
+
+<CodeGroup>
+```python Data Export
+import csv
+import json
+from datetime import datetime
+
+def export_metrics_to_csv(admin_client, time_range="30d"):
+    """Export metrics data to CSV for analysis"""
+    
+    metrics = admin_client.admin.get_usage_metrics(
+        time_range=time_range,
+        granularity="day"
+    )
+    
+    # Export time series data
+    filename = f"contextzero_metrics_{datetime.now().strftime('%Y%m%d')}.csv"
+    
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        
+        # Write header
+        writer.writerow([
+            'Date',
+            'Memories Created',
+            'API Requests',
+            'Search Count',
+            'Active Users',
+            'Error Rate',
+            'Response Time (ms)'
+        ])
+        
+        # Write data
+        memory_data = {dp.timestamp: dp.value for dp in metrics.time_series.memory_creation}
+        api_data = {dp.timestamp: dp.value for dp in metrics.time_series.api_requests}
+        
+        for timestamp in memory_data.keys():
+            writer.writerow([
+                timestamp,
+                memory_data.get(timestamp, 0),
+                api_data.get(timestamp, 0),
+                '', # Would need search time series data
+                '', # Would need user time series data
+                metrics.summary.error_rate,
+                metrics.api_metrics.average_response_time
+            ])
+    
+    print(f"Metrics exported to {filename}")
+    return filename
+
+# Export data
+csv_file = export_metrics_to_csv(admin_client, "30d")
+```
+
+```bash Prometheus Export
+# Export metrics in Prometheus format
+curl -X GET "https://api.contextzero.ai/v1/admin/metrics?format=prometheus" \
+  -H "Authorization: Bearer admin_api_key" \
+  > contextzero_metrics.prom
+
+# Example Prometheus metrics format output:
+# contextzero_total_memories 1250000
+# contextzero_total_searches 45680
+# contextzero_active_users 15420
+# contextzero_api_requests_total 892340
+# contextzero_error_rate 0.025
+# contextzero_response_time_avg_ms 120
+```
+</CodeGroup>
+
+## Metrics Categories
+
+### Memory Metrics
+- **Count Statistics**: Total, created, updated, deleted
+- **Storage Usage**: Content size, embedding size, total storage
+- **Category Distribution**: Personal, work, learning, other
+- **Size Analytics**: Average size, large memory detection
+
+### Search Metrics  
+- **Performance**: Latency, cache hit rate, success rate
+- **Volume**: Total searches, search types, query patterns
+- **Popular Queries**: Most searched terms and phrases
+- **Failure Analysis**: Failed searches and error reasons
+
+### User Metrics
+- **Engagement**: Daily, weekly, monthly active users
+- **Segmentation**: Free, starter, pro, enterprise users
+- **Growth**: New user acquisition, churn analysis
+- **Geographic Distribution**: Usage by region
+
+### API Metrics
+- **Request Volume**: Total requests, requests per endpoint
+- **Performance**: Response times, latency percentiles
+- **Reliability**: Success rate, error distribution
+- **Rate Limiting**: Rate limited requests, quota usage
+
+### System Performance
+- **Resource Usage**: CPU, memory, disk, network
+- **Capacity**: Current usage vs. limits
+- **Scalability**: Peak load handling, bottleneck identification
+- **Health**: Service availability, error rates
+
+## Real-time Monitoring
+
+<CodeGroup>
+```python Real-time Dashboard
+import time
+import curses
+from datetime import datetime
+
+def real_time_dashboard(admin_client):
+    """Real-time metrics dashboard using curses"""
+    
+    def draw_dashboard(stdscr):
+        stdscr.clear()
+        stdscr.refresh()
+        
+        # Setup
+        curses.curs_set(0)
+        stdscr.nodelay(1)
+        stdscr.timeout(5000)  # Refresh every 5 seconds
+        
+        while True:
+            try:
+                # Get current metrics
+                metrics = admin_client.admin.get_usage_metrics(time_range="1h")
+                
+                # Clear screen
+                stdscr.clear()
+                
+                # Header
+                stdscr.addstr(0, 0, "Context Zero AI - Real-time Metrics Dashboard", curses.A_BOLD)
+                stdscr.addstr(1, 0, f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                stdscr.addstr(2, 0, "=" * 80)
+                
+                # Summary section
+                stdscr.addstr(4, 0, "SYSTEM SUMMARY", curses.A_BOLD)
+                stdscr.addstr(5, 2, f"Total Memories: {metrics.summary.total_memories:,}")
+                stdscr.addstr(6, 2, f"Active Users: {metrics.summary.active_users:,}")
+                stdscr.addstr(7, 2, f"API Requests (1h): {metrics.summary.api_requests:,}")
+                stdscr.addstr(8, 2, f"Error Rate: {metrics.summary.error_rate:.2%}")
+                
+                # Performance section
+                stdscr.addstr(10, 0, "PERFORMANCE", curses.A_BOLD)
+                stdscr.addstr(11, 2, f"Avg Response Time: {metrics.api_metrics.average_response_time}ms")
+                stdscr.addstr(12, 2, f"Search Cache Hit Rate: {metrics.search_metrics.cache_hit_rate:.1%}")
+                stdscr.addstr(13, 2, f"CPU Usage: {metrics.performance_metrics.cpu_usage.current:.1f}%")
+                stdscr.addstr(14, 2, f"Memory Usage: {metrics.performance_metrics.memory_usage.current_gb:.1f}GB")
+                
+                # Alerts section
+                alerts_y = 16
+                if metrics.summary.error_rate > 0.05:
+                    stdscr.addstr(alerts_y, 0, "🚨 HIGH ERROR RATE DETECTED", curses.A_BLINK)
+                    alerts_y += 1
+                
+                if metrics.performance_metrics.cpu_usage.current > 80:
+                    stdscr.addstr(alerts_y, 0, "⚠️  HIGH CPU USAGE", curses.A_BOLD)
+                    alerts_y += 1
+                
+                stdscr.addstr(20, 0, "Press 'q' to quit, any other key to refresh")
+                
+                # Refresh
+                stdscr.refresh()
+                
+                # Check for quit
+                key = stdscr.getch()
+                if key == ord('q'):
+                    break
+                    
+            except KeyboardInterrupt:
+                break
+            except Exception as e:
+                stdscr.addstr(18, 0, f"Error: {str(e)}", curses.A_BOLD)
+                stdscr.refresh()
+                time.sleep(5)
+    
+    # Run dashboard
+    curses.wrapper(draw_dashboard)
+
+# Usage
+real_time_dashboard(admin_client)
+```
+</CodeGroup>
+
+## Best Practices
+
+### Data Collection
+- **Regular Monitoring**: Collect metrics consistently for trend analysis
+- **Appropriate Granularity**: Use hour-level data for short-term, day-level for long-term
+- **Selective Metrics**: Only collect metrics you actively monitor
+- **Data Retention**: Implement appropriate retention policies for historical data
+
+### Analysis
+- **Baseline Establishment**: Establish normal operating ranges for key metrics
+- **Trend Analysis**: Look for patterns and anomalies over time
+- **Correlation Analysis**: Identify relationships between different metrics
+- **Predictive Modeling**: Use historical data for capacity planning
+
+### Alerting
+- **Threshold Setting**: Set appropriate thresholds for different alert levels
+- **Alert Fatigue**: Avoid too many low-priority alerts
+- **Escalation Policies**: Implement proper escalation for critical issues
+- **Documentation**: Document alert meanings and response procedures
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card
+    title="📊 Detailed Analytics"
+    href="/api-reference/admin/analytics"
+  >
+    Deep-dive analytics and custom reports
+  </Card>
+  <Card
+    title="🔍 Performance Monitoring"
+    href="/api-reference/admin/performance"
+  >
+    Detailed performance metrics and optimization
+  </Card>
+  <Card
+    title="📈 Usage Reports"
+    href="/api-reference/admin/reports"
+  >
+    Generate comprehensive usage reports
+  </Card>
+  <Card
+    title="⚠️  System Alerts"
+    href="/api-reference/admin/alerts"
+  >
+    Configure and manage system alerts
+  </Card>
+</CardGroup>

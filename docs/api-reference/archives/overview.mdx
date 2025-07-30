@@ -1,0 +1,378 @@
+---
+title: 'Archive API Overview'
+description: 'Manage archived memories and memory lifecycle in Context Zero AI'
+---
+
+## Overview
+
+The Archive API provides functionality for managing the lifecycle of memories, including archiving expired or inactive memories, listing archived content, and restoring memories when needed. This helps maintain system performance while preserving historical data.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card
+    title="📦 Memory Archival"
+    href="/api-reference/archives/archive-memories"
+    icon="archive"
+  >
+    Archive expired or inactive memories automatically
+  </Card>
+  <Card
+    title="📋 Archive Listing"
+    href="/api-reference/archives/list-archived"
+    icon="list"
+  >
+    Browse and search archived memories
+  </Card>
+  <Card
+    title="🔄 Memory Restoration"
+    href="/api-reference/archives/restore-memory"
+    icon="arrow-rotate-left"
+  >
+    Restore archived memories back to active state
+  </Card>
+  <Card
+    title="⚙️ Lifecycle Management"
+    href="/api-reference/archives/lifecycle"
+    icon="gear"
+  >
+    Configure automatic archival policies
+  </Card>
+</CardGroup>
+
+## Archive Workflow
+
+### 1. Automatic Archival
+Memories are automatically archived based on:
+- **Expiration Date**: Memories with explicit expiration dates
+- **Inactivity Period**: Memories not accessed for a specified time
+- **User Preferences**: User-defined archival rules
+- **Storage Policies**: Organization-level retention policies
+
+### 2. Archive Storage
+Archived memories are:
+- Moved to cold storage for cost efficiency
+- Compressed to reduce storage footprint
+- Indexed for fast searching and retrieval
+- Backed up with disaster recovery procedures
+
+### 3. Restoration Process
+Archived memories can be restored:
+- On-demand by users or administrators
+- Automatically when accessed by integrations
+- In bulk for specific time periods or categories
+- With full metadata and relationship preservation
+
+## Available Endpoints
+
+| Endpoint | Method | Description |
+|----------|---------|-------------|
+| `/api/v1/archive/` | GET | List archived memories with filtering options |
+| `/api/v1/archive/memory` | POST | Archive expired memories based on policies |
+| `/api/v1/archive/restore/{memory_id}` | POST | Restore a specific archived memory |
+
+## Common Use Cases
+
+### Data Retention Compliance
+Automatically archive memories to comply with data retention policies:
+
+```json
+{
+  "retention_policy": {
+    "personal_data": "2_years",
+    "business_data": "7_years", 
+    "temporary_data": "30_days"
+  },
+  "auto_archive": true,
+  "notification": true
+}
+```
+
+### Storage Optimization
+Archive inactive memories to optimize storage costs:
+
+```json
+{
+  "archive_criteria": {
+    "last_accessed": "180_days",
+    "memory_size": "> 1MB",
+    "category": ["draft", "temporary"]
+  }
+}
+```
+
+### Seasonal Data Management
+Archive memories based on seasonal or cyclical patterns:
+
+```json
+{
+  "seasonal_archive": {
+    "quarterly_reviews": "archive_after_quarter",
+    "project_memories": "archive_30_days_after_completion",
+    "event_memories": "archive_after_event_date"
+  }
+}
+```
+
+## Response Format
+
+All archive endpoints follow a consistent response format:
+
+```json
+{
+  "success": true,
+  "data": {
+    "archived_count": 150,
+    "total_size_saved": "2.3GB",
+    "archived_memories": [
+      {
+        "id": "mem_archived_123",
+        "original_id": "mem_123",
+        "title": "Q1 Project Review",
+        "archived_at": "2024-01-15T10:30:00Z",
+        "reason": "expired",
+        "size_kb": 245
+      }
+    ]
+  },
+  "metadata": {
+    "archive_location": "cold_storage_us_east_1",
+    "retrieval_time": "5_minutes",
+    "storage_tier": "glacier"
+  }
+}
+```
+
+## Archive Metadata
+
+Archived memories maintain comprehensive metadata:
+
+```json
+{
+  "archive_metadata": {
+    "original_memory_id": "mem_123",
+    "archived_at": "2024-01-15T10:30:00Z",
+    "archived_by": "system_policy",
+    "archive_reason": "expired",
+    "original_size_kb": 245,
+    "compressed_size_kb": 89,
+    "storage_location": "s3://archives/2024/01/mem_123.gz",
+    "restoration_cost": "0.001_usd",
+    "estimated_restoration_time": "5_minutes",
+    "retention_until": "2031-01-15T10:30:00Z"
+  }
+}
+```
+
+## Security and Compliance
+
+### Access Control
+- **Role-based Access**: Different permissions for viewing, archiving, and restoring
+- **Audit Trails**: Complete logging of all archive operations
+- **Encryption**: End-to-end encryption for archived data
+- **Regional Compliance**: Data residency requirements honored
+
+### Data Protection
+- **Backup Strategy**: Multiple backup copies in different regions
+- **Integrity Checks**: Regular verification of archived data
+- **Disaster Recovery**: Comprehensive recovery procedures
+- **Legal Hold**: Support for legal preservation requirements
+
+## Performance Characteristics
+
+| Operation | Performance | Notes |
+|-----------|-------------|--------|
+| Archive Creation | 100-500 memories/sec | Depends on memory size and complexity |
+| Archive Listing | < 100ms | With pagination and filtering |
+| Memory Restoration | 5-30 seconds | From cold storage to active |
+| Search Archived | 200-500ms | Indexed search with metadata |
+
+## Monitoring and Alerts
+
+Set up monitoring for archive operations:
+
+```json
+{
+  "monitoring": {
+    "archive_success_rate": "> 99%",
+    "restoration_time": "< 60 seconds",
+    "storage_growth": "alert_if_> 20%_monthly",
+    "failed_operations": "alert_immediately"
+  },
+  "notifications": {
+    "weekly_summary": "admin@company.com",
+    "compliance_reports": "legal@company.com",
+    "storage_alerts": "ops@company.com"
+  }
+}
+```
+
+## Best Practices
+
+### Archive Strategy
+- **Clear Policies**: Define explicit archival criteria and timelines
+- **User Communication**: Notify users before archiving their memories
+- **Gradual Implementation**: Implement archival policies gradually
+- **Regular Review**: Periodically review and adjust archive policies
+
+### Storage Management
+- **Tier Strategy**: Use appropriate storage tiers for different archive ages
+- **Compression**: Enable compression for long-term archives
+- **Geographic Distribution**: Distribute archives across regions for resilience
+- **Cost Monitoring**: Track storage costs and optimize regularly
+
+### Operational Excellence
+- **Automated Testing**: Test restore procedures regularly
+- **Documentation**: Maintain clear procedures for emergency restoration
+- **Capacity Planning**: Plan for archive storage growth
+- **SLA Management**: Define and monitor service level agreements
+
+## Integration Examples
+
+### Automated Archival Workflow
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+from datetime import datetime, timedelta
+
+client = ContextZero(api_key="your_api_key")
+
+# Configure automatic archival
+def setup_archival_policies():
+    policies = {
+        "expired_memories": {
+            "enabled": True,
+            "check_frequency": "daily",
+            "notification": True
+        },
+        "inactive_memories": {
+            "enabled": True,
+            "threshold_days": 180,
+            "categories": ["draft", "temporary"]
+        }
+    }
+    
+    result = client.archives.configure_policies(policies)
+    print(f"Archival policies configured: {result.success}")
+
+# Manual archival trigger
+def archive_old_memories():
+    cutoff_date = datetime.now() - timedelta(days=365)
+    
+    result = client.archives.archive_memories(
+        criteria={
+            "last_accessed_before": cutoff_date.isoformat(),
+            "categories": ["personal", "draft"],
+            "exclude_pinned": True
+        }
+    )
+    
+    print(f"Archived {result.archived_count} memories")
+    print(f"Storage saved: {result.storage_saved}")
+
+# Usage
+setup_archival_policies()
+archive_old_memories()
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+const client = new ContextZero({ apiKey: 'your_api_key' });
+
+// Monitor archive operations
+async function monitorArchiveHealth() {
+    const metrics = await client.archives.getMetrics({
+        timeRange: '24h'
+    });
+    
+    console.log(`Archive operations: ${metrics.totalOperations}`);
+    console.log(`Success rate: ${(metrics.successRate * 100).toFixed(2)}%`);
+    console.log(`Storage saved: ${metrics.storageSaved} GB`);
+    
+    if (metrics.failedOperations > 0) {
+        console.warn(`⚠️ ${metrics.failedOperations} failed archive operations`);
+        
+        // Get failed operation details
+        const failures = await client.archives.getFailures({
+            timeRange: '24h'
+        });
+        
+        failures.forEach(failure => {
+            console.error(`Failed: ${failure.memoryId} - ${failure.error}`);
+        });
+    }
+}
+
+// Schedule monitoring
+setInterval(monitorArchiveHealth, 3600000); // Every hour
+```
+</CodeGroup>
+
+## Cost Optimization
+
+### Storage Tiers
+
+| Tier | Use Case | Cost | Retrieval Time |
+|------|----------|------|----------------|
+| **Frequent Access** | Recently archived, likely to be restored | High | Immediate |
+| **Infrequent Access** | Older archives, occasional access | Medium | Minutes |
+| **Cold Storage** | Long-term retention, rare access | Low | Hours |
+| **Deep Archive** | Compliance, emergency-only | Lowest | 12+ hours |
+
+### Cost Management
+
+<CodeGroup>
+```python Cost Tracking
+def analyze_archive_costs(client):
+    """Analyze and optimize archive storage costs"""
+    
+    # Get cost breakdown
+    costs = client.archives.get_cost_analysis(
+        time_range="30d",
+        group_by=["storage_tier", "region", "category"]
+    )
+    
+    print("Archive Cost Analysis (Last 30 days)")
+    print(f"Total cost: ${costs.total_cost:.2f}")
+    
+    # Cost by storage tier
+    for tier, cost in costs.by_tier.items():
+        print(f"  {tier}: ${cost:.2f} ({cost/costs.total_cost*100:.1f}%)")
+    
+    # Optimization recommendations
+    if costs.recommendations:
+        print("\nCost Optimization Recommendations:")
+        for rec in costs.recommendations:
+            print(f"  • {rec.suggestion} (Est. savings: ${rec.estimated_savings:.2f})")
+    
+    return costs
+
+# Usage
+costs = analyze_archive_costs(client)
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="📋 List Archived Memories"
+    href="/api-reference/archives/list-archived"
+  >
+    Browse and search archived content
+  </Card>
+  <Card
+    title="📦 Archive Memories"
+    href="/api-reference/archives/archive-memories"
+  >
+    Archive expired or inactive memories
+  </Card>
+  <Card
+    title="🔄 Restore Memory"
+    href="/api-reference/archives/restore-memory"
+  >
+    Restore archived memories to active state
+  </Card>
+</CardGroup>

@@ -4,25 +4,33 @@ import { useRouter } from "next/navigation";
 
 import { ChevronLeftIcon } from "lucide-react";
 
-import NavigationTabs from "@/app/workflow/_components/topbar/NavigationTabs";
+import NavigationTabs from "@/app/workflow/_components/topbar/navigation-tabs";
 import TooltipWrapper from "@/components/tooltip-wrapper";
 import { Button } from "@/components/ui/button";
+
+import ExecuteBtn from "./execute-btn";
+import PublishBtn from "./publish-btn";
+import SaveBtn from "./save-btn";
+import UnpublishBtn from "./unpublish-btn";
 
 interface Props {
   title: string;
   subtitle?: string;
   workflowId: string;
+  hideButtons?: boolean;
+  hideTabs?: boolean;
   isPublished?: boolean;
-  currentView: "editor" | "json" | "both";
-  setView: (view: "editor" | "json" | "both") => void;
+  currentView?: "editor" | "json" | "both";
+  setView?: (view: "editor" | "json" | "both") => void;
 }
 
 export default function Topbar({
   title,
   subtitle,
   workflowId,
-  // hideButtons = false,
-  // isPublished = false,
+  hideTabs = false,
+  hideButtons = false,
+  isPublished = false,
   currentView,
   setView,
 }: Props) {
@@ -44,9 +52,11 @@ export default function Topbar({
           )}
         </div>
       </div>
-      <NavigationTabs currentView={currentView} setView={setView} />
+      {hideTabs === false && (
+        <NavigationTabs currentView={currentView} setView={setView} />
+      )}
       <div className="flex flex-1 justify-end gap-1">
-        {/* {hideButtons === false && (
+        {hideButtons === false && (
           <>
             <ExecuteBtn workflowId={workflowId} />
             {isPublished && <UnpublishBtn workflowId={workflowId} />}
@@ -57,7 +67,7 @@ export default function Topbar({
               </>
             )}
           </>
-        )} */}
+        )}
       </div>
     </header>
   );

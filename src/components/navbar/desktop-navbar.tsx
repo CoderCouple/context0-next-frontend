@@ -39,7 +39,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
   return (
     <div
       className={cn(
-        "relative z-10 flex w-full justify-between rounded-full px-4 py-2 transition duration-200",
+        "absolute flex w-full justify-between rounded-full px-4 py-2 transition duration-200",
     "text-black dark:text-white",
         showBackground &&
           "bg-neutral-50 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:bg-neutral-900 dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]"

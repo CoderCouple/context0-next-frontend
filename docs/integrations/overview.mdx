@@ -1,0 +1,273 @@
+---
+title: "Integrations Overview"
+description: "Connect Context Zero AI with your favorite tools and platforms"
+---
+
+## Available Integrations
+
+Context Zero AI integrates seamlessly with popular AI assistants, productivity tools, and communication platforms to provide contextual memory across your digital workflow.
+
+<CardGroup cols={2}>
+  <Card title="💬 ChatGPT" href="/integrations/chatgpt" icon="robot">
+    Enhance ChatGPT conversations with personal memory
+  </Card>
+  <Card title="🤖 Claude" href="/integrations/claude" icon="brain">
+    Add contextual memory to Claude interactions
+  </Card>
+  <Card title="💬 Slack" href="/integrations/slack" icon="slack">
+    Context-aware team communication
+  </Card>
+  <Card title="🎮 Discord" href="/integrations/discord" icon="discord">
+    Smart community interactions with memory
+  </Card>
+  <Card title="📝 Notion" href="/integrations/notion" icon="notion">
+    Sync and enhance your Notion workspace
+  </Card>
+  <Card
+    title="📁 Google Drive"
+    href="/integrations/google-drive"
+    icon="google-drive"
+  >
+    Intelligent document memory and search
+  </Card>
+</CardGroup>
+
+## Integration Types
+
+### Browser Extensions
+
+Install Context Zero AI directly in your browser for seamless web integration:
+
+- **Chrome Extension**: Full-featured extension with sidebar and overlay
+- **Firefox Extension**: Complete functionality for Firefox users
+- **Safari Extension**: Native Safari integration (coming soon)
+- **Edge Extension**: Microsoft Edge support
+
+### API Integrations
+
+Connect your applications using our RESTful API:
+
+- **Webhook Support**: Real-time memory updates
+- **GraphQL Endpoint**: Flexible data querying
+- **WebSocket Connections**: Live memory streaming
+- **Batch Operations**: Bulk memory management
+
+### Native SDKs
+
+Use our official SDKs for seamless integration:
+
+- **Python SDK**: Full-featured Python library
+- **JavaScript SDK**: Node.js and browser support
+- **React Components**: Pre-built UI components
+- **Vue.js Plugin**: Vue application integration
+
+### No-Code Solutions
+
+Connect without writing code:
+
+- **Zapier Integration**: 1000+ app connections
+- **Microsoft Power Automate**: Workflow automation
+- **IFTTT Support**: Simple trigger-based automation
+- **Make.com Integration**: Visual workflow builder
+
+## Quick Start Guide
+
+### 1. Choose Your Integration Method
+
+<Tabs>
+  <Tab title="Browser Extension">
+    Perfect for ChatGPT, Claude, and web-based tools:
+    
+    1. Install the Chrome extension
+    2. Sign in to your Context Zero AI account
+    3. Visit your favorite AI assistant
+    4. See contextual memories appear automatically
+  </Tab>
+  
+  <Tab title="API Integration">
+    Ideal for custom applications and workflows:
+    
+    ```bash
+    curl -X POST "https://api.contextzero.ai/v1/memories" \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"content": "Your memory content"}'
+    ```
+  </Tab>
+  
+  <Tab title="SDK Integration">
+    Best for developers building applications:
+    
+    ```python
+    from contextzero import ContextZero
+    
+    client = ContextZero(api_key="your_api_key")
+    memory = client.memories.add("Your memory content")
+    ```
+  </Tab>
+</Tabs>
+
+### 2. Configure Your Settings
+
+- **Memory Scope**: Choose which memories to share with each integration
+- **Privacy Settings**: Control data access and permissions
+- **Auto-Injection**: Enable/disable automatic context injection
+- **Custom Triggers**: Set up specific activation conditions
+
+### 3. Start Using Context
+
+Once configured, Context Zero AI will automatically:
+
+- Inject relevant memories into conversations
+- Learn from your interactions
+- Suggest related information
+- Build contextual connections
+
+## Integration Features
+
+### Automatic Context Injection
+
+Context Zero AI analyzes your conversations and automatically injects relevant memories:
+
+- **Smart Timing**: Memories appear when contextually relevant
+- **Relevance Scoring**: Only the most pertinent memories are shown
+- **User Control**: Easy approval/rejection of suggested memories
+- **Learning System**: Improves suggestions based on your feedback
+
+### Bidirectional Sync
+
+Many integrations support two-way synchronization:
+
+- **Import**: Pull existing data into Context Zero AI
+- **Export**: Share memories with external tools
+- **Live Updates**: Real-time synchronization of changes
+- **Conflict Resolution**: Smart handling of data conflicts
+
+### Privacy Controls
+
+Granular control over what information is shared:
+
+- **Per-Integration Settings**: Different permissions for each tool
+- **Memory Filtering**: Choose which memories are accessible
+- **Temporary Disabling**: Pause integrations when needed
+- **Audit Logs**: Track all integration activities
+
+## Popular Integration Workflows
+
+### Personal AI Assistant
+
+Transform ChatGPT or Claude into your personal AI assistant:
+
+1. **Setup**: Install browser extension
+2. **Memory Building**: Capture personal preferences and experiences
+3. **Enhanced Conversations**: AI remembers your context and preferences
+4. **Continuous Learning**: System learns from each interaction
+
+### Team Collaboration
+
+Enable context-aware team communication:
+
+1. **Slack Integration**: Install Context Zero AI Slack app
+2. **Shared Memory**: Create team-accessible memory spaces
+3. **Smart Notifications**: Get relevant context in team discussions
+4. **Knowledge Base**: Build and maintain team knowledge automatically
+
+### Content Creation
+
+Enhance your writing and content creation workflow:
+
+1. **Notion Integration**: Connect your Notion workspace
+2. **Research Memory**: Capture and organize research materials
+3. **Writing Assistant**: Get relevant information while writing
+4. **Version Control**: Track changes and maintain context history
+
+### Customer Support
+
+Provide context-aware customer support:
+
+1. **API Integration**: Connect with your support platform
+2. **Customer Memory**: Maintain comprehensive customer profiles
+3. **Interaction History**: Access complete conversation history
+4. **Smart Suggestions**: Get relevant solutions and responses
+
+## Integration Security
+
+### Data Protection
+
+- **End-to-End Encryption**: All data encrypted in transit and at rest
+- **Zero-Trust Architecture**: No data stored on integration servers
+- **Access Tokens**: Secure, revocable authentication
+- **Audit Trails**: Complete logging of all data access
+
+### Compliance
+
+- **GDPR Compliance**: Full European data protection compliance
+- **SOC 2 Type II**: Enterprise security certification
+- **HIPAA Available**: Healthcare-grade security options
+- **Custom Compliance**: Meet specific regulatory requirements
+
+### Permission Management
+
+- **Granular Permissions**: Control access at the memory level
+- **Role-Based Access**: Different permissions for different roles
+- **Temporary Access**: Time-limited access grants
+- **Emergency Revocation**: Instant access revocation capabilities
+
+## Troubleshooting
+
+### Common Issues
+
+**Integration Not Working**
+
+- Check API key validity
+- Verify permissions settings
+- Review browser extension status
+- Confirm network connectivity
+
+**Missing Context**
+
+- Adjust relevance thresholds
+- Review memory tagging
+- Check memory scope settings
+- Verify integration configuration
+
+**Performance Issues**
+
+- Optimize memory queries
+- Adjust batch sizes
+- Review caching settings
+- Monitor API rate limits
+
+### Getting Help
+
+<CardGroup cols={2}>
+  <Card title="📚 Documentation" href="/api-reference">
+    Complete API and SDK documentation
+  </Card>
+  <Card title="💬 Community" href="https://discord.gg/contextzero">
+    Join our Discord community for support
+  </Card>
+  <Card title="📧 Support" href="mailto:support@contextzero.ai">
+    Contact our support team directly
+  </Card>
+  <Card
+    title="🐛 Bug Reports"
+    href="https://github.com/contextzero/context-zero"
+  >
+    Report issues on GitHub
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="🚀 Quick Start" href="/quickstart">
+    Get started with your first integration
+  </Card>
+  <Card title="💬 ChatGPT Setup" href="/integrations/chatgpt">
+    Set up ChatGPT integration
+  </Card>
+  <Card title="📊 Advanced Features" href="/concepts/graph-memory">
+    Learn about advanced memory features
+  </Card>
+</CardGroup>

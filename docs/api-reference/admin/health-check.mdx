@@ -1,0 +1,384 @@
+---
+title: 'Admin Health Check'
+description: 'Check the health status of the Context Zero AI admin service'
+api: 'GET https://api.contextzero.ai/v1/admin/healthz'
+---
+
+## Overview
+
+The admin health check endpoint provides a simple way to verify that the administrative services are running and responding properly. This endpoint is commonly used by monitoring systems and load balancers.
+
+## Request
+
+### Headers
+
+| Header | Value | Required |
+|--------|--------|----------|
+| `Authorization` | `Bearer {admin_api_key}` | Yes |
+
+### Parameters
+
+This endpoint requires no parameters.
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "status": "OK",
+  "message": "Service is alive and healthy"
+}
+```
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Health status indicator. Always returns "OK" when the service is healthy.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable message describing the service status.
+</ResponseField>
+
+## Examples
+
+### Basic Health Check
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZeroAdmin
+
+admin_client = ContextZeroAdmin(api_key="admin_api_key")
+
+try:
+    health = admin_client.admin.health_check()
+    print(f"Status: {health.status}")
+    print(f"Message: {health.message}")
+except Exception as e:
+    print(f"Health check failed: {e}")
+```
+
+```javascript JavaScript
+import { ContextZeroAdmin } from '@contextzero/admin-sdk';
+
+const adminClient = new ContextZeroAdmin({ apiKey: 'admin_api_key' });
+
+try {
+  const health = await adminClient.admin.healthCheck();
+  console.log(`Status: ${health.status}`);
+  console.log(`Message: ${health.message}`);
+} catch (error) {
+  console.error(`Health check failed: ${error.message}`);
+}
+```
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/v1/admin/healthz" \
+  -H "Authorization: Bearer admin_api_key"
+```
+
+```go Go
+package main
+
+import (
+    "fmt"
+    "github.com/contextzero/go-admin-sdk"
+)
+
+func main() {
+    client := contextzero.NewAdminClient("admin_api_key")
+    
+    health, err := client.Admin.HealthCheck()
+    if err != nil {
+        fmt.Printf("Health check failed: %v\n", err)
+        return
+    }
+    
+    fmt.Printf("Status: %s\n", health.Status)
+    fmt.Printf("Message: %s\n", health.Message)
+}
+```
+</CodeGroup>
+
+### Monitoring Integration
+
+<CodeGroup>
+```python Monitoring Script
+import requests
+import time
+from datetime import datetime
+
+def monitor_admin_health():
+    """Continuous monitoring of admin service health"""
+    
+    headers = {
+        "Authorization": "Bearer admin_api_key"
+    }
+    
+    while True:
+        try:
+            response = requests.get(
+                "https://api.contextzero.ai/v1/admin/healthz",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"[{datetime.now()}] Health: {data['status']} - {data['message']}")
+            else:
+                print(f"[{datetime.now()}] Health check failed: HTTP {response.status_code}")
+                
+        except Exception as e:
+            print(f"[{datetime.now()}] Health check error: {e}")
+            
+        time.sleep(30)  # Check every 30 seconds
+
+if __name__ == "__main__":
+    monitor_admin_health()
+```
+
+```bash Shell Script
+#!/bin/bash
+
+# Simple health check script for deployment monitoring
+check_admin_health() {
+    response=$(curl -s -w "%{http_code}" \
+        -H "Authorization: Bearer $ADMIN_API_KEY" \
+        -o /tmp/health_response.json \
+        https://api.contextzero.ai/v1/admin/healthz)
+    
+    if [ "$response" == "200" ]; then
+        status=$(cat /tmp/health_response.json | jq -r '.status')
+        message=$(cat /tmp/health_response.json | jq -r '.message')
+        echo "$(date): Health OK - $status: $message"
+        return 0
+    else
+        echo "$(date): Health check failed with HTTP $response"
+        return 1
+    fi
+}
+
+# Run health check
+check_admin_health
+exit $?
+```
+</CodeGroup>
+
+## Use Cases
+
+### Load Balancer Health Checks
+
+Configure your load balancer to use this endpoint:
+
+```yaml
+# Example Kubernetes deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: contextzero-admin
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: contextzero-admin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contextzero-admin
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: contextzero-admin
+  template:
+    metadata:
+      labels:
+        app: contextzero-admin
+    spec:
+      containers:
+      - name: admin-api
+        image: contextzero/admin-api:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /v1/admin/healthz
+            port: 8080
+            httpHeaders:
+            - name: Authorization
+              value: "Bearer admin_api_key"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /v1/admin/healthz
+            port: 8080
+            httpHeaders:
+            - name: Authorization
+              value: "Bearer admin_api_key"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+```
+
+### Monitoring Dashboard
+
+Integrate with monitoring systems:
+
+<CodeGroup>
+```python Prometheus Metrics
+from prometheus_client import Gauge, Counter, start_http_server
+import requests
+import threading
+import time
+
+# Prometheus metrics
+admin_health_status = Gauge('contextzero_admin_health', 'Admin service health status (1=healthy, 0=unhealthy)')
+admin_health_checks_total = Counter('contextzero_admin_health_checks_total', 'Total admin health checks performed')
+admin_health_failures_total = Counter('contextzero_admin_health_failures_total', 'Total admin health check failures')
+
+def collect_admin_metrics():
+    """Collect admin health metrics for Prometheus"""
+    
+    headers = {"Authorization": "Bearer admin_api_key"}
+    
+    while True:
+        try:
+            response = requests.get(
+                "https://api.contextzero.ai/v1/admin/healthz",
+                headers=headers,
+                timeout=5
+            )
+            
+            admin_health_checks_total.inc()
+            
+            if response.status_code == 200:
+                admin_health_status.set(1)  # Healthy
+            else:
+                admin_health_status.set(0)  # Unhealthy
+                admin_health_failures_total.inc()
+                
+        except Exception:
+            admin_health_status.set(0)  # Unhealthy
+            admin_health_failures_total.inc()
+            
+        time.sleep(30)
+
+# Start Prometheus metrics server
+start_http_server(8000)
+
+# Start health monitoring thread
+health_thread = threading.Thread(target=collect_admin_metrics, daemon=True)
+health_thread.start()
+```
+
+```javascript Datadog Integration
+const StatsD = require('node-statsd');
+const axios = require('axios');
+
+const statsD = new StatsD({
+  host: 'datadog-agent',
+  port: 8125
+});
+
+async function checkAdminHealth() {
+  try {
+    const response = await axios.get('https://api.contextzero.ai/v1/admin/healthz', {
+      headers: {
+        'Authorization': 'Bearer admin_api_key'
+      },
+      timeout: 5000
+    });
+    
+    // Send success metric
+    statsD.increment('contextzero.admin.health.success');
+    statsD.gauge('contextzero.admin.health.status', 1);
+    
+    console.log('Admin health check: OK');
+    
+  } catch (error) {
+    // Send failure metric
+    statsD.increment('contextzero.admin.health.failure');
+    statsD.gauge('contextzero.admin.health.status', 0);
+    
+    console.error('Admin health check failed:', error.message);
+  }
+}
+
+// Check health every 30 seconds
+setInterval(checkAdminHealth, 30000);
+```
+</CodeGroup>
+
+## Error Handling
+
+### Common Error Scenarios
+
+| Scenario | HTTP Status | Response |
+|----------|-------------|----------|
+| Service unavailable | 503 | Service temporarily unavailable |
+| Authentication failed | 401 | Invalid or missing admin API key |
+| Internal error | 500 | Internal server error |
+
+### Error Response Format
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SERVICE_UNAVAILABLE",
+    "message": "Admin service is temporarily unavailable",
+    "details": {
+      "retry_after": 30,
+      "maintenance_mode": false
+    }
+  },
+  "request_id": "req_health_1234567890"
+}
+```
+
+## Best Practices
+
+### Monitoring Setup
+- **Frequent Checks**: Monitor every 10-30 seconds for production systems
+- **Timeout Configuration**: Set appropriate timeouts (5-10 seconds)
+- **Retry Logic**: Implement exponential backoff for failed checks
+- **Alerting**: Set up alerts for consecutive health check failures
+
+### Integration Patterns
+- **Circuit Breaker**: Implement circuit breaker pattern for dependent services
+- **Graceful Degradation**: Handle health check failures gracefully
+- **Status Codes**: Use appropriate HTTP status codes for different failure types
+- **Logging**: Log health check results for debugging and analysis
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card
+    title="📊 Usage Metrics"
+    href="/api-reference/admin/metrics"
+  >
+    Get detailed system usage metrics
+  </Card>
+  <Card
+    title="🔄 Refresh Embeddings"
+    href="/api-reference/admin/embeddings"
+  >
+    Refresh system embeddings
+  </Card>
+  <Card
+    title="🏢 System Status"
+    href="/api-reference/system/status"
+  >
+    Comprehensive system status check
+  </Card>
+  <Card
+    title="📋 Service Health"
+    href="/api-reference/system/health"
+  >
+    Detailed service health information
+  </Card>
+</CardGroup>

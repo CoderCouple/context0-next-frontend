@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   CreateWorkflowInput,
-  createWorkflowSchema,
+  CreateWorkflowSchema,
 } from "@/schema/workflow-schema";
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
@@ -35,7 +35,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const queryClient = useQueryClient();
 
   const form = useForm<CreateWorkflowInput>({
-    resolver: zodResolver(createWorkflowSchema),
+    resolver: zodResolver(CreateWorkflowSchema),
     defaultValues: {
       name: "",
       description: "",

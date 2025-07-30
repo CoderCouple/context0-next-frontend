@@ -1,0 +1,520 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the Context Zero AI API'
+---
+
+## Overview
+
+Context Zero AI uses API keys for authentication. All API requests must include a valid API key in the Authorization header.
+
+## API Key Types
+
+Context Zero AI supports different types of API keys:
+
+<CardGroup cols={2}>
+  <Card
+    title="🔑 Personal API Keys"
+    icon="key"
+  >
+    For individual developers and personal projects
+  </Card>
+  <Card
+    title="🏢 Team API Keys"
+    icon="users"
+  >
+    For team projects with shared access
+  </Card>
+  <Card
+    title="🔒 Service API Keys"
+    icon="server"
+  >
+    For production services and applications
+  </Card>
+  <Card
+    title="⚡ Temporary API Keys"
+    icon="clock"
+  >
+    Time-limited keys for temporary access
+  </Card>
+</CardGroup>
+
+## Getting Your API Key
+
+### Via Dashboard
+
+<Steps>
+  <Step title="Sign In">
+    Go to [app.contextzero.ai](https://app.contextzero.ai) and sign in to your account
+  </Step>
+  
+  <Step title="Navigate to Settings">
+    Click on "Settings" in the sidebar menu
+  </Step>
+  
+  <Step title="Go to API Keys">
+    Select the "API Keys" tab in the settings page
+  </Step>
+  
+  <Step title="Create New Key">
+    Click "Create New API Key" and fill out the form:
+    - **Name**: Give your key a descriptive name
+    - **Type**: Choose the appropriate key type
+    - **Permissions**: Set the access level
+    - **Expiration**: Set an expiration date (optional)
+  </Step>
+  
+  <Step title="Copy and Store">
+    Copy your API key immediately and store it securely
+    
+    <Warning>
+    This is the only time you'll see the full API key. Store it securely!
+    </Warning>
+  </Step>
+</Steps>
+
+### Via API (Programmatic)
+
+You can also create API keys programmatically using an existing key:
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+
+client = ContextZero(api_key="your_existing_api_key")
+
+# Create a new API key
+new_key = client.api_keys.create(
+    name="Production Service Key",
+    type="service",
+    permissions=["memories.read", "memories.write"],
+    expires_at="2025-01-01T00:00:00Z"
+)
+
+print(f"New API key: {new_key.key}")
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+const client = new ContextZero({ apiKey: 'your_existing_api_key' });
+
+// Create a new API key
+const newKey = await client.apiKeys.create({
+  name: 'Production Service Key',
+  type: 'service',
+  permissions: ['memories.read', 'memories.write'],
+  expiresAt: '2025-01-01T00:00:00Z'
+});
+
+console.log(`New API key: ${newKey.key}`);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/api-keys" \
+  -H "Authorization: Bearer your_existing_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production Service Key",
+    "type": "service", 
+    "permissions": ["memories.read", "memories.write"],
+    "expires_at": "2025-01-01T00:00:00Z"
+  }'
+```
+</CodeGroup>
+
+## Using API Keys
+
+### Header Authentication
+
+Include your API key in the `Authorization` header with the `Bearer` scheme:
+
+```bash
+curl -H "Authorization: Bearer ctx_1234567890abcdef" \
+  https://api.contextzero.ai/v1/memories
+```
+
+### SDK Authentication
+
+When using our SDKs, pass the API key during client initialization:
+
+<Tabs>
+  <Tab title="Python">
+    ```python
+    from contextzero import ContextZero
+    
+    # Initialize with API key
+    client = ContextZero(api_key="ctx_1234567890abcdef")
+    
+    # Or use environment variable
+    import os
+    client = ContextZero(api_key=os.getenv("CONTEXT_ZERO_API_KEY"))
+    ```
+  </Tab>
+  
+  <Tab title="JavaScript">
+    ```javascript
+    import { ContextZero } from '@contextzero/sdk';
+    
+    // Initialize with API key
+    const client = new ContextZero({ 
+      apiKey: 'ctx_1234567890abcdef' 
+    });
+    
+    // Or use environment variable
+    const client = new ContextZero({ 
+      apiKey: process.env.CONTEXT_ZERO_API_KEY 
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Go">
+    ```go
+    import "github.com/contextzero/go-sdk"
+    
+    // Initialize with API key
+    client := contextzero.New("ctx_1234567890abcdef")
+    
+    // Or use environment variable
+    client := contextzero.NewFromEnv() // Reads CONTEXT_ZERO_API_KEY
+    ```
+  </Tab>
+</Tabs>
+
+## Permissions
+
+API keys can be configured with specific permissions to limit access:
+
+### Available Permissions
+
+| Permission | Description |
+|------------|-------------|
+| `memories.read` | Read access to memories |
+| `memories.write` | Create and update memories |
+| `memories.delete` | Delete memories |
+| `memories.search` | Search memories |
+| `users.read` | Read user information |
+| `users.write` | Create and update users |
+| `users.delete` | Delete users |
+| `analytics.read` | Access analytics data |
+| `webhooks.manage` | Manage webhook configurations |
+| `api_keys.manage` | Create and manage other API keys |
+
+### Permission Examples
+
+<Tabs>
+  <Tab title="Read-Only Access">
+    ```json
+    {
+      "name": "Analytics Dashboard",
+      "permissions": [
+        "memories.read",
+        "memories.search", 
+        "analytics.read"
+      ]
+    }
+    ```
+    
+    Perfect for dashboards and reporting tools that only need to read data.
+  </Tab>
+  
+  <Tab title="Full Memory Access">
+    ```json
+    {
+      "name": "Memory Management Service",
+      "permissions": [
+        "memories.read",
+        "memories.write", 
+        "memories.delete",
+        "memories.search"
+      ]
+    }
+    ```
+    
+    Ideal for applications that need complete memory management capabilities.
+  </Tab>
+  
+  <Tab title="Admin Access">
+    ```json
+    {
+      "name": "Admin Tool",
+      "permissions": [
+        "memories.*",
+        "users.*",
+        "analytics.read",
+        "webhooks.manage",
+        "api_keys.manage"
+      ]
+    }
+    ```
+    
+    For administrative tools that need full system access.
+  </Tab>
+</Tabs>
+
+## Security Best Practices
+
+### Environment Variables
+
+Never hardcode API keys in your source code. Use environment variables:
+
+<CodeGroup>
+```bash Environment Setup
+# In your .env file
+CONTEXT_ZERO_API_KEY=ctx_1234567890abcdef
+
+# Or export directly
+export CONTEXT_ZERO_API_KEY=ctx_1234567890abcdef
+```
+
+```python Python
+import os
+from contextzero import ContextZero
+
+# ✅ Good: Use environment variables
+client = ContextZero(api_key=os.getenv("CONTEXT_ZERO_API_KEY"))
+
+# ❌ Bad: Hardcoded API key
+# client = ContextZero(api_key="ctx_1234567890abcdef")
+```
+
+```javascript JavaScript
+// ✅ Good: Use environment variables
+const client = new ContextZero({ 
+  apiKey: process.env.CONTEXT_ZERO_API_KEY 
+});
+
+// ❌ Bad: Hardcoded API key  
+// const client = new ContextZero({ apiKey: 'ctx_1234567890abcdef' });
+```
+</CodeGroup>
+
+### Key Rotation
+
+Regularly rotate your API keys for enhanced security:
+
+<Steps>
+  <Step title="Create New Key">
+    Generate a new API key with the same permissions
+  </Step>
+  
+  <Step title="Update Applications">
+    Update all applications to use the new API key
+  </Step>
+  
+  <Step title="Test Functionality">
+    Verify all applications work with the new key
+  </Step>
+  
+  <Step title="Revoke Old Key">
+    Disable the old API key after successful migration
+  </Step>
+</Steps>
+
+### Network Security
+
+Additional security measures for production environments:
+
+- **IP Allowlisting**: Restrict API key usage to specific IP addresses
+- **Rate Limiting**: Implement client-side rate limiting
+- **HTTPS Only**: Always use HTTPS for API requests
+- **Webhook Signatures**: Verify webhook signatures for security
+
+```json
+{
+  "name": "Production API Key",
+  "permissions": ["memories.read", "memories.write"],
+  "allowed_ips": ["192.168.1.100", "10.0.0.50"],
+  "rate_limit": {
+    "requests_per_minute": 1000,
+    "burst_limit": 1500
+  }
+}
+```
+
+## Troubleshooting Authentication
+
+### Common Authentication Errors
+
+<Accordion>
+  <AccordionItem title="401 Unauthorized">
+    **Possible Causes:**
+    - Missing Authorization header
+    - Invalid API key format
+    - Expired API key
+    - Revoked API key
+    
+    **Solutions:**
+    - Verify the Authorization header is included
+    - Check API key format (should start with `ctx_`)
+    - Generate a new API key if expired
+    - Check key status in dashboard
+  </AccordionItem>
+  
+  <AccordionItem title="403 Forbidden">
+    **Possible Causes:**
+    - Insufficient permissions for the endpoint
+    - IP address not in allowlist
+    - API key type restrictions
+    
+    **Solutions:**
+    - Check required permissions for the endpoint
+    - Verify IP address is allowed
+    - Use appropriate API key type (service vs personal)
+  </AccordionItem>
+  
+  <AccordionItem title="429 Rate Limited">
+    **Possible Causes:**
+    - Exceeded requests per minute limit
+    - Burst limit exceeded
+    - Account-level limits reached
+    
+    **Solutions:**
+    - Implement exponential backoff
+    - Reduce request frequency
+    - Upgrade to higher tier plan
+    - Use multiple API keys for load distribution
+  </AccordionItem>
+</Accordion>
+
+### Testing Authentication
+
+Verify your API key is working correctly:
+
+<CodeGroup>
+```bash cURL Test
+curl -H "Authorization: Bearer ctx_1234567890abcdef" \
+  https://api.contextzero.ai/v1/auth/verify
+```
+
+```python Python Test
+from contextzero import ContextZero
+
+client = ContextZero(api_key="ctx_1234567890abcdef")
+
+try:
+    user_info = client.auth.verify()
+    print(f"✅ Authentication successful: {user_info.email}")
+except Exception as e:
+    print(f"❌ Authentication failed: {e}")
+```
+
+```javascript JavaScript Test
+import { ContextZero } from '@contextzero/sdk';
+
+const client = new ContextZero({ apiKey: 'ctx_1234567890abcdef' });
+
+try {
+  const userInfo = await client.auth.verify();
+  console.log(`✅ Authentication successful: ${userInfo.email}`);
+} catch (error) {
+  console.error(`❌ Authentication failed: ${error.message}`);
+}
+```
+</CodeGroup>
+
+Expected response for valid authentication:
+```json
+{
+  "success": true,
+  "data": {
+    "user_id": "user_123",
+    "email": "user@example.com",
+    "api_key_id": "key_456",
+    "permissions": ["memories.read", "memories.write"],
+    "rate_limits": {
+      "requests_per_minute": 1200,
+      "remaining": 1150
+    }
+  }
+}
+```
+
+## API Key Management
+
+### Listing API Keys
+
+View all your API keys:
+
+<CodeGroup>
+```python Python
+keys = client.api_keys.list()
+for key in keys:
+    print(f"Key: {key.name} ({key.id})")
+    print(f"Created: {key.created_at}")
+    print(f"Last used: {key.last_used_at}")
+    print(f"Permissions: {key.permissions}")
+```
+
+```bash cURL
+curl -H "Authorization: Bearer ctx_1234567890abcdef" \
+  https://api.contextzero.ai/v1/api-keys
+```
+</CodeGroup>
+
+### Updating API Keys
+
+Modify API key permissions or settings:
+
+<CodeGroup>
+```python Python
+client.api_keys.update(
+    key_id="key_456",
+    name="Updated Key Name",
+    permissions=["memories.read", "memories.search"]
+)
+```
+
+```bash cURL
+curl -X PATCH "https://api.contextzero.ai/v1/api-keys/key_456" \
+  -H "Authorization: Bearer ctx_1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Key Name",
+    "permissions": ["memories.read", "memories.search"]
+  }'
+```
+</CodeGroup>
+
+### Revoking API Keys
+
+Disable API keys that are no longer needed:
+
+<CodeGroup>
+```python Python
+client.api_keys.revoke("key_456")
+```
+
+```bash cURL
+curl -X DELETE "https://api.contextzero.ai/v1/api-keys/key_456" \
+  -H "Authorization: Bearer ctx_1234567890abcdef"
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🧠 Memories API"
+    href="/api-reference/memories/add"
+  >
+    Start creating and managing memories
+  </Card>
+  <Card
+    title="🔍 Search API"
+    href="/api-reference/memories/search"
+  >
+    Learn about advanced search capabilities
+  </Card>
+  <Card
+    title="👥 Users API"
+    href="/api-reference/users/add"
+  >
+    Manage users and teams
+  </Card>
+  <Card
+    title="🔗 Webhooks"
+    href="/api-reference/webhooks"
+  >
+    Set up real-time notifications
+  </Card>
+</CardGroup>

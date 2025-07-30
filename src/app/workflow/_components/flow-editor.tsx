@@ -23,7 +23,7 @@ import { CreateFlowNode } from "@/lib/workflow/create-flow-node";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { AppNode } from "@/types/app-node";
 import { TaskType } from "@/types/task";
-import { Workflow } from "@/types/workflow-type";
+import { FlowDefinition, Workflow } from "@/types/workflow-type";
 
 const nodeTypes = {
   ContextZeroNodeBasic: NodeComponent,
@@ -43,9 +43,10 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
 
   useEffect(() => {
     try {
-      const flow = JSON.parse(workflow.definition ?? "{}");
+      const flow = (workflow.definition ?? {}) as FlowDefinition;
+
       if (!flow) return;
-      setNodes(flow.nodes || []);
+      setNodes((flow.nodes || []) as AppNode[]);
       setEdges(flow.edges || []);
       if (!flow.viewport) return;
       const { x = 0, y = 0, zoom = 1 } = flow.viewport;

@@ -5,6 +5,10 @@ import { MobileNavbar } from "./mobile-navbar";
 
 const navItems = [
   {
+    title: "Docs",
+    link: "/docs",
+  },
+  {
     title: "Pricing",
     link: "/pricing",
   },
@@ -31,7 +35,7 @@ export function NavBar() {
         ease: [0.6, 0.05, 0.1, 0.9],
         duration: 0.8,
       }}
-      className="max-w-7xl  fixed top-4  mx-auto inset-x-0 z-50 w-[95%] lg:w-full"
+      className="max-w-7xl fixed top-4 mx-auto inset-x-0 z-50 w-[95%] lg:w-full"
     >
       <div className="hidden lg:block w-full">
         <DesktopNavbar navItems={navItems} />

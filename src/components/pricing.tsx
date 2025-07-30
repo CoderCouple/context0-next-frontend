@@ -53,8 +53,8 @@ export function Pricing() {
                 className={cn(
                   tier.featured
                     ? "text-white"
-                    : "text-muted dark:text-muted-dark",
-                  "text-base font-semibold leading-7"
+                    : "text-neutral-900 dark:text-neutral-100",
+                  "text-xl md:text-2xl lg:text-3xl font-semibold leading-7"
                 )}
               >
                 {tier.name}
@@ -79,8 +79,8 @@ export function Pricing() {
                 className={cn(
                   tier.featured
                     ? "text-neutral-300"
-                    : "text-neutral-600 dark:text-neutral-300",
-                  "mt-6 text-sm leading-7  h-12 md:h-12 xl:h-12"
+                    : "text-neutral-700 dark:text-neutral-200",
+                  "mt-6 text-base md:text-lg leading-7  h-auto"
                 )}
               >
                 {tier.description}
@@ -90,8 +90,8 @@ export function Pricing() {
                 className={cn(
                   tier.featured
                     ? "text-neutral-300"
-                    : "text-neutral-600 dark:text-neutral-300",
-                  "mt-8 space-y-3 text-sm leading-6 sm:mt-10"
+                    : "text-neutral-700 dark:text-neutral-200",
+                  "mt-8 space-y-3 text-base md:text-lg leading-6 sm:mt-10"
                 )}
               >
                 {tier.features.map((feature) => (

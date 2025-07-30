@@ -11,8 +11,8 @@ export const Testimonials = () => {
   return (
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Loved by people all over the universe</Heading>
-      <Subheading className="mx-auto max-w-lg text-center">
-        Every AI is used by millions of people around the globe.Our APIs have
+      <Subheading className="mx-auto max-w-lg text-center text-neutral-600 dark:text-neutral-300">
+        Context Zero AI is used by millions of people around the globe.<br />Our APIs have
         fan bases and people fight for us over twitter.
       </Subheading>
       <TestimonialGrid />
@@ -236,7 +236,7 @@ function Testimonial({
             </p>
           </div>
         </div>
-        <p className="dark:text-muted-dark mt-4 text-base text-muted">
+        <p className="text-neutral-700 dark:text-neutral-200 mt-4 text-base">
           {quote}
         </p>
       </div>

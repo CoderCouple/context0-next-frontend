@@ -1,0 +1,192 @@
+---
+title: "Get Context"
+api: "GET /api/v1/context/"
+description: "Retrieve contextual memories and information relevant to the current user session"
+---
+
+## Overview
+
+This endpoint provides contextually relevant memories and information based on the user's recent activities, current session, and behavioral patterns. It's designed to help AI assistants and applications understand the user's current context.
+
+## Query Parameters
+
+<ParamField query="top_k" type="integer" default="5">
+  Number of top contextual memories to return (max: 20)
+</ParamField>
+
+<ParamField query="include_recent" type="boolean" default="true">
+  Whether to include recent memories in the context
+</ParamField>
+
+<ParamField query="include_relevant" type="boolean" default="true">
+  Whether to include semantically relevant memories
+</ParamField>
+
+<ParamField query="session_id" type="string">
+  Optional session ID to maintain context continuity
+</ParamField>
+
+## Response
+
+<ResponseField name="context_memories" type="array">
+  Array of contextually relevant memory objects
+  <Expandable title="Context Memory Object">
+    <ResponseField name="memory_id" type="string">
+      Unique identifier for the memory
+    </ResponseField>
+    <ResponseField name="content" type="string">
+      The memory content
+    </ResponseField>
+    <ResponseField name="relevance_score" type="number">
+      Contextual relevance score (0.0 to 1.0)
+    </ResponseField>
+    <ResponseField name="context_type" type="string">
+      Type of context match ("recent", "semantic", "behavioral", "temporal")
+    </ResponseField>
+    <ResponseField name="metadata" type="object">
+      Memory metadata including tags and relationships
+    </ResponseField>
+    <ResponseField name="created_at" type="string">
+      When the memory was created
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="context_summary" type="object">
+  Summary of the user's current context
+  <Expandable title="Context Summary">
+    <ResponseField name="primary_topics" type="array">
+      Main topics and themes from recent activities
+    </ResponseField>
+    <ResponseField name="current_focus" type="string">
+      Inferred current area of focus
+    </ResponseField>
+    <ResponseField name="session_continuity" type="boolean">
+      Whether this continues a previous session
+    </ResponseField>
+    <ResponseField name="temporal_context" type="string">
+      Time-based context (e.g., "morning routine", "end of workday")
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="suggestions" type="array">
+  AI-generated suggestions based on current context
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/api/v1/context/?top_k=8&session_id=sess_abc123" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/context/?top_k=8&session_id=sess_abc123', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+});
+
+const context = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.contextzero.ai/api/v1/context/",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    params={
+        'top_k': 8,
+        'session_id': 'sess_abc123'
+    }
+)
+
+context = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "context_memories": [
+    {
+      "memory_id": "mem_67890",
+      "content": "Quarterly planning meeting scheduled for next week. Need to prepare revenue projections and team capacity analysis.",
+      "relevance_score": 0.92,
+      "context_type": "recent",
+      "metadata": {
+        "tags": ["planning", "quarterly", "meeting"],
+        "priority": "high",
+        "related_memories": ["mem_67885", "mem_67883"]
+      },
+      "created_at": "2024-01-15T09:30:00Z"
+    },
+    {
+      "memory_id": "mem_67885",
+      "content": "Q1 2024 revenue target: $2.5M based on current pipeline and historical conversion rates.",
+      "relevance_score": 0.87,
+      "context_type": "semantic",
+      "metadata": {
+        "tags": ["revenue", "quarterly", "targets"],
+        "category": "business_metrics"
+      },
+      "created_at": "2024-01-12T14:20:00Z"
+    },
+    {
+      "memory_id": "mem_67888",
+      "content": "Team capacity review shows we're at 85% utilization. May need to adjust project timelines or add resources.",
+      "relevance_score": 0.79,
+      "context_type": "behavioral",
+      "metadata": {
+        "tags": ["team", "capacity", "planning"],
+        "urgency": "medium"
+      },
+      "created_at": "2024-01-14T11:15:00Z"
+    }
+  ],
+  "context_summary": {
+    "primary_topics": [
+      "quarterly planning",
+      "revenue projections",
+      "team capacity"
+    ],
+    "current_focus": "strategic planning and preparation",
+    "session_continuity": true,
+    "temporal_context": "mid-morning work session"
+  },
+  "suggestions": [
+    "Review last quarter's performance metrics for comparison",
+    "Schedule one-on-ones with team leads before the planning meeting",
+    "Prepare visual dashboards for the quarterly review presentation"
+  ]
+}
+```
+
+</ResponseExample>
+
+## Context Types
+
+<CardGroup cols={2}>
+  <Card title="Recent" icon="clock">
+    Memories from recent user activities and interactions
+  </Card>
+  <Card title="Semantic" icon="magnifying-glass">
+    Memories semantically similar to current topics or queries
+  </Card>
+  <Card title="Behavioral" icon="chart-line">
+    Memories matching user's behavioral patterns and preferences
+  </Card>
+  <Card title="Temporal" icon="calendar">
+    Memories relevant to the current time context (day, week, season)
+  </Card>
+</CardGroup>

@@ -21,7 +21,7 @@ const buttonVariants = cva(
         sidebarItem:
           "gap-2 !justify-start hover:bg-accent hover:bg-primary/80 hover:text-primary-foreground",
         activeSidebarItem:
-          "gap-2 !justify-start bg-primary text-primary-foreground hover:bg-primary/90",
+          "gap-2 !justify-start bg-primary text-primary-foreground hover:bg-primary/50",
         simple: "bg-black relative z-10 bg-transparent hover:bg-gray-100  border border-transparent text-black text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center dark:text-white dark:hover:bg-neutral-800 dark:hover:shadow-xl"  
       },
       size: {

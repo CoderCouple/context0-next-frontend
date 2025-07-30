@@ -95,12 +95,12 @@ const Feature = ({
       )}
       <div className="relative z-10 mb-4 px-10">{icon}</div>
       <div className="relative z-10 mb-2 px-10 text-lg font-bold">
-        <div className="absolute inset-y-0 left-0 h-6 w-1 rounded-br-full rounded-tr-full bg-neutral-300 transition duration-200 group-hover:bg-blue-500 dark:bg-neutral-700" />
+        <div className="absolute inset-y-0 left-0 h-6 w-1 rounded-br-full rounded-tr-full bg-neutral-300 transition duration-200 group-hover:bg-primary dark:bg-neutral-700" />
         <span className="inline-block transition duration-200 group-hover:translate-x-2">
           {title}
         </span>
       </div>
-      <p className="dark:text-muted-dark relative z-10 mx-auto max-w-xs px-10 text-sm text-muted">
+      <p className="text-neutral-600 dark:text-neutral-300 relative z-10 mx-auto max-w-xs px-10 text-sm">
         {description}
       </p>
     </div>

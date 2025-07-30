@@ -32,17 +32,6 @@ function NodeHeader({
             <CoinsIcon size={16} />
             {task.credits}
           </Badge>
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() => {
-              deleteElements({
-                nodes: [{ id: nodeId }],
-              });
-            }}
-          >
-            <TrashIcon size={12} />
-          </Button>
           {!task.isEntryPoint && (
             <>
               <Button

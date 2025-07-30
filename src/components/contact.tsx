@@ -70,21 +70,21 @@ export function ContactForm() {
       title: "twitter",
       href: "https://twitter.com/mannupaaji",
       icon: (
-        <IconBrandX className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
+        <IconBrandX className="h-5 w-5 text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white" />
       ),
     },
     {
       title: "github",
       href: "https://github.com/manuarora700",
       icon: (
-        <IconBrandGithub className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
+        <IconBrandGithub className="h-5 w-5 text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white" />
       ),
     },
     {
       title: "linkedin",
       href: "https://linkedin.com/manuarora28",
       icon: (
-        <IconBrandLinkedin className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
+        <IconBrandLinkedin className="h-5 w-5 text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white" />
       ),
     },
   ];
@@ -97,7 +97,7 @@ export function ContactForm() {
             <h1 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
               Contact Us
             </h1>
-            <p className="mt-4 text-muted dark:text-muted-dark  text-sm max-w-sm">
+            <p className="mt-4 text-neutral-600 dark:text-neutral-300 text-sm max-w-sm">
               Please reach out to us and we will get back to you at the speed of
               light.
             </p>
@@ -116,7 +116,7 @@ export function ContactForm() {
                     <FormItem>
                       <label
                         htmlFor="name"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-200"
                       >
                         Full Name
                       </label>
@@ -125,7 +125,7 @@ export function ContactForm() {
                           <input
                             id="name"
                             type="name"
-                            placeholder="Manu Arora"
+                            placeholder="John Doe"
                             className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
                             {...field}
                           />
@@ -142,7 +142,7 @@ export function ContactForm() {
                     <FormItem>
                       <label
                         htmlFor="email"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-200"
                       >
                         Email address
                       </label>
@@ -168,7 +168,7 @@ export function ContactForm() {
                     <FormItem>
                       <label
                         htmlFor="company"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-200"
                       >
                         Company
                       </label>
@@ -177,7 +177,7 @@ export function ContactForm() {
                           <input
                             id="company"
                             type="company"
-                            placeholder="Aceternity Labs, LLC"
+                            placeholder="Context Zero Labs, LLC"
                             className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
                             {...field}
                           />
@@ -194,7 +194,7 @@ export function ContactForm() {
                     <FormItem>
                       <label
                         htmlFor="message"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-200"
                       >
                         message
                       </label>

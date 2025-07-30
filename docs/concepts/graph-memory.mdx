@@ -1,0 +1,350 @@
+---
+title: 'Graph Memory'
+description: 'Understanding multi-hop memory and graph relationships in Context Zero AI'
+---
+
+## What is Graph Memory?
+
+Graph Memory is Context Zero AI's advanced memory system that creates intelligent connections between memories, enabling multi-hop reasoning and contextual understanding. Unlike traditional linear memory systems, Graph Memory builds a dynamic network of relationships that mirrors how human memory works.
+
+<img
+  className="block dark:hidden"
+  src="/images/graph-memory-light.png"
+  alt="Graph Memory Visualization"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/graph-memory-dark.png"
+  alt="Graph Memory Visualization"
+/>
+
+## Key Concepts
+
+### Nodes (Memories)
+Individual memories serve as nodes in the graph:
+- **Content**: The actual information stored
+- **Embeddings**: Vector representations for similarity
+- **Metadata**: Tags, categories, and timestamps
+- **Connections**: Links to related memories
+
+### Edges (Relationships)
+Connections between memories with different types:
+- **Semantic**: Content-based similarity
+- **Temporal**: Time-based relationships
+- **Causal**: Cause-and-effect connections
+- **Contextual**: Situational relationships
+- **User-defined**: Manual associations
+
+### Clusters
+Groups of highly connected memories:
+- **Topic Clusters**: Related subjects or themes
+- **Time Clusters**: Events from similar periods
+- **Person Clusters**: Memories about specific individuals
+- **Project Clusters**: Work or goal-related memories
+
+## Relationship Types
+
+<CardGroup cols={2}>
+  <Card
+    title="🔗 Semantic Links"
+    icon="brain"
+  >
+    Connections based on content similarity and meaning
+  </Card>
+  <Card
+    title="⏰ Temporal Links"
+    icon="clock"
+  >
+    Relationships formed through time proximity or sequence
+  </Card>
+  <Card
+    title="🎯 Causal Links"
+    icon="arrow-right"
+  >
+    Cause-and-effect relationships between events or ideas
+  </Card>
+  <Card
+    title="👥 Social Links"
+    icon="users"
+  >
+    Connections through people, teams, or organizations
+  </Card>
+</CardGroup>
+
+## Multi-Hop Reasoning
+
+Graph Memory enables sophisticated reasoning across multiple memory hops:
+
+### Single-Hop Retrieval
+Direct connections to the query:
+```
+Query: "React best practices" 
+→ Memory: "Use React hooks for state management"
+```
+
+### Two-Hop Reasoning
+Following connections to related memories:
+```
+Query: "React best practices"
+→ Memory: "Use React hooks"
+→ Connected Memory: "useState and useEffect examples"
+```
+
+### Multi-Hop Discovery
+Deep traversal for comprehensive context:
+```
+Query: "Project challenges"
+→ Memory: "Authentication issues in mobile app"
+→ Connected: "Firebase configuration problems"  
+→ Connected: "Team discussion about switching to Auth0"
+→ Connected: "Sarah's experience with Auth0 at previous company"
+```
+
+## Graph Construction
+
+### Automatic Relationship Detection
+
+**Semantic Analysis**
+- Vector similarity between memories
+- Named entity recognition
+- Topic modeling
+- Concept extraction
+
+**Temporal Patterns**
+- Time-based clustering
+- Sequential event detection
+- Recurring pattern identification
+- Timeline construction
+
+**Co-occurrence Analysis**
+- Memories created in similar contexts
+- Shared tags and metadata
+- Cross-referenced content
+- User behavior patterns
+
+### Manual Relationship Creation
+
+Users can explicitly create connections:
+
+<CodeGroup>
+```python Python
+# Create a manual relationship
+client.memories.create_relationship(
+    source_id="mem_123",
+    target_id="mem_456", 
+    relationship_type="caused_by",
+    strength=0.8,
+    metadata={"context": "debugging session"}
+)
+```
+
+```javascript JavaScript
+// Create a manual relationship
+await client.memories.createRelationship({
+  sourceId: "mem_123",
+  targetId: "mem_456",
+  relationshipType: "caused_by", 
+  strength: 0.8,
+  metadata: { context: "debugging session" }
+});
+```
+</CodeGroup>
+
+## Graph Traversal
+
+### Breadth-First Search
+Explore immediate neighbors first:
+- Find directly related memories
+- Discover topic clusters
+- Identify recent connections
+
+### Depth-First Search  
+Follow connection chains deeply:
+- Trace causal relationships
+- Follow narrative threads
+- Explore conceptual hierarchies
+
+### Weighted Traversal
+Use relationship strength to guide search:
+- Prioritize stronger connections
+- Balance relevance with diversity
+- Optimize for user preferences
+
+## Practical Applications
+
+### Enhanced Context Retrieval
+
+**Traditional Memory**:
+```
+Query: "Team meeting notes"
+Results: 3 direct matches
+```
+
+**Graph Memory**:
+```
+Query: "Team meeting notes"
+Results: 
+- Direct: Meeting notes from last week
+- Connected: Action items assigned to team members  
+- Connected: Related project discussions
+- Connected: Previous decisions that influenced current topics
+```
+
+### Intelligent Summarization
+
+Graph Memory can generate comprehensive summaries by traversing related memories:
+
+```python
+# Generate contextual summary
+summary = client.memories.generate_summary(
+    query="Q4 planning progress",
+    max_hops=3,
+    include_relationships=True
+)
+```
+
+### Proactive Context Injection
+
+The system can anticipate information needs:
+- When discussing a person, surface recent interactions
+- When working on a project, include related challenges
+- When learning a concept, provide prerequisite knowledge
+
+## Graph Analytics
+
+### Centrality Metrics
+Identify important memories:
+- **Degree Centrality**: Number of connections
+- **Betweenness Centrality**: Bridge between clusters
+- **PageRank**: Overall importance in the graph
+
+### Cluster Analysis
+Understand memory organization:
+- **Community Detection**: Natural groupings
+- **Topic Distribution**: Subject matter clusters  
+- **Temporal Clustering**: Time-based groups
+
+### Relationship Strength
+Measure connection quality:
+- **Semantic Similarity**: Content overlap
+- **Access Frequency**: Usage patterns
+- **User Reinforcement**: Manual confirmations
+
+## Advanced Features
+
+### Dynamic Graph Evolution
+
+The graph continuously adapts:
+- **New Connections**: Automatically formed based on access patterns
+- **Strength Updates**: Relationships strengthen or weaken over time
+- **Pruning**: Weak or irrelevant connections are removed
+- **Consolidation**: Similar memories may be merged
+
+### Personalized Graph Views
+
+Each user has customized graph perspectives:
+- **Interest-Based**: Emphasize personally relevant topics
+- **Role-Based**: Highlight professional vs. personal memories
+- **Context-Aware**: Adapt based on current situation
+- **Goal-Oriented**: Focus on task-relevant connections
+
+### Cross-User Graph Integration
+
+For team and organizational use:
+- **Shared Clusters**: Common project or topic areas
+- **Privacy Boundaries**: Respect individual privacy settings
+- **Knowledge Transfer**: Learn from team expertise
+- **Collaborative Memory**: Jointly created and maintained memories
+
+## Best Practices
+
+### Graph Quality
+- **Clean Input**: Provide clear, specific memories
+- **Consistent Tagging**: Use standardized metadata
+- **Regular Maintenance**: Remove outdated connections
+- **Validate Relationships**: Confirm important connections
+
+### Optimal Structure
+- **Balanced Density**: Neither too sparse nor too dense
+- **Clear Hierarchies**: Maintain logical organization
+- **Cross-Connections**: Link different topic areas
+- **Regular Updates**: Keep relationships current
+
+### Performance Optimization
+- **Index Critical Paths**: Optimize frequent traversal routes
+- **Limit Depth**: Set reasonable hop limits for queries
+- **Cache Results**: Store frequently accessed patterns
+- **Monitor Usage**: Track graph performance metrics
+
+## Visualization
+
+Graph Memory includes powerful visualization tools:
+
+### Interactive Graph View
+- **Node Sizing**: Based on importance or recency
+- **Edge Thickness**: Represents relationship strength
+- **Color Coding**: Different memory types and categories
+- **Clustering**: Visual grouping of related memories
+
+### Timeline View
+- **Chronological Layout**: Memories arranged by time
+- **Connection Arcs**: Show relationships across time
+- **Event Clustering**: Group related temporal events
+- **Causal Chains**: Visualize cause-and-effect sequences
+
+### Network Analysis
+- **Influence Maps**: Show memory importance
+- **Knowledge Gaps**: Identify sparse areas
+- **Connection Patterns**: Reveal usage trends
+- **Growth Over Time**: Track graph evolution
+
+## Troubleshooting
+
+### Common Issues
+
+**Sparse Connections**
+- Add more descriptive metadata
+- Create manual relationships
+- Use consistent terminology
+- Increase memory volume
+
+**Over-Connected Graph**
+- Tighten similarity thresholds
+- Remove weak relationships
+- Better categorization
+- Prune irrelevant connections
+
+**Poor Retrieval Quality**
+- Review relationship strengths
+- Validate connection accuracy  
+- Adjust traversal parameters
+- Update memory content
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🔍 Advanced Search"
+    href="/concepts/search"
+  >
+    Learn to leverage graph structure for better search
+  </Card>
+  <Card
+    title="📊 Analytics Dashboard"
+    href="/concepts/analytics"
+  >
+    Monitor and analyze your memory graph
+  </Card>
+  <Card
+    title="🤝 Team Graphs"
+    href="/platform/teams"
+  >
+    Set up shared memory graphs for teams
+  </Card>
+  <Card
+    title="🔌 Graph API"
+    href="/api-reference/graph"
+  >
+    Programmatically work with memory graphs
+  </Card>
+</CardGroup>

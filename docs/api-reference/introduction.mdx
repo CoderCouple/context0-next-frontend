@@ -1,0 +1,416 @@
+---
+title: 'API Introduction'
+description: 'Get started with the Context Zero AI API'
+---
+
+## Welcome to Context Zero AI API
+
+The Context Zero AI API provides programmatic access to our memory management and contextual AI platform. Build applications that can create, search, and manage memories with intelligent context injection.
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.contextzero.ai/v1
+```
+
+## Authentication
+
+Context Zero AI uses API keys for authentication. Include your API key in the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer your_api_key_here" \
+  https://api.contextzero.ai/v1/memories
+```
+
+### Getting Your API Key
+
+<Steps>
+  <Step title="Log into Dashboard">
+    Go to [app.contextzero.ai](https://app.contextzero.ai) and sign in
+  </Step>
+  <Step title="Navigate to Settings">
+    Click on Settings in the sidebar
+  </Step>
+  <Step title="Generate API Key">
+    Go to API Keys tab and click "Create New API Key"
+  </Step>
+  <Step title="Secure Your Key">
+    Copy your key and store it securely - you won't see it again
+  </Step>
+</Steps>
+
+<Warning>
+Keep your API keys secure and never commit them to version control. Use environment variables in production applications.
+</Warning>
+
+## Rate Limits
+
+API requests are subject to rate limits based on your plan:
+
+| Plan | Requests per minute | Burst limit |
+|------|---------------------|-------------|
+| Hobby | 60 | 100 |
+| Starter | 300 | 500 |
+| Pro | 1,200 | 2,000 |
+| Enterprise | Custom | Custom |
+
+Rate limit headers are included in all responses:
+
+```
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1150
+X-RateLimit-Reset: 1640995200
+```
+
+## Response Format
+
+All API responses use JSON format with consistent structure:
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {
+    // Response data here
+  },
+  "metadata": {
+    "total": 150,
+    "page": 1,
+    "limit": 20
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The request body is invalid",
+    "details": {
+      "field": "content",
+      "issue": "Content cannot be empty"
+    }
+  },
+  "request_id": "req_1234567890"
+}
+```
+
+## Error Codes
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `INVALID_REQUEST` | 400 | Request body or parameters are invalid |
+| `UNAUTHORIZED` | 401 | API key is missing or invalid |
+| `FORBIDDEN` | 403 | Insufficient permissions for the resource |
+| `NOT_FOUND` | 404 | Requested resource does not exist |
+| `RATE_LIMITED` | 429 | Too many requests, rate limit exceeded |
+| `SERVER_ERROR` | 500 | Internal server error |
+| `SERVICE_UNAVAILABLE` | 503 | Service temporarily unavailable |
+
+## Pagination
+
+List endpoints support cursor-based pagination:
+
+```bash
+curl "https://api.contextzero.ai/v1/memories?limit=20&cursor=eyJ0aW1lc3RhbXAi..."
+```
+
+**Parameters:**
+- `limit`: Number of results per page (max 100, default 20)
+- `cursor`: Pagination cursor from previous response
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [...],
+  "pagination": {
+    "has_more": true,
+    "next_cursor": "eyJ0aW1lc3RhbXAi...",
+    "total": 150
+  }
+}
+```
+
+## Filtering and Sorting
+
+Many endpoints support filtering and sorting:
+
+### Filters
+```bash
+# Filter by category
+curl "https://api.contextzero.ai/v1/memories?category=personal"
+
+# Filter by date range
+curl "https://api.contextzero.ai/v1/memories?created_after=2024-01-01&created_before=2024-02-01"
+
+# Filter by tags
+curl "https://api.contextzero.ai/v1/memories?tags=work,project"
+```
+
+### Sorting
+```bash
+# Sort by creation date (default: newest first)
+curl "https://api.contextzero.ai/v1/memories?sort=created_at&order=desc"
+
+# Sort by relevance (for search endpoints)
+curl "https://api.contextzero.ai/v1/memories/search?q=project&sort=relevance"
+```
+
+## Field Selection
+
+Use the `fields` parameter to return only specific fields:
+
+```bash
+curl "https://api.contextzero.ai/v1/memories?fields=id,content,created_at"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "mem_1234567890",
+      "content": "Meeting notes from client call",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+## Webhooks
+
+Context Zero AI can send webhooks for real-time notifications:
+
+### Supported Events
+- `memory.created` - New memory added
+- `memory.updated` - Memory modified  
+- `memory.deleted` - Memory removed
+- `search.performed` - Search query executed
+- `user.created` - New user registered
+
+### Webhook Payload
+```json
+{
+  "event": "memory.created",
+  "data": {
+    "id": "mem_1234567890",
+    "content": "New memory content",
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  "user_id": "user_123",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "signature": "sha256=..."
+}
+```
+
+### Webhook Configuration
+Configure webhooks in your dashboard or via API:
+
+```bash
+curl -X POST "https://api.contextzero.ai/v1/webhooks" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-app.com/webhooks",
+    "events": ["memory.created", "memory.updated"],
+    "active": true
+  }'
+```
+
+## SDKs and Libraries
+
+Official SDKs are available for popular programming languages:
+
+<Tabs>
+  <Tab title="Python">
+    ```bash
+    pip install contextzero
+    ```
+    
+    ```python
+    from contextzero import ContextZero
+    
+    client = ContextZero(api_key="your_api_key")
+    memory = client.memories.add("Your memory content")
+    ```
+    
+    [Python SDK Documentation →](https://github.com/contextzero/python-sdk)
+  </Tab>
+  
+  <Tab title="JavaScript">
+    ```bash
+    npm install @contextzero/sdk
+    ```
+    
+    ```javascript
+    import { ContextZero } from '@contextzero/sdk';
+    
+    const client = new ContextZero({ apiKey: 'your_api_key' });
+    const memory = await client.memories.add('Your memory content');
+    ```
+    
+    [JavaScript SDK Documentation →](https://github.com/contextzero/javascript-sdk)
+  </Tab>
+  
+  <Tab title="Go">
+    ```bash
+    go get github.com/contextzero/go-sdk
+    ```
+    
+    ```go
+    import "github.com/contextzero/go-sdk"
+    
+    client := contextzero.New("your_api_key")
+    memory, err := client.Memories.Add("Your memory content")
+    ```
+    
+    [Go SDK Documentation →](https://github.com/contextzero/go-sdk)
+  </Tab>
+</Tabs>
+
+## API Playground
+
+Test API endpoints directly in your browser using our interactive playground:
+
+[Open API Playground →](https://app.contextzero.ai/playground)
+
+## Examples
+
+### Quick Start Example
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+
+# Initialize client
+client = ContextZero(api_key="your_api_key")
+
+# Add a memory
+memory = client.memories.add(
+    content="I prefer morning meetings between 9-11 AM",
+    metadata={"category": "personal", "type": "preference"}
+)
+
+# Search memories
+results = client.memories.search(
+    query="meeting preferences",
+    limit=5
+)
+
+for memory in results:
+    print(f"Memory: {memory.content}")
+    print(f"Relevance: {memory.score:.2f}")
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+// Initialize client
+const client = new ContextZero({ apiKey: 'your_api_key' });
+
+// Add a memory
+const memory = await client.memories.add({
+  content: 'I prefer morning meetings between 9-11 AM',
+  metadata: { category: 'personal', type: 'preference' }
+});
+
+// Search memories
+const results = await client.memories.search({
+  query: 'meeting preferences',
+  limit: 5
+});
+
+results.forEach(memory => {
+  console.log(`Memory: ${memory.content}`);
+  console.log(`Relevance: ${memory.score.toFixed(2)}`);
+});
+```
+
+```bash cURL
+# Add a memory
+curl -X POST "https://api.contextzero.ai/v1/memories" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "I prefer morning meetings between 9-11 AM",
+    "metadata": {
+      "category": "personal",
+      "type": "preference"
+    }
+  }'
+
+# Search memories
+curl "https://api.contextzero.ai/v1/memories/search?q=meeting%20preferences&limit=5" \
+  -H "Authorization: Bearer your_api_key"
+```
+</CodeGroup>
+
+## Support
+
+### Getting Help
+
+<CardGroup cols={2}>
+  <Card
+    title="📚 API Reference"
+    href="/api-reference/memories/add"
+  >
+    Detailed endpoint documentation
+  </Card>
+  <Card
+    title="💬 Discord Community"
+    href="https://discord.gg/contextzero"
+  >
+    Join our developer community
+  </Card>
+  <Card
+    title="📧 Email Support"
+    href="mailto:developers@contextzero.ai"
+  >
+    Get help from our team
+  </Card>
+  <Card
+    title="🐛 Report Issues"
+    href="https://github.com/contextzero/api-issues"
+  >
+    Bug reports and feature requests
+  </Card>
+</CardGroup>
+
+### Status Page
+
+Monitor API status and uptime:
+[https://status.contextzero.ai](https://status.contextzero.ai)
+
+### Changelog
+
+Stay updated with API changes:
+[https://changelog.contextzero.ai](https://changelog.contextzero.ai)
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="🧠 Add Memories"
+    href="/api-reference/memories/add"
+  >
+    Create your first memory via API
+  </Card>
+  <Card
+    title="🔍 Search Memories"
+    href="/api-reference/memories/search"
+  >
+    Learn advanced search capabilities
+  </Card>
+  <Card
+    title="👤 User Management"
+    href="/api-reference/users/add"
+  >
+    Manage users and permissions
+  </Card>
+</CardGroup>

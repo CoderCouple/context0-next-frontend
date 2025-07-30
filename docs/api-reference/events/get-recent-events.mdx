@@ -1,0 +1,169 @@
+---
+title: "Get Recent Events"
+api: "GET /api/v1/event/context"
+description: "Retrieve the most recent events for building contextual understanding"
+---
+
+## Overview
+
+This endpoint provides the most recent events for the authenticated user, designed to help build context for AI interactions and user behavior analysis. It returns events in reverse chronological order.
+
+## Query Parameters
+
+<ParamField query="limit" type="integer" default="10">
+  Number of recent events to return (max: 50)
+</ParamField>
+
+## Response
+
+<ResponseField name="events" type="array">
+  Array of recent event objects ordered by timestamp (newest first)
+  <Expandable title="Event Object">
+    <ResponseField name="event_id" type="string">
+      Unique identifier for the event
+    </ResponseField>
+    <ResponseField name="event_type" type="string">
+      Type of the event
+    </ResponseField>
+    <ResponseField name="user_id" type="string">
+      ID of the user associated with the event
+    </ResponseField>
+    <ResponseField name="metadata" type="object">
+      Additional event data and context
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      When the event occurred (ISO format)
+    </ResponseField>
+    <ResponseField name="relevance_score" type="number">
+      Contextual relevance score (0.0 to 1.0)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="context_summary" type="object">
+  Summary of recent activity patterns
+  <Expandable title="Context Summary">
+    <ResponseField name="primary_activities" type="array">
+      Most common event types in the recent period
+    </ResponseField>
+    <ResponseField name="active_sessions" type="integer">
+      Number of active user sessions
+    </ResponseField>
+    <ResponseField name="time_range" type="object">
+      Time range covered by the events
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/api/v1/event/context?limit=15" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/event/context?limit=15', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+});
+
+const recentEvents = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.contextzero.ai/api/v1/event/context",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    params={'limit': 15}
+)
+
+recent_events = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "events": [
+    {
+      "event_id": "evt_98767",
+      "event_type": "memory_created",
+      "user_id": "user_12345",
+      "metadata": {
+        "memory_id": "mem_67892",
+        "content_type": "meeting_notes",
+        "source": "web"
+      },
+      "timestamp": "2024-01-15T10:45:00Z",
+      "relevance_score": 0.95
+    },
+    {
+      "event_id": "evt_98766",
+      "event_type": "search_performed",
+      "user_id": "user_12345",
+      "metadata": {
+        "query": "quarterly planning",
+        "results_count": 8,
+        "selected_result": "mem_67890"
+      },
+      "timestamp": "2024-01-15T10:42:00Z",
+      "relevance_score": 0.87
+    },
+    {
+      "event_id": "evt_98765",
+      "event_type": "memory_updated",
+      "user_id": "user_12345",
+      "metadata": {
+        "memory_id": "mem_67891",
+        "changes": ["tags", "content"],
+        "source": "api"
+      },
+      "timestamp": "2024-01-15T10:30:00Z",
+      "relevance_score": 0.72
+    }
+  ],
+  "context_summary": {
+    "primary_activities": [
+      "memory_created",
+      "search_performed",
+      "memory_updated"
+    ],
+    "active_sessions": 2,
+    "time_range": {
+      "start": "2024-01-15T09:15:00Z",
+      "end": "2024-01-15T10:45:00Z"
+    }
+  }
+}
+```
+
+</ResponseExample>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="AI Context Building" icon="brain">
+    Use recent events to provide context to AI assistants about user's current activities and interests.
+  </Card>
+  <Card title="Personalization" icon="user-gear">
+    Analyze recent patterns to personalize user experience and recommendations.
+  </Card>
+  <Card title="Session Continuity" icon="link">
+    Maintain context across user sessions and interactions.
+  </Card>
+  <Card title="Behavior Analysis" icon="chart-line">
+    Understand user workflows and optimize product features.
+  </Card>
+</CardGroup>

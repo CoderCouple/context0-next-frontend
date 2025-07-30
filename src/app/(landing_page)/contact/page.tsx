@@ -26,18 +26,18 @@ export default function PricingPage() {
             <FeaturedTestimonials />
             <p
               className={cn(
-                "dark:text-muted-dark text-center text-xl font-semibold text-muted"
+                "text-neutral-700 dark:text-neutral-200 text-center text-xl font-semibold"
               )}
             >
-              Every AI is used by thousands of users
+              Context Zero AI is used by thousands of users
             </p>
             <p
               className={cn(
                 "mt-8 text-center text-base font-normal text-neutral-500 dark:text-neutral-200"
               )}
             >
-              With lots of AI applications around, Everything AI stands out with
-              its state of the art Shitposting capabilities.
+              With lots of AI applications around, Context Zero AI stands out with
+              its state of the art memory layer capabilities.
             </p>
           </div>
           <HorizontalGradient className="top-20" />

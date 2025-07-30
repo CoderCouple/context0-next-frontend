@@ -1,0 +1,278 @@
+---
+title: 'Quickstart'
+description: 'Get started with Context Zero AI in under 5 minutes'
+---
+
+## Overview
+
+This quickstart guide will help you:
+1. Set up your Context Zero AI account
+2. Install the SDK or browser extension
+3. Create your first memory
+4. Retrieve and use memories in conversations
+
+## Step 1: Create an Account
+
+First, create your Context Zero AI account:
+
+1. Go to [app.contextzero.ai](https://app.contextzero.ai)
+2. Sign up with your email or OAuth provider
+3. Verify your email address
+4. Complete the onboarding flow
+
+## Step 2: Get Your API Key
+
+<Steps>
+  <Step title="Navigate to Settings">
+    In your dashboard, click on "Settings" in the sidebar
+  </Step>
+  <Step title="Go to API Keys">
+    Select the "API Keys" tab
+  </Step>
+  <Step title="Create New Key">
+    Click "Create New API Key" and give it a descriptive name
+  </Step>
+  <Step title="Copy Your Key">
+    Copy the API key and store it securely
+  </Step>
+</Steps>
+
+<Warning>
+Keep your API key secure and never commit it to version control. Use environment variables in production.
+</Warning>
+
+## Step 3: Install SDK
+
+Choose your preferred programming language:
+
+<Tabs>
+  <Tab title="Python">
+    Install the Python SDK:
+    ```bash
+    pip install contextzero
+    ```
+    
+    Set up your environment:
+    ```bash
+    export CONTEXT_ZERO_API_KEY="your_api_key_here"
+    ```
+  </Tab>
+  
+  <Tab title="JavaScript">
+    Install the JavaScript SDK:
+    ```bash
+    npm install @contextzero/sdk
+    ```
+    
+    Set up your environment:
+    ```bash
+    export CONTEXT_ZERO_API_KEY="your_api_key_here"
+    ```
+  </Tab>
+  
+  <Tab title="Browser Extension">
+    1. Visit the [Chrome Web Store](https://chrome.google.com/webstore)
+    2. Search for "Context Zero AI"
+    3. Click "Add to Chrome"
+    4. Sign in with your Context Zero AI account
+  </Tab>
+</Tabs>
+
+## Step 4: Initialize the Client
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+
+# Initialize the client
+client = ContextZero(api_key="your_api_key")
+
+# Test the connection
+try:
+    health = client.health.check()
+    print("✅ Connected to Context Zero AI!")
+except Exception as e:
+    print(f"❌ Connection failed: {e}")
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+// Initialize the client
+const client = new ContextZero({
+  apiKey: process.env.CONTEXT_ZERO_API_KEY
+});
+
+// Test the connection
+try {
+  const health = await client.health.check();
+  console.log('✅ Connected to Context Zero AI!');
+} catch (error) {
+  console.error('❌ Connection failed:', error);
+}
+```
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/v1/health" \
+  -H "Authorization: Bearer your_api_key"
+```
+</CodeGroup>
+
+## Step 5: Create Your First Memory
+
+<CodeGroup>
+```python Python
+# Create a personal memory
+memory = client.memories.add(
+    content="I'm a software engineer who loves hiking and photography. I work remotely and prefer morning meetings.",
+    metadata={
+        "category": "personal",
+        "type": "profile"
+    }
+)
+
+print(f"Memory created with ID: {memory.id}")
+```
+
+```javascript JavaScript
+// Create a personal memory
+const memory = await client.memories.add({
+  content: "I'm a software engineer who loves hiking and photography. I work remotely and prefer morning meetings.",
+  metadata: {
+    category: "personal",
+    type: "profile"
+  }
+});
+
+console.log(`Memory created with ID: ${memory.id}`);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/memories" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "I'\''m a software engineer who loves hiking and photography. I work remotely and prefer morning meetings.",
+    "metadata": {
+      "category": "personal",
+      "type": "profile"
+    }
+  }'
+```
+</CodeGroup>
+
+## Step 6: Search and Retrieve Memories
+
+<CodeGroup>
+```python Python
+# Search for relevant memories
+results = client.memories.search(
+    query="What are my work preferences?",
+    limit=5
+)
+
+for memory in results:
+    print(f"📝 {memory.content}")
+    print(f"🎯 Relevance: {memory.score:.2f}")
+    print("---")
+```
+
+```javascript JavaScript
+// Search for relevant memories
+const results = await client.memories.search({
+  query: "What are my work preferences?",
+  limit: 5
+});
+
+results.forEach(memory => {
+  console.log(`📝 ${memory.content}`);
+  console.log(`🎯 Relevance: ${memory.score.toFixed(2)}`);
+  console.log('---');
+});
+```
+</CodeGroup>
+
+## Step 7: Use in Chat Applications
+
+### ChatGPT Integration
+
+1. Install the Context Zero AI browser extension
+2. Navigate to [chat.openai.com](https://chat.openai.com)
+3. You'll see a Context Zero sidebar appear
+4. Start chatting - relevant memories will automatically be injected
+
+### Custom Integration
+
+<CodeGroup>
+```python Python
+def enhanced_chat(user_message):
+    # Get relevant memories
+    memories = client.memories.search(query=user_message, limit=3)
+    
+    # Build context
+    context = "Relevant context:\n"
+    for memory in memories:
+        context += f"- {memory.content}\n"
+    
+    # Send to your LLM with context
+    enhanced_prompt = f"{context}\n\nUser: {user_message}"
+    
+    return enhanced_prompt
+```
+
+```javascript JavaScript
+async function enhancedChat(userMessage) {
+  // Get relevant memories
+  const memories = await client.memories.search({
+    query: userMessage,
+    limit: 3
+  });
+  
+  // Build context
+  let context = "Relevant context:\n";
+  memories.forEach(memory => {
+    context += `- ${memory.content}\n`;
+  });
+  
+  // Send to your LLM with context
+  const enhancedPrompt = `${context}\n\nUser: ${userMessage}`;
+  
+  return enhancedPrompt;
+}
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🧠 Learn About Memory Types"
+    href="/concepts/memory-types"
+  >
+    Understand different types of memories and when to use them
+  </Card>
+  <Card
+    title="🔌 Explore Integrations"
+    href="/integrations/overview"
+  >
+    Connect with ChatGPT, Claude, Slack, and more
+  </Card>
+  <Card
+    title="📊 Graph Memory"
+    href="/concepts/graph-memory"
+  >
+    Build complex relationships between memories
+  </Card>
+  <Card
+    title="📚 API Reference"
+    href="/api-reference"
+  >
+    Complete API documentation and examples
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+- 💬 Join our [Discord community](https://discord.gg/contextzero)
+- 📧 Email us at [support@contextzero.ai](mailto:support@contextzero.ai)
+- 🐛 Report issues on [GitHub](https://github.com/contextzero/context-zero)

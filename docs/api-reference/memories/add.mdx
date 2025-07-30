@@ -1,0 +1,502 @@
+---
+title: 'Add Memory'
+description: 'Create a new memory in Context Zero AI'
+api: 'POST https://api.contextzero.ai/v1/memories'
+---
+
+## Overview
+
+Create a new memory with content, metadata, and optional relationships. Memories are automatically indexed for search and connected to related memories in your graph.
+
+## Request
+
+### Headers
+
+| Header | Value | Required |
+|--------|--------|----------|
+| `Authorization` | `Bearer {api_key}` | Yes |
+| `Content-Type` | `application/json` | Yes |
+
+### Body Parameters
+
+<ParamField body="content" type="string" required>
+  The main content of the memory. This can be text, notes, facts, or any information you want to store.
+  
+  **Maximum length:** 10,000 characters
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata to organize and categorize the memory.
+  
+  <Expandable title="Metadata Properties">
+    <ParamField body="metadata.category" type="string">
+      Category to organize memories (e.g., "personal", "work", "learning")
+    </ParamField>
+    
+    <ParamField body="metadata.type" type="string">
+      Specific type within the category (e.g., "preference", "fact", "experience")
+    </ParamField>
+    
+    <ParamField body="metadata.tags" type="array">
+      Array of tags for flexible organization and search
+    </ParamField>
+    
+    <ParamField body="metadata.priority" type="integer">
+      Priority level from 1 (low) to 10 (high). Default: 5
+    </ParamField>
+    
+    <ParamField body="metadata.expires_at" type="string">
+      ISO 8601 timestamp when the memory should expire (optional)
+    </ParamField>
+    
+    <ParamField body="metadata.source" type="string">
+      Source of the memory (e.g., "manual", "import", "api", "chatgpt")
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="relationships" type="array">
+  Optional array of relationships to other memories.
+  
+  <Expandable title="Relationship Properties">
+    <ParamField body="relationships[].target_id" type="string" required>
+      ID of the target memory to relate to
+    </ParamField>
+    
+    <ParamField body="relationships[].type" type="string">
+      Type of relationship: "related", "caused_by", "leads_to", "contradicts", "supports"
+      
+      Default: "related"
+    </ParamField>
+    
+    <ParamField body="relationships[].strength" type="number">
+      Relationship strength from 0.0 to 1.0. Default: 0.7
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="embedding" type="object">
+  Optional custom embedding configuration.
+  
+  <Expandable title="Embedding Properties">
+    <ParamField body="embedding.model" type="string">
+      Embedding model to use. Options: "default", "multilingual", "domain-specific"
+      
+      Default: "default"
+    </ParamField>
+    
+    <ParamField body="embedding.custom_vector" type="array">
+      Custom embedding vector (array of numbers). If provided, skips automatic embedding generation.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+### Success Response (201 Created)
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "mem_1234567890abcdef",
+    "content": "I prefer to have meetings in the morning between 9-11 AM",
+    "metadata": {
+      "category": "personal",
+      "type": "preference", 
+      "tags": ["work", "schedule", "meetings"],
+      "priority": 7,
+      "source": "api"
+    },
+    "embedding": {
+      "model": "default",
+      "vector_id": "vec_abcdef1234567890"
+    },
+    "relationships": [
+      {
+        "target_id": "mem_0987654321fedcba",
+        "type": "related",
+        "strength": 0.8
+      }
+    ],
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z",
+    "user_id": "user_123456"
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "Memory content cannot be empty",
+    "details": {
+      "field": "content",
+      "issue": "Content is required and cannot be empty"
+    }
+  },
+  "request_id": "req_1234567890"
+}
+```
+
+## Examples
+
+### Basic Memory
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+
+client = ContextZero(api_key="your_api_key")
+
+memory = client.memories.add(
+    content="I prefer to have meetings in the morning between 9-11 AM",
+    metadata={
+        "category": "personal",
+        "type": "preference",
+        "tags": ["work", "schedule", "meetings"]
+    }
+)
+
+print(f"Created memory with ID: {memory.id}")
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+const client = new ContextZero({ apiKey: 'your_api_key' });
+
+const memory = await client.memories.add({
+  content: 'I prefer to have meetings in the morning between 9-11 AM',
+  metadata: {
+    category: 'personal',
+    type: 'preference',
+    tags: ['work', 'schedule', 'meetings']
+  }
+});
+
+console.log(`Created memory with ID: ${memory.id}`);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/memories" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "I prefer to have meetings in the morning between 9-11 AM",
+    "metadata": {
+      "category": "personal",
+      "type": "preference", 
+      "tags": ["work", "schedule", "meetings"]
+    }
+  }'
+```
+</CodeGroup>
+
+### Memory with Relationships
+
+<CodeGroup>
+```python Python
+memory_with_relations = client.memories.add(
+    content="The client meeting went well. They approved our proposal.",
+    metadata={
+        "category": "work",
+        "type": "experience",
+        "tags": ["client", "meeting", "proposal"]
+    },
+    relationships=[
+        {
+            "target_id": "mem_proposal_draft",
+            "type": "leads_to",
+            "strength": 0.9
+        },
+        {
+            "target_id": "mem_client_background", 
+            "type": "related",
+            "strength": 0.7
+        }
+    ]
+)
+```
+
+```javascript JavaScript
+const memoryWithRelations = await client.memories.add({
+  content: 'The client meeting went well. They approved our proposal.',
+  metadata: {
+    category: 'work',
+    type: 'experience',
+    tags: ['client', 'meeting', 'proposal']
+  },
+  relationships: [
+    {
+      target_id: 'mem_proposal_draft',
+      type: 'leads_to',
+      strength: 0.9
+    },
+    {
+      target_id: 'mem_client_background',
+      type: 'related', 
+      strength: 0.7
+    }
+  ]
+});
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/memories" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "The client meeting went well. They approved our proposal.",
+    "metadata": {
+      "category": "work",
+      "type": "experience",
+      "tags": ["client", "meeting", "proposal"]
+    },
+    "relationships": [
+      {
+        "target_id": "mem_proposal_draft",
+        "type": "leads_to",
+        "strength": 0.9
+      },
+      {
+        "target_id": "mem_client_background",
+        "type": "related",
+        "strength": 0.7
+      }
+    ]
+  }'
+```
+</CodeGroup>
+
+### Temporary Memory with Expiration
+
+<CodeGroup>
+```python Python
+from datetime import datetime, timedelta
+
+# Create a memory that expires in 30 days
+expires_at = datetime.now() + timedelta(days=30)
+
+temp_memory = client.memories.add(
+    content="Remember to follow up on the project proposal by end of month",
+    metadata={
+        "category": "task",
+        "type": "reminder",
+        "priority": 8,
+        "expires_at": expires_at.isoformat()
+    }
+)
+```
+
+```javascript JavaScript
+// Create a memory that expires in 30 days
+const expiresAt = new Date();
+expiresAt.setDate(expiresAt.getDate() + 30);
+
+const tempMemory = await client.memories.add({
+  content: 'Remember to follow up on the project proposal by end of month',
+  metadata: {
+    category: 'task',
+    type: 'reminder',
+    priority: 8,
+    expires_at: expiresAt.toISOString()
+  }
+});
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/memories" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Remember to follow up on the project proposal by end of month",
+    "metadata": {
+      "category": "task",
+      "type": "reminder",
+      "priority": 8,
+      "expires_at": "2024-02-15T10:30:00Z"
+    }
+  }'
+```
+</CodeGroup>
+
+### Bulk Memory Creation
+
+<CodeGroup>
+```python Python
+# Create multiple memories at once
+memories_data = [
+    {
+        "content": "Python is my preferred programming language",
+        "metadata": {"category": "personal", "tags": ["programming", "python"]}
+    },
+    {
+        "content": "I work remotely from home office",
+        "metadata": {"category": "personal", "tags": ["work", "remote"]}
+    },
+    {
+        "content": "Coffee helps me focus in the morning",
+        "metadata": {"category": "personal", "tags": ["habits", "coffee"]}
+    }
+]
+
+bulk_result = client.memories.bulk_add(memories_data)
+print(f"Created {len(bulk_result.created)} memories")
+```
+
+```javascript JavaScript
+// Create multiple memories at once
+const memoriesData = [
+  {
+    content: 'Python is my preferred programming language',
+    metadata: { category: 'personal', tags: ['programming', 'python'] }
+  },
+  {
+    content: 'I work remotely from home office', 
+    metadata: { category: 'personal', tags: ['work', 'remote'] }
+  },
+  {
+    content: 'Coffee helps me focus in the morning',
+    metadata: { category: 'personal', tags: ['habits', 'coffee'] }
+  }
+];
+
+const bulkResult = await client.memories.bulkAdd(memoriesData);
+console.log(`Created ${bulkResult.created.length} memories`);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/memories/bulk" \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "memories": [
+      {
+        "content": "Python is my preferred programming language",
+        "metadata": {"category": "personal", "tags": ["programming", "python"]}
+      },
+      {
+        "content": "I work remotely from home office",
+        "metadata": {"category": "personal", "tags": ["work", "remote"]}
+      },
+      {
+        "content": "Coffee helps me focus in the morning",
+        "metadata": {"category": "personal", "tags": ["habits", "coffee"]}
+      }
+    ]
+  }'
+```
+</CodeGroup>
+
+## Validation Rules
+
+### Content Validation
+- **Length**: 1 to 10,000 characters
+- **Format**: Plain text (HTML tags will be stripped)
+- **Language**: Auto-detected, supports 50+ languages
+
+### Metadata Validation
+- **Category**: 1-50 characters, alphanumeric and underscores
+- **Type**: 1-50 characters, alphanumeric and underscores
+- **Tags**: Maximum 20 tags, each 1-50 characters
+- **Priority**: Integer between 1 and 10
+
+### Relationship Validation
+- **Target ID**: Must be a valid existing memory ID
+- **Type**: Must be one of the supported relationship types
+- **Strength**: Number between 0.0 and 1.0
+
+## Automatic Processing
+
+When you create a memory, Context Zero AI automatically:
+
+1. **Generates Embeddings**: Creates vector representations for semantic search
+2. **Detects Language**: Identifies the content language for optimization
+3. **Extracts Entities**: Finds people, places, dates, and concepts
+4. **Creates Relationships**: Suggests connections to existing memories
+5. **Indexes Content**: Makes the memory searchable immediately
+6. **Triggers Webhooks**: Sends notifications if configured
+
+## Error Handling
+
+### Common Errors
+
+| Error Code | Description | Solution |
+|------------|-------------|----------|
+| `CONTENT_TOO_LONG` | Memory content exceeds 10,000 characters | Reduce content length or split into multiple memories |
+| `INVALID_METADATA` | Metadata format is incorrect | Check metadata field types and constraints |
+| `INVALID_RELATIONSHIP` | Target memory doesn't exist | Verify target memory ID exists |
+| `RATE_LIMITED` | Too many requests | Implement exponential backoff |
+| `QUOTA_EXCEEDED` | Memory limit reached | Upgrade plan or delete old memories |
+
+### Error Response Format
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "CONTENT_TOO_LONG",
+    "message": "Memory content exceeds maximum length of 10,000 characters",
+    "details": {
+      "field": "content",
+      "current_length": 12000,
+      "max_length": 10000
+    }
+  },
+  "request_id": "req_1234567890"
+}
+```
+
+## Best Practices
+
+### Content Quality
+- **Be Specific**: Include relevant context and details
+- **Use Clear Language**: Write in clear, understandable terms
+- **Include Keywords**: Add important keywords for better search
+- **Regular Updates**: Keep information current and accurate
+
+### Metadata Organization  
+- **Consistent Categories**: Use standardized category names
+- **Meaningful Tags**: Apply relevant and searchable tags
+- **Appropriate Priority**: Set priority based on importance
+- **Logical Types**: Use type field for subcategorization
+
+### Performance Optimization
+- **Batch Operations**: Use bulk creation for multiple memories
+- **Appropriate Relationships**: Only create meaningful connections
+- **Regular Cleanup**: Remove outdated or duplicate memories
+- **Monitor Quotas**: Keep track of memory usage limits
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🔍 Search Memories"
+    href="/api-reference/memories/search"
+  >
+    Learn how to find relevant memories
+  </Card>
+  <Card
+    title="📝 Update Memory"
+    href="/api-reference/memories/update"
+  >
+    Modify existing memory content
+  </Card>
+  <Card
+    title="📋 Get All Memories"
+    href="/api-reference/memories/get-all"
+  >
+    Retrieve your memory collection
+  </Card>
+  <Card
+    title="🗑️ Delete Memory"
+    href="/api-reference/memories/delete"
+  >
+    Remove memories you no longer need
+  </Card>
+</CardGroup>

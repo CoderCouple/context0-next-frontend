@@ -1,0 +1,652 @@
+---
+title: 'List Archived Memories'
+description: 'Retrieve and browse archived memories with filtering options'
+api: 'GET https://api.contextzero.ai/v1/archive/'
+---
+
+## Overview
+
+List archived memories with comprehensive filtering and search capabilities. This endpoint allows you to browse, search, and manage archived memories while providing detailed metadata about storage location, archival reason, and restoration options.
+
+## Request
+
+### Headers
+
+| Header | Value | Required |
+|--------|--------|----------|
+| `Authorization` | `Bearer {api_key}` | Yes |
+
+### Query Parameters
+
+<ParamField query="limit" type="integer">
+  Maximum number of archived memories to return
+  
+  **Default:** 50, **Range:** 1-100
+</ParamField>
+
+<ParamField query="offset" type="integer">
+  Number of results to skip for pagination
+  
+  **Default:** 0
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by memory category
+  
+  **Examples:** `personal`, `work`, `learning`, `temporary`
+</ParamField>
+
+<ParamField query="archived_after" type="string">
+  Only show memories archived after this date (ISO 8601 format)
+  
+  **Example:** `2024-01-01T00:00:00Z`
+</ParamField>
+
+<ParamField query="archived_before" type="string">
+  Only show memories archived before this date (ISO 8601 format)
+  
+  **Example:** `2024-12-31T23:59:59Z`
+</ParamField>
+
+<ParamField query="archive_reason" type="string">
+  Filter by archival reason
+  
+  **Options:** `expired`, `inactive`, `user_request`, `policy`, `storage_optimization`
+</ParamField>
+
+<ParamField query="search" type="string">
+  Search archived memories by content or metadata
+  
+  **Note:** Searching archived content may have longer response times
+</ParamField>
+
+<ParamField query="storage_tier" type="string">
+  Filter by storage tier
+  
+  **Options:** `frequent`, `infrequent`, `cold`, `deep_archive`
+</ParamField>
+
+<ParamField query="sort_by" type="string">
+  Sort results by field
+  
+  **Options:** `archived_at`, `size`, `category`, `original_created_at`
+  **Default:** `archived_at`
+</ParamField>
+
+<ParamField query="sort_order" type="string">
+  Sort direction
+  
+  **Options:** `asc`, `desc`
+  **Default:** `desc`
+</ParamField>
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "data": {
+    "archived_memories": [
+      {
+        "id": "arch_1234567890abcdef",
+        "original_memory_id": "mem_1234567890abcdef",
+        "content": "Q1 project planning meeting notes...",
+        "metadata": {
+          "category": "work",
+          "type": "meeting_notes",
+          "tags": ["project", "planning", "q1"],
+          "priority": 5
+        },
+        "archive_info": {
+          "archived_at": "2024-01-15T10:30:00Z",
+          "archived_by": "system_policy",
+          "archive_reason": "expired",
+          "expiration_date": "2024-01-10T00:00:00Z",
+          "storage_tier": "infrequent",
+          "compressed_size_kb": 89,
+          "original_size_kb": 245
+        },
+        "restoration": {
+          "can_restore": true,
+          "estimated_time": "5 minutes",
+          "cost_usd": 0.001,
+          "requires_approval": false
+        },
+        "original_created_at": "2023-12-01T09:15:00Z",
+        "last_accessed_at": "2024-01-05T14:22:00Z"
+      },
+      {
+        "id": "arch_0987654321fedcba", 
+        "original_memory_id": "mem_0987654321fedcba",
+        "content": "Personal reflection on weekend hiking trip...",
+        "metadata": {
+          "category": "personal",
+          "type": "experience",
+          "tags": ["hiking", "outdoor", "reflection"],
+          "priority": 3
+        },
+        "archive_info": {
+          "archived_at": "2024-01-10T08:45:00Z",
+          "archived_by": "user_request",
+          "archive_reason": "user_request",
+          "storage_tier": "cold",
+          "compressed_size_kb": 156,
+          "original_size_kb": 432
+        },
+        "restoration": {
+          "can_restore": true,
+          "estimated_time": "15 minutes",
+          "cost_usd": 0.005,
+          "requires_approval": false
+        },
+        "original_created_at": "2023-11-15T16:30:00Z",
+        "last_accessed_at": "2023-12-20T10:15:00Z"
+      }
+    ],
+    "pagination": {
+      "total_count": 1547,
+      "current_page": 1,
+      "total_pages": 31,
+      "has_next": true,
+      "has_previous": false
+    },
+    "statistics": {
+      "total_archived_memories": 1547,
+      "total_storage_saved": "4.2 GB",
+      "avg_compression_ratio": 0.64,
+      "distribution_by_reason": {
+        "expired": 892,
+        "inactive": 445,
+        "user_request": 123,
+        "policy": 87
+      },
+      "distribution_by_tier": {
+        "frequent": 234,
+        "infrequent": 567,
+        "cold": 634,
+        "deep_archive": 112
+      }
+    }
+  }
+}
+```
+
+## Examples
+
+### Basic Listing
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+
+client = ContextZero(api_key="your_api_key")
+
+# Get first page of archived memories
+archived = client.archives.list_archived()
+
+print(f"Found {archived.pagination.total_count} archived memories")
+print(f"Showing {len(archived.archived_memories)} memories")
+
+for memory in archived.archived_memories:
+    print(f"\nMemory: {memory.id}")
+    print(f"  Original ID: {memory.original_memory_id}")
+    print(f"  Category: {memory.metadata.category}")
+    print(f"  Archived: {memory.archive_info.archived_at}")
+    print(f"  Reason: {memory.archive_info.archive_reason}")
+    print(f"  Size saved: {memory.archive_info.original_size_kb - memory.archive_info.compressed_size_kb}KB")
+    print(f"  Can restore: {memory.restoration.can_restore}")
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+
+const client = new ContextZero({ apiKey: 'your_api_key' });
+
+// Get first page of archived memories
+const archived = await client.archives.listArchived();
+
+console.log(`Found ${archived.pagination.totalCount} archived memories`);
+console.log(`Showing ${archived.archivedMemories.length} memories`);
+
+archived.archivedMemories.forEach(memory => {
+  console.log(`\nMemory: ${memory.id}`);
+  console.log(`  Original ID: ${memory.originalMemoryId}`);
+  console.log(`  Category: ${memory.metadata.category}`);
+  console.log(`  Archived: ${memory.archiveInfo.archivedAt}`);
+  console.log(`  Reason: ${memory.archiveInfo.archiveReason}`);
+  console.log(`  Size saved: ${memory.archiveInfo.originalSizeKb - memory.archiveInfo.compressedSizeKb}KB`);
+  console.log(`  Can restore: ${memory.restoration.canRestore}`);
+});
+```
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/v1/archive/" \
+  -H "Authorization: Bearer your_api_key"
+
+# Get archived memories with filtering
+curl -X GET "https://api.contextzero.ai/v1/archive/?category=work&limit=10&sort_by=archived_at" \
+  -H "Authorization: Bearer your_api_key"
+```
+</CodeGroup>
+
+### Advanced Filtering
+
+<CodeGroup>
+```python Python
+from datetime import datetime, timedelta
+
+# Get work-related memories archived in the last 30 days
+cutoff_date = datetime.now() - timedelta(days=30)
+
+archived = client.archives.list_archived(
+    category="work",
+    archived_after=cutoff_date.isoformat(),
+    archive_reason="expired",
+    storage_tier="infrequent",
+    limit=25
+)
+
+print(f"Work memories archived in last 30 days: {len(archived.archived_memories)}")
+
+# Calculate total storage saved
+total_saved = sum(
+    memory.archive_info.original_size_kb - memory.archive_info.compressed_size_kb 
+    for memory in archived.archived_memories
+)
+print(f"Total storage saved: {total_saved / 1024:.2f} MB")
+
+# Group by archive reason
+by_reason = {}
+for memory in archived.archived_memories:
+    reason = memory.archive_info.archive_reason
+    if reason not in by_reason:
+        by_reason[reason] = 0
+    by_reason[reason] += 1
+
+print("Distribution by reason:")
+for reason, count in by_reason.items():
+    print(f"  {reason}: {count}")
+```
+
+```javascript JavaScript
+// Search archived memories with content search
+const searchResults = await client.archives.listArchived({
+  search: "project meeting",
+  category: "work",
+  archivedAfter: "2024-01-01T00:00:00Z",
+  sortBy: "archived_at",
+  sortOrder: "desc",
+  limit: 20
+});
+
+console.log(`Found ${searchResults.archivedMemories.length} matching memories`);
+
+// Analyze restoration costs
+let totalRestorationCost = 0;
+let canRestoreCount = 0;
+
+searchResults.archivedMemories.forEach(memory => {
+  if (memory.restoration.canRestore) {
+    canRestoreCount++;
+    totalRestorationCost += memory.restoration.costUsd;
+  }
+});
+
+console.log(`Restorable memories: ${canRestoreCount}`);
+console.log(`Total restoration cost: $${totalRestorationCost.toFixed(3)}`);
+```
+</CodeGroup>
+
+### Pagination Handling
+
+<CodeGroup>
+```python Pagination
+def get_all_archived_memories(client, **filters):
+    """Fetch all archived memories with pagination"""
+    
+    all_memories = []
+    offset = 0
+    limit = 100  # Maximum allowed
+    
+    while True:
+        page = client.archives.list_archived(
+            offset=offset,
+            limit=limit,
+            **filters
+        )
+        
+        all_memories.extend(page.archived_memories)
+        
+        print(f"Fetched {len(page.archived_memories)} memories (Total: {len(all_memories)})")
+        
+        if not page.pagination.has_next:
+            break
+            
+        offset += limit
+    
+    return all_memories
+
+# Get all work-related archived memories
+work_memories = get_all_archived_memories(
+    client,
+    category="work",
+    archive_reason="expired"
+)
+
+print(f"Total work memories archived due to expiration: {len(work_memories)}")
+```
+
+```javascript JavaScript Async Iterator
+class ArchivedMemoryIterator {
+  constructor(client, filters = {}) {
+    this.client = client;
+    this.filters = filters;
+    this.currentOffset = 0;
+    this.limit = 100;
+  }
+  
+  async *getMemories() {
+    while (true) {
+      const page = await this.client.archives.listArchived({
+        ...this.filters,
+        offset: this.currentOffset,
+        limit: this.limit
+      });
+      
+      for (const memory of page.archivedMemories) {
+        yield memory;
+      }
+      
+      if (!page.pagination.hasNext) {
+        break;
+      }
+      
+      this.currentOffset += this.limit;
+    }
+  }
+}
+
+// Usage: iterate through all archived memories
+const iterator = new ArchivedMemoryIterator(client, { category: 'personal' });
+
+let count = 0;
+for await (const memory of iterator.getMemories()) {
+  console.log(`Memory ${++count}: ${memory.id} - ${memory.metadata.category}`);
+  
+  // Process memory...
+}
+```
+</CodeGroup>
+
+### Archive Analytics
+
+<CodeGroup>
+```python Analytics
+def analyze_archive_patterns(client):
+    """Analyze archival patterns and trends"""
+    
+    # Get last 6 months of archived memories
+    six_months_ago = datetime.now() - timedelta(days=180)
+    
+    archived = client.archives.list_archived(
+        archived_after=six_months_ago.isoformat(),
+        limit=100  # Get first batch for analysis
+    )
+    
+    analysis = {
+        'total_memories': archived.pagination.total_count,
+        'storage_analysis': {
+            'total_original_size_mb': 0,
+            'total_compressed_size_mb': 0,
+            'compression_ratios': []
+        },
+        'category_distribution': {},
+        'reason_distribution': {},
+        'tier_distribution': {},
+        'restoration_analysis': {
+            'restorable_count': 0,
+            'total_restoration_cost': 0,
+            'avg_restoration_time': 0
+        }
+    }
+    
+    # Analyze storage and compression
+    for memory in archived.archived_memories:
+        original_mb = memory.archive_info.original_size_kb / 1024
+        compressed_mb = memory.archive_info.compressed_size_kb / 1024
+        
+        analysis['storage_analysis']['total_original_size_mb'] += original_mb
+        analysis['storage_analysis']['total_compressed_size_mb'] += compressed_mb
+        
+        if original_mb > 0:
+            compression_ratio = compressed_mb / original_mb
+            analysis['storage_analysis']['compression_ratios'].append(compression_ratio)
+        
+        # Category distribution
+        category = memory.metadata.category
+        analysis['category_distribution'][category] = analysis['category_distribution'].get(category, 0) + 1
+        
+        # Archive reason distribution
+        reason = memory.archive_info.archive_reason
+        analysis['reason_distribution'][reason] = analysis['reason_distribution'].get(reason, 0) + 1
+        
+        # Storage tier distribution
+        tier = memory.archive_info.storage_tier
+        analysis['tier_distribution'][tier] = analysis['tier_distribution'].get(tier, 0) + 1
+        
+        # Restoration analysis
+        if memory.restoration.can_restore:
+            analysis['restoration_analysis']['restorable_count'] += 1
+            analysis['restoration_analysis']['total_restoration_cost'] += memory.restoration.cost_usd
+    
+    # Calculate averages
+    if analysis['storage_analysis']['compression_ratios']:
+        avg_compression = sum(analysis['storage_analysis']['compression_ratios']) / len(analysis['storage_analysis']['compression_ratios'])
+        analysis['storage_analysis']['avg_compression_ratio'] = avg_compression
+    
+    storage_saved_mb = analysis['storage_analysis']['total_original_size_mb'] - analysis['storage_analysis']['total_compressed_size_mb']
+    analysis['storage_analysis']['storage_saved_mb'] = storage_saved_mb
+    
+    return analysis
+
+# Run analysis
+analysis = analyze_archive_patterns(client)
+
+print("Archive Analysis Report")
+print("=" * 50)
+print(f"Total archived memories: {analysis['total_memories']:,}")
+print(f"Storage saved: {analysis['storage_analysis']['storage_saved_mb']:.2f} MB")
+print(f"Average compression ratio: {analysis['storage_analysis'].get('avg_compression_ratio', 0):.2%}")
+print(f"Restorable memories: {analysis['restoration_analysis']['restorable_count']}")
+print(f"Total restoration cost: ${analysis['restoration_analysis']['total_restoration_cost']:.2f}")
+
+print("\nCategory Distribution:")
+for category, count in analysis['category_distribution'].items():
+    print(f"  {category}: {count}")
+
+print("\nArchive Reason Distribution:")
+for reason, count in analysis['reason_distribution'].items():
+    print(f"  {reason}: {count}")
+```
+</CodeGroup>
+
+## Response Fields
+
+### Archive Info Object
+
+<ResponseField name="archive_info.archived_at" type="string">
+  ISO 8601 timestamp when the memory was archived
+</ResponseField>
+
+<ResponseField name="archive_info.archived_by" type="string">
+  Who or what triggered the archival (user, system_policy, admin, etc.)
+</ResponseField>
+
+<ResponseField name="archive_info.archive_reason" type="string">
+  Reason for archival: expired, inactive, user_request, policy, storage_optimization
+</ResponseField>
+
+<ResponseField name="archive_info.storage_tier" type="string">
+  Current storage tier: frequent, infrequent, cold, deep_archive
+</ResponseField>
+
+<ResponseField name="archive_info.original_size_kb" type="integer">
+  Original memory size in kilobytes before compression
+</ResponseField>
+
+<ResponseField name="archive_info.compressed_size_kb" type="integer">
+  Current compressed size in kilobytes
+</ResponseField>
+
+### Restoration Info Object
+
+<ResponseField name="restoration.can_restore" type="boolean">
+  Whether the memory can be restored (permissions, policy constraints)
+</ResponseField>
+
+<ResponseField name="restoration.estimated_time" type="string">
+  Human-readable estimate of restoration time
+</ResponseField>
+
+<ResponseField name="restoration.cost_usd" type="number">
+  Estimated cost in USD to restore this memory
+</ResponseField>
+
+<ResponseField name="restoration.requires_approval" type="boolean">
+  Whether restoration requires administrative approval
+</ResponseField>
+
+## Error Handling
+
+### Common Errors
+
+<Accordion>
+  <AccordionItem title="ARCHIVE_ACCESS_DENIED">
+    **HTTP Status:** 403
+    
+    **Cause:** User doesn't have permission to view archived memories
+    
+    **Solution:** Ensure user has `archive.read` permission
+    
+    ```json
+    {
+      "error": {
+        "code": "ARCHIVE_ACCESS_DENIED",
+        "message": "Insufficient permissions to access archived memories"
+      }
+    }
+    ```
+  </AccordionItem>
+  
+  <AccordionItem title="INVALID_FILTER_PARAMETERS">
+    **HTTP Status:** 400
+    
+    **Cause:** Invalid filter parameters or date formats
+    
+    **Solution:** Check parameter formats, especially date strings
+    
+    ```json
+    {
+      "error": {
+        "code": "INVALID_FILTER_PARAMETERS",
+        "message": "Invalid date format in archived_after parameter",
+        "details": {
+          "parameter": "archived_after",
+          "provided": "2024-01-01",
+          "expected_format": "ISO 8601 (2024-01-01T00:00:00Z)"
+        }
+      }
+    }
+    ```
+  </AccordionItem>
+  
+  <AccordionItem title="ARCHIVE_SEARCH_TIMEOUT">
+    **HTTP Status:** 408
+    
+    **Cause:** Search query took too long to execute
+    
+    **Solution:** Simplify search query or use more specific filters
+    
+    ```json
+    {
+      "error": {
+        "code": "ARCHIVE_SEARCH_TIMEOUT",
+        "message": "Archive search query exceeded timeout limit",
+        "details": {
+          "timeout_seconds": 30,
+          "suggestion": "Use more specific filters or reduce search scope"
+        }
+      }
+    }
+    ```
+  </AccordionItem>
+</Accordion>
+
+## Performance Considerations
+
+### Response Times
+
+| Scenario | Expected Response Time | Notes |
+|----------|----------------------|--------|
+| Basic listing (no search) | < 200ms | Metadata-only queries are fast |
+| Filtered listing | < 500ms | Additional processing for complex filters |
+| Content search | 1-5 seconds | Depends on archive size and storage tier |
+| Large result sets | 2-10 seconds | Use pagination for better performance |
+
+### Optimization Tips
+
+- **Use Specific Filters**: Narrow down results with category, date range, or reason filters
+- **Avoid Content Search**: When possible, use metadata-based filtering instead
+- **Pagination**: Use appropriate page sizes (50-100 items) for best performance
+- **Caching**: Results are cached for 5 minutes to improve repeated queries
+
+## Best Practices
+
+### Efficient Querying
+- Start with broad filters, then narrow down
+- Use date ranges to limit scope
+- Combine multiple filters for precision
+- Cache results when possible
+
+### User Experience
+- Show loading indicators for search operations
+- Implement infinite scroll for large result sets
+- Provide clear restoration cost estimates
+- Display storage savings information
+
+### Data Management
+- Regular cleanup of very old archives
+- Monitor storage tier distribution
+- Track restoration patterns
+- Optimize compression settings based on usage
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card
+    title="📦 Archive Memories"
+    href="/api-reference/archives/archive-memories"
+  >
+    Archive expired or inactive memories
+  </Card>
+  <Card
+    title="🔄 Restore Memory"
+    href="/api-reference/archives/restore-memory"
+  >
+    Restore archived memories to active state
+  </Card>
+  <Card
+    title="📊 Archive Analytics"
+    href="/api-reference/archives/analytics"
+  >
+    Detailed analytics for archived memories
+  </Card>
+  <Card
+    title="⚙️ Archive Policies"
+    href="/api-reference/archives/policies"
+  >
+    Configure automatic archival policies
+  </Card>
+</CardGroup>

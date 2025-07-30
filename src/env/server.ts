@@ -13,6 +13,8 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "production"]),
     PYTHON_BACKEND_HOST: z.string(),
+    API_SECRET: z.string(),
+    ENCRYPTION_KEY: z.string(),
   },
   onValidationError: (issues) => {
     console.error("❌ Invalid environment variables:", issues);

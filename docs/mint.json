@@ -1,0 +1,158 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Context Zero AI",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#f97316",
+    "light": "#fbbf24",
+    "dark": "#ea580c",
+    "anchors": {
+      "from": "#f97316",
+      "to": "#7c3aed"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@contextzero.ai"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.contextzero.ai"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Documentation",
+      "icon": "book-open-cover",
+      "url": "https://docs.contextzero.ai"
+    },
+    {
+      "name": "Community",
+      "icon": "slack",
+      "url": "https://discord.gg/contextzero"
+    },
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://contextzero.ai/blog"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "introduction",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Concepts",
+      "pages": [
+        "concepts/memories",
+        "concepts/memory-types",
+        "concepts/graph-memory"
+      ]
+    },
+    {
+      "group": "Integrations",
+      "pages": [
+        "integrations/overview",
+        "integrations/chatgpt",
+        "integrations/claude",
+        "integrations/slack",
+        "integrations/discord",
+        "integrations/notion",
+        "integrations/google-drive"
+      ]
+    },
+    {
+      "group": "Platform",
+      "pages": [
+        "platform/hosted",
+        "platform/open-source"
+      ]
+    },
+    {
+      "group": "API Documentation",
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication"
+      ]
+    },
+    {
+      "group": "Memory",
+      "pages": [
+        "api-reference/memories/add",
+        "api-reference/memories/list-memories",
+        "api-reference/memories/get-memory",
+        "api-reference/memories/update-memory",
+        "api-reference/memories/delete-memory"
+      ]
+    },
+    {
+      "group": "Events",
+      "pages": [
+        "api-reference/events/log-event",
+        "api-reference/events/list-events",
+        "api-reference/events/get-recent-events",
+        "api-reference/events/summarize-events"
+      ]
+    },
+    {
+      "group": "Permissions",
+      "pages": [
+        "api-reference/permissions/create-permission",
+        "api-reference/permissions/update-memory-permission",
+        "api-reference/permissions/get-memory-permission"
+      ]
+    },
+    {
+      "group": "Archive",
+      "pages": [
+        "api-reference/archives/list-archived",
+        "api-reference/archives/archive-expired-memories",
+        "api-reference/archives/restore-archived-memory"
+      ]
+    },
+    {
+      "group": "Context",
+      "pages": [
+        "api-reference/context/get-context",
+        "api-reference/context/search-memory",
+        "api-reference/context/related-memory"
+      ]
+    },
+    {
+      "group": "Utilities",
+      "pages": [
+        "api-reference/utilities/export-user-data",
+        "api-reference/utilities/import-user-data"
+      ]
+    },
+    {
+      "group": "Admin",
+      "pages": [
+        "api-reference/admin/overview",
+        "api-reference/admin/health-check",
+        "api-reference/admin/embeddings",
+        "api-reference/admin/metrics"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/contextzeroai",
+    "github": "https://github.com/contextzero/context-zero",
+    "linkedin": "https://www.linkedin.com/company/contextzero"
+  }
+}

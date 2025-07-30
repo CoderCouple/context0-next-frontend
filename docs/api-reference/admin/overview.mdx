@@ -1,0 +1,332 @@
+---
+title: 'Admin API Overview'
+description: 'Administrative endpoints for managing Context Zero AI instances'
+---
+
+## Overview
+
+The Admin API provides administrative functionality for managing Context Zero AI instances, users, and system-wide settings. These endpoints require elevated permissions and are typically used by system administrators and enterprise customers.
+
+<Warning>
+Admin API endpoints require special permissions and are only available to users with administrative roles. Improper use of these endpoints can affect system stability and user data.
+</Warning>
+
+## Available Endpoints
+
+<CardGroup cols={2}>
+  <Card
+    title="🏢 Organization Management"
+    href="/api-reference/admin/organizations"
+    icon="building"
+  >
+    Create, update, and manage organizations
+  </Card>
+  <Card
+    title="👥 User Management"
+    href="/api-reference/admin/users"
+    icon="users"
+  >
+    Administrative user operations and permissions
+  </Card>
+  <Card
+    title="📊 System Analytics"
+    href="/api-reference/admin/analytics"
+    icon="chart-bar"
+  >
+    System-wide metrics and usage analytics
+  </Card>
+  <Card
+    title="🔧 Configuration"
+    href="/api-reference/admin/config"
+    icon="cog"
+  >
+    System configuration and feature flags
+  </Card>
+  <Card
+    title="🚫 Content Moderation"
+    href="/api-reference/admin/moderation"
+    icon="shield-exclamation"
+  >
+    Content moderation and safety controls
+  </Card>
+  <Card
+    title="📋 Audit Logs"
+    href="/api-reference/admin/audit"
+    icon="clipboard-list"
+  >
+    Access system audit logs and security events
+  </Card>
+</CardGroup>
+
+## Authentication
+
+Admin endpoints require elevated authentication:
+
+```bash
+curl -H "Authorization: Bearer admin_api_key_here" \
+  -H "X-Admin-Context: organization_id_here" \
+  https://api.contextzero.ai/v1/admin/organizations
+```
+
+### Required Headers
+
+| Header | Description |
+|--------|-------------|
+| `Authorization` | Admin-level API key with `admin.*` permissions |
+| `X-Admin-Context` | Organization or system context for the operation |
+
+## Permissions Model
+
+Admin API operations require specific permissions:
+
+### Organization-Level Permissions
+- `admin.org.read` - View organization details
+- `admin.org.write` - Modify organization settings  
+- `admin.org.delete` - Delete organizations
+- `admin.org.users` - Manage organization users
+
+### System-Level Permissions
+- `admin.system.read` - View system metrics
+- `admin.system.write` - Modify system configuration
+- `admin.system.analytics` - Access system analytics
+- `admin.system.audit` - View audit logs
+
+### User Management Permissions
+- `admin.users.read` - View user details
+- `admin.users.write` - Modify user accounts
+- `admin.users.delete` - Delete user accounts
+- `admin.users.permissions` - Manage user permissions
+
+## Rate Limits
+
+Admin endpoints have special rate limiting:
+
+| Operation Type | Requests per minute | Burst limit |
+|----------------|---------------------|-------------|
+| Read operations | 300 | 500 |
+| Write operations | 60 | 100 |
+| Delete operations | 30 | 50 |
+| Analytics | 120 | 200 |
+
+## Common Patterns
+
+### Bulk Operations
+
+Many admin endpoints support bulk operations for efficiency:
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZeroAdmin
+
+admin_client = ContextZeroAdmin(
+    api_key="admin_api_key",
+    organization_id="org_123"
+)
+
+# Bulk user operations
+result = admin_client.users.bulk_update([
+    {"id": "user_1", "role": "admin"},
+    {"id": "user_2", "role": "member"},
+    {"id": "user_3", "status": "suspended"}
+])
+```
+
+```javascript JavaScript
+import { ContextZeroAdmin } from '@contextzero/admin-sdk';
+
+const adminClient = new ContextZeroAdmin({
+  apiKey: 'admin_api_key',
+  organizationId: 'org_123'
+});
+
+// Bulk user operations
+const result = await adminClient.users.bulkUpdate([
+  { id: 'user_1', role: 'admin' },
+  { id: 'user_2', role: 'member' },
+  { id: 'user_3', status: 'suspended' }
+]);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/admin/users/bulk" \
+  -H "Authorization: Bearer admin_api_key" \
+  -H "X-Admin-Context: org_123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operations": [
+      {"id": "user_1", "role": "admin"},
+      {"id": "user_2", "role": "member"},
+      {"id": "user_3", "status": "suspended"}
+    ]
+  }'
+```
+</CodeGroup>
+
+### Filtering and Search
+
+Admin endpoints support advanced filtering:
+
+```bash
+# Filter users by organization and status
+curl "https://api.contextzero.ai/v1/admin/users?org_id=org_123&status=active&role=admin"
+
+# Search across multiple fields
+curl "https://api.contextzero.ai/v1/admin/users/search?q=john+doe&fields=name,email,organization"
+```
+
+## Error Handling
+
+Admin API errors include additional context:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INSUFFICIENT_PERMISSIONS",
+    "message": "Admin operation requires elevated permissions",
+    "details": {
+      "required_permission": "admin.users.write",
+      "current_permissions": ["admin.users.read"],
+      "operation": "update_user_role"
+    }
+  },
+  "admin_context": {
+    "organization_id": "org_123",
+    "admin_user_id": "admin_456"
+  },
+  "request_id": "req_admin_1234567890"
+}
+```
+
+## Audit Trail
+
+All admin operations are automatically logged:
+
+```json
+{
+  "event_id": "evt_1234567890",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "admin_user": "admin_456",
+  "organization": "org_123",
+  "operation": "update_user_role",
+  "target": "user_789",
+  "changes": {
+    "role": {
+      "from": "member",
+      "to": "admin"
+    }
+  },
+  "ip_address": "192.168.1.100",
+  "user_agent": "ContextZero Admin Dashboard/1.0"
+}
+```
+
+## Best Practices
+
+### Security
+- **Principle of Least Privilege**: Grant minimal required permissions
+- **Regular Key Rotation**: Rotate admin API keys frequently
+- **IP Restrictions**: Limit admin access to specific IP ranges
+- **Multi-Factor Authentication**: Require MFA for admin operations
+
+### Operations
+- **Bulk Processing**: Use bulk endpoints for multiple operations
+- **Idempotent Operations**: Design operations to be safely retried
+- **Graceful Degradation**: Handle partial failures in bulk operations
+- **Monitoring**: Set up alerts for admin API usage patterns
+
+### Data Management
+- **Backup Before Changes**: Backup critical data before bulk modifications
+- **Incremental Updates**: Use pagination for large result sets
+- **Validation**: Validate data before applying changes
+- **Rollback Plans**: Have rollback procedures for critical operations
+
+## Monitoring and Alerts
+
+Set up monitoring for admin operations:
+
+<CodeGroup>
+```python Python Monitoring
+# Example monitoring setup
+def monitor_admin_operation(operation, result):
+    """Log and alert on admin operations"""
+    
+    # Log the operation
+    logger.info(f"Admin operation: {operation}", extra={
+        "operation": operation,
+        "success": result.success,
+        "affected_count": len(result.affected_items),
+        "duration": result.duration_ms
+    })
+    
+    # Alert on failures
+    if not result.success:
+        alert_service.send_alert(
+            title=f"Admin operation failed: {operation}",
+            details=result.error,
+            severity="high"
+        )
+    
+    # Alert on large operations
+    if len(result.affected_items) > 100:
+        alert_service.send_alert(
+            title=f"Large admin operation: {operation}",
+            details=f"Affected {len(result.affected_items)} items",
+            severity="medium"
+        )
+```
+</CodeGroup>
+
+## Support
+
+For admin API support:
+
+<CardGroup cols={2}>
+  <Card
+    title="📞 Enterprise Support"
+    href="mailto:enterprise@contextzero.ai"
+  >
+    Direct line to enterprise support team
+  </Card>
+  <Card
+    title="📚 Admin Documentation"
+    href="/admin/documentation"
+  >
+    Comprehensive admin guides and tutorials
+  </Card>
+  <Card
+    title="🔧 Status Dashboard"
+    href="https://admin-status.contextzero.ai"
+  >
+    Real-time admin API status and incidents
+  </Card>
+  <Card
+    title="🚨 Emergency Contacts"
+    href="/admin/emergency"
+  >
+    Emergency procedures and contacts
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="🏢 Organization Management"
+    href="/api-reference/admin/organizations"
+  >
+    Manage organizations and settings
+  </Card>
+  <Card
+    title="👥 User Administration"
+    href="/api-reference/admin/users"
+  >
+    Administrative user operations
+  </Card>
+  <Card
+    title="📊 System Analytics"
+    href="/api-reference/admin/analytics"
+  >
+    View system-wide metrics and insights
+  </Card>
+</CardGroup>

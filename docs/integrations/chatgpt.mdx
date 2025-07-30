@@ -1,0 +1,384 @@
+---
+title: 'ChatGPT Integration'
+description: 'Enhance ChatGPT with personal memory and context'
+---
+
+## Overview
+
+The Context Zero AI ChatGPT integration transforms your ChatGPT experience by providing persistent memory and contextual awareness. Your AI assistant will remember your preferences, past conversations, and important details across sessions.
+
+## Installation
+
+### Browser Extension (Recommended)
+
+<Steps>
+  <Step title="Install Extension">
+    1. Visit the [Chrome Web Store](https://chrome.google.com/webstore)
+    2. Search for "Context Zero AI"
+    3. Click "Add to Chrome"
+    4. Confirm installation
+  </Step>
+  
+  <Step title="Sign In">
+    1. Click the Context Zero AI icon in your browser
+    2. Sign in with your Context Zero AI account
+    3. Grant necessary permissions
+    4. Complete the setup wizard
+  </Step>
+  
+  <Step title="Configure ChatGPT">
+    1. Navigate to [chat.openai.com](https://chat.openai.com)
+    2. You'll see the Context Zero sidebar appear
+    3. Allow integration with ChatGPT
+    4. Start your first enhanced conversation
+  </Step>
+</Steps>
+
+## Features
+
+### Persistent Memory
+ChatGPT will remember:
+- Your personal preferences and interests
+- Professional background and expertise
+- Past project discussions and decisions
+- Important dates and commitments
+- Conversation history and context
+
+### Smart Context Injection
+The integration automatically:
+- Analyzes your current conversation
+- Finds relevant memories from your knowledge base
+- Injects contextual information seamlessly
+- Maintains conversation flow and naturalness
+
+### Memory Management
+Direct memory control within ChatGPT:
+- Add new memories during conversations
+- Edit existing memories inline
+- Delete outdated or incorrect information
+- Organize memories with tags and categories
+
+## How It Works
+
+### Automatic Context Detection
+
+When you start a conversation, Context Zero AI:
+
+1. **Analyzes Your Message**: Understanding intent and context
+2. **Searches Memory Graph**: Finding relevant connected memories
+3. **Ranks Relevance**: Scoring memories by importance and recency
+4. **Injects Context**: Adding background information to the conversation
+
+<img
+  className="block dark:hidden"
+  src="/images/chatgpt-integration-flow-light.png"
+  alt="ChatGPT Integration Flow"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/chatgpt-integration-flow-dark.png"
+  alt="ChatGPT Integration Flow"
+/>
+
+### Example Conversation
+
+**Without Context Zero AI:**
+```
+User: How should I approach the client meeting?
+ChatGPT: I'd recommend preparing an agenda, researching the client, and 
+defining clear objectives for the meeting.
+```
+
+**With Context Zero AI:**
+```
+User: How should I approach the client meeting?
+
+Context Zero AI injects:
+- Client: TechCorp (previous meetings on 2/15, 3/22)
+- Project: Mobile app redesign (budget: $50k, timeline: 8 weeks)
+- Key contacts: Sarah (CTO), Mike (PM) - both prefer technical details
+- Last discussion: Concerns about React Native performance
+
+ChatGPT: Based on your previous meetings with TechCorp, I'd recommend 
+focusing on addressing Sarah and Mike's React Native performance concerns. 
+Since they appreciate technical details, prepare specific metrics from 
+your mobile app redesign project. Given the $50k budget and 8-week 
+timeline you discussed, consider proposing a phased approach...
+```
+
+## Configuration
+
+### Memory Scope Settings
+
+Control which memories are shared with ChatGPT:
+
+<Tabs>
+  <Tab title="Personal Only">
+    ```json
+    {
+      "scope": "personal",
+      "include_categories": [
+        "preferences",
+        "experiences", 
+        "goals"
+      ],
+      "exclude_sensitive": true
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Professional Only">
+    ```json
+    {
+      "scope": "professional", 
+      "include_categories": [
+        "work",
+        "projects",
+        "clients",
+        "skills"
+      ],
+      "exclude_personal": true
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Everything">
+    ```json
+    {
+      "scope": "all",
+      "include_categories": ["*"],
+      "apply_privacy_filters": true,
+      "max_context_length": 2000
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Privacy Controls
+
+Fine-tune what information is shared:
+
+- **Sensitive Information Filter**: Automatically excludes personal data
+- **Category Blocking**: Disable specific memory categories
+- **Temporary Disable**: Pause memory injection for sensitive conversations
+- **Manual Override**: Approve/reject each memory suggestion
+
+### Performance Settings
+
+Optimize the integration for your needs:
+
+- **Context Length**: Limit how much background information is included
+- **Relevance Threshold**: Control minimum relevance score for memory injection
+- **Update Frequency**: Set how often memories are refreshed
+- **Cache Duration**: Configure how long context is cached locally
+
+## Advanced Features
+
+### Conversation Memory
+
+Every ChatGPT conversation can be automatically saved as a memory:
+
+```python
+# Automatic conversation saving
+{
+  "content": "Discussed marketing strategy for Q4. Decided to focus on social media campaigns and influencer partnerships. Budget allocated: $25k.",
+  "metadata": {
+    "type": "conversation",
+    "source": "chatgpt", 
+    "date": "2024-01-15",
+    "participants": ["user", "chatgpt"],
+    "topics": ["marketing", "q4", "budget"]
+  }
+}
+```
+
+### Smart Suggestions
+
+Get proactive memory suggestions during conversations:
+
+- **Related Topics**: "You might want to mention your experience with React from last month"
+- **Follow-ups**: "Remember to ask about the client's feedback on the prototype"
+- **Connections**: "This relates to your conversation with Sarah about API design"
+
+### Multi-Session Context
+
+Maintain context across multiple ChatGPT sessions:
+
+- **Project Continuity**: Pick up where you left off on projects
+- **Learning Progress**: Track your learning journey and progress
+- **Decision History**: Remember past decisions and their outcomes
+- **Relationship Building**: Maintain context about people and relationships
+
+## Use Cases
+
+### Personal Assistant
+
+Transform ChatGPT into your personal AI assistant:
+
+**Setup:**
+1. Add personal preferences, schedule, and goals to Context Zero AI
+2. Configure ChatGPT to access personal memory scope
+3. Start having natural conversations about your life and work
+
+**Example Interactions:**
+- "What should I work on today?" → Gets your goals, deadlines, and priorities
+- "Plan my weekend" → Considers your interests, energy levels, and commitments
+- "Help me prepare for the job interview" → Recalls your skills, experiences, and the role details
+
+### Professional Consultant
+
+Use ChatGPT as an informed business consultant:
+
+**Setup:**
+1. Add work projects, client information, and professional expertise
+2. Configure professional memory scope
+3. Include team dynamics and organizational context
+
+**Example Interactions:**
+- "How should I handle the difficult client?" → Knows client history and preferences
+- "Draft a proposal for the new project" → Understands company capabilities and past successes
+- "Prepare for the board meeting" → Has context on company metrics and strategic goals
+
+### Learning Companion
+
+Make ChatGPT aware of your learning journey:
+
+**Setup:**
+1. Add learning goals, completed courses, and skill development plans
+2. Include books read, concepts learned, and areas of confusion
+3. Track progress and milestones
+
+**Example Interactions:**
+- "Explain quantum computing" → Knows your physics background and learning style
+- "Help me practice coding interviews" → Understands your experience level and weak areas
+- "Suggest next steps in my career" → Considers your skills, interests, and market trends
+
+## Troubleshooting
+
+### Common Issues
+
+**Extension Not Appearing**
+1. Refresh the ChatGPT page
+2. Check if extension is enabled in Chrome
+3. Verify you're signed in to Context Zero AI
+4. Clear browser cache and cookies
+
+**No Context Being Injected**
+1. Check memory scope settings
+2. Verify API connection in extension settings
+3. Review relevance threshold settings
+4. Ensure you have memories that match the conversation topic
+
+**Performance Issues**
+1. Reduce context length limit
+2. Increase relevance threshold
+3. Clear local cache
+4. Disable auto-injection and use manual mode
+
+### Getting Help
+
+<Warning>
+If you encounter issues, first check our troubleshooting guide. For persistent problems, contact support with:
+- Browser version and extension version
+- Error messages or unexpected behavior description
+- Screenshots of the issue
+- Steps to reproduce the problem
+</Warning>
+
+## API Integration
+
+For advanced users, integrate ChatGPT programmatically:
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+from openai import OpenAI
+
+# Initialize clients
+context_client = ContextZero(api_key="your_context_zero_key")
+openai_client = OpenAI(api_key="your_openai_key")
+
+def enhanced_chat(user_message):
+    # Get relevant context
+    context = context_client.memories.search(
+        query=user_message,
+        limit=5
+    )
+    
+    # Build enhanced prompt
+    system_prompt = "Relevant context:\n" + "\n".join([
+        f"- {memory.content}" for memory in context
+    ])
+    
+    # Send to ChatGPT
+    response = openai_client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message}
+        ]
+    )
+    
+    return response.choices[0].message.content
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+import { OpenAI } from 'openai';
+
+const contextClient = new ContextZero({ apiKey: process.env.CONTEXT_ZERO_API_KEY });
+const openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function enhancedChat(userMessage) {
+    // Get relevant context
+    const context = await contextClient.memories.search({
+        query: userMessage,
+        limit: 5
+    });
+    
+    // Build enhanced prompt
+    const systemPrompt = "Relevant context:\n" + 
+        context.map(memory => `- ${memory.content}`).join('\n');
+    
+    // Send to ChatGPT
+    const response = await openaiClient.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userMessage }
+        ]
+    });
+    
+    return response.choices[0].message.content;
+}
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🤖 Claude Integration"
+    href="/integrations/claude"
+  >
+    Set up Claude with Context Zero AI
+  </Card>
+  <Card
+    title="💬 Slack Integration"
+    href="/integrations/slack"  
+  >
+    Add context to team communications
+  </Card>
+  <Card
+    title="🧠 Memory Management"
+    href="/concepts/memories"
+  >
+    Learn to optimize your memory collection
+  </Card>
+  <Card
+    title="📊 Analytics"
+    href="/concepts/analytics"
+  >
+    Track your ChatGPT integration usage
+  </Card>
+</CardGroup>

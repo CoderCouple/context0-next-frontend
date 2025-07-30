@@ -1,0 +1,560 @@
+---
+title: 'Claude Integration'
+description: 'Add persistent memory and context to Claude conversations'
+---
+
+## Overview
+
+The Context Zero AI Claude integration enhances your interactions with Anthropic's Claude by providing persistent memory, contextual awareness, and seamless conversation continuity. Claude will remember your preferences, expertise, and conversation history across all sessions.
+
+## Installation Options
+
+### Browser Extension (Recommended)
+
+<Steps>
+  <Step title="Install Extension">
+    1. Visit the Chrome Web Store
+    2. Install "Context Zero AI Browser Extension"
+    3. Pin the extension to your browser toolbar
+    4. Sign in to your Context Zero AI account
+  </Step>
+  
+  <Step title="Configure Claude Access">
+    1. Navigate to [claude.ai](https://claude.ai)
+    2. The Context Zero AI sidebar will appear
+    3. Grant permissions for Claude integration
+    4. Complete the initial setup wizard
+  </Step>
+  
+  <Step title="Test Integration">
+    1. Start a conversation with Claude
+    2. Verify that context injection is working
+    3. Check the memory sidebar for relevant memories
+    4. Test memory creation and updates
+  </Step>
+</Steps>
+
+### API Integration
+
+For developers building applications with Claude:
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZero
+import anthropic
+
+# Initialize clients
+context_client = ContextZero(api_key="your_context_zero_key")
+claude_client = anthropic.Anthropic(api_key="your_anthropic_key")
+
+def enhanced_claude_chat(user_message):
+    # Get relevant memories
+    relevant_memories = context_client.memories.search(
+        query=user_message,
+        limit=5,
+        threshold=0.7
+    )
+    
+    # Build context
+    context = "Here's relevant background information:\n"
+    for memory in relevant_memories:
+        context += f"- {memory.content}\n"
+    
+    # Send to Claude with context
+    message = claude_client.messages.create(
+        model="claude-3-sonnet-20240229",
+        max_tokens=1000,
+        messages=[
+            {"role": "user", "content": f"{context}\n\nUser question: {user_message}"}
+        ]
+    )
+    
+    return message.content[0].text
+```
+
+```javascript JavaScript
+import { ContextZero } from '@contextzero/sdk';
+import Anthropic from '@anthropic-ai/sdk';
+
+const contextClient = new ContextZero({ apiKey: process.env.CONTEXT_ZERO_API_KEY });
+const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+async function enhancedClaudeChat(userMessage) {
+    // Get relevant memories
+    const relevantMemories = await contextClient.memories.search({
+        query: userMessage,
+        limit: 5,
+        threshold: 0.7
+    });
+    
+    // Build context
+    let context = "Here's relevant background information:\n";
+    relevantMemories.forEach(memory => {
+        context += `- ${memory.content}\n`;
+    });
+    
+    // Send to Claude with context
+    const message = await claude.messages.create({
+        model: 'claude-3-sonnet-20240229',
+        max_tokens: 1000,
+        messages: [
+            { 
+                role: 'user', 
+                content: `${context}\n\nUser question: ${userMessage}` 
+            }
+        ]
+    });
+    
+    return message.content[0].text;
+}
+```
+</CodeGroup>
+
+## Key Features
+
+### Persistent Memory
+
+Claude will maintain awareness of:
+- **Personal Details**: Your background, preferences, and interests
+- **Professional Context**: Work history, current projects, and expertise
+- **Conversation History**: Previous discussions and their outcomes  
+- **Learning Progress**: Skills you're developing and knowledge gaps
+- **Relationship Context**: People you work with and their characteristics
+
+### Intelligent Context Selection
+
+Context Zero AI uses advanced algorithms to:
+- Analyze conversation topics and intent
+- Search your memory graph for relevant information
+- Rank memories by relevance and recency
+- Inject only the most pertinent context
+- Adapt to your feedback and preferences
+
+### Memory Management
+
+Manage your memories directly within Claude conversations:
+- **Add Memories**: Create new memories from conversation insights
+- **Update Existing**: Modify memories based on new information
+- **Delete Outdated**: Remove irrelevant or incorrect memories
+- **Tag and Categorize**: Organize memories for better retrieval
+
+## Configuration
+
+### Memory Scope
+
+Control what information Claude can access:
+
+<Tabs>
+  <Tab title="Personal Assistant Mode">
+    ```json
+    {
+      "name": "Personal Assistant",
+      "description": "Full access to personal memories",
+      "scope": {
+        "categories": ["personal", "goals", "preferences", "relationships"],
+        "exclude_sensitive": true,
+        "max_memories_per_query": 10,
+        "relevance_threshold": 0.6
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Professional Mode">
+    ```json
+    {
+      "name": "Professional Assistant", 
+      "description": "Work-focused memory access",
+      "scope": {
+        "categories": ["work", "projects", "clients", "skills"],
+        "exclude_personal": true,
+        "max_memories_per_query": 8,
+        "relevance_threshold": 0.7
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Learning Mode">
+    ```json
+    {
+      "name": "Learning Companion",
+      "description": "Educational content focus", 
+      "scope": {
+        "categories": ["learning", "concepts", "progress", "resources"],
+        "include_related": true,
+        "max_memories_per_query": 12,
+        "relevance_threshold": 0.5
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Privacy Settings
+
+<CardGroup cols={2}>
+  <Card
+    title="🔒 Sensitive Data Filter"
+    icon="shield-check"
+  >
+    Automatically excludes personal identifiers, financial info, and private details
+  </Card>
+  <Card
+    title="🎯 Category Controls"
+    icon="sliders"
+  >
+    Enable/disable specific memory categories per conversation
+  </Card>
+  <Card
+    title="⏸️ Temporary Disable"
+    icon="pause"
+  >
+    Pause memory injection for sensitive discussions
+  </Card>
+  <Card
+    title="👀 Manual Review"
+    icon="eye"
+  >
+    Review and approve memories before they're shared with Claude
+  </Card>
+</CardGroup>
+
+### Performance Tuning
+
+Optimize integration performance:
+
+- **Response Time**: Balance context depth with speed
+- **Memory Limit**: Control maximum memories per conversation
+- **Cache Settings**: Configure local memory caching
+- **Batch Processing**: Optimize memory retrieval efficiency
+
+## Advanced Features
+
+### Multi-Model Context
+
+When using multiple Claude models, Context Zero AI maintains consistency:
+
+- **Model-Specific Tuning**: Optimize context for different Claude versions
+- **Cross-Model Memory**: Share context between Claude models
+- **Performance Profiles**: Different settings for different models
+- **Capability Matching**: Match memory types to model strengths
+
+### Conversation Branches
+
+Handle complex conversation flows:
+
+- **Branch Tracking**: Remember different conversation paths
+- **Context Isolation**: Keep separate contexts for different topics
+- **Merge Points**: Intelligently combine context from multiple branches  
+- **History Navigation**: Jump between conversation contexts
+
+### Custom Memory Types
+
+Create specialized memory categories for Claude:
+
+<CodeGroup>
+```python Python
+# Create custom memory type
+context_client.memory_types.create(
+    name="claude_instructions",
+    description="Specific instructions for Claude interactions",
+    schema={
+        "instruction": {"type": "string", "required": True},
+        "context": {"type": "string", "required": False}, 
+        "priority": {"type": "integer", "default": 5}
+    }
+)
+
+# Add instruction memory
+context_client.memories.add(
+    content="When discussing code, always provide examples in Python unless otherwise specified",
+    type="claude_instructions",
+    metadata={
+        "instruction": "default_language_preference",
+        "priority": 8
+    }
+)
+```
+
+```javascript JavaScript
+// Create custom memory type
+await contextClient.memoryTypes.create({
+    name: 'claude_instructions',
+    description: 'Specific instructions for Claude interactions',
+    schema: {
+        instruction: { type: 'string', required: true },
+        context: { type: 'string', required: false },
+        priority: { type: 'integer', default: 5 }
+    }
+});
+
+// Add instruction memory
+await contextClient.memories.add({
+    content: 'When discussing code, always provide examples in Python unless otherwise specified',
+    type: 'claude_instructions',
+    metadata: {
+        instruction: 'default_language_preference',
+        priority: 8
+    }
+});
+```
+</CodeGroup>
+
+## Use Cases
+
+### Research Assistant
+
+Transform Claude into a personalized research assistant:
+
+**Setup:**
+- Add research interests and methodology preferences
+- Include academic background and expertise areas
+- Store ongoing projects and research questions
+
+**Example Interaction:**
+```
+User: Help me analyze this quantum computing paper
+
+Context Injected:
+- PhD in Computer Science, focus on quantum algorithms
+- Current research: Quantum optimization algorithms
+- Previous papers analyzed: IBM quantum supremacy, Google's Sycamore
+- Preference: Focus on algorithmic complexity and practical applications
+
+Claude Response: Based on your background in quantum optimization 
+algorithms, I'll analyze this paper through the lens of practical 
+applications and algorithmic complexity. Given your previous analysis 
+of IBM's quantum supremacy work, you'll likely find the comparison 
+between this approach and IBM's interesting...
+```
+
+### Technical Consultant
+
+Use Claude as an informed technical advisor:
+
+**Setup:**
+- Add technical expertise and experience
+- Include current projects and technology stack
+- Store architecture decisions and lessons learned
+
+**Example Interaction:**
+```
+User: Should we migrate from REST to GraphQL?
+
+Context Injected:
+- Senior backend engineer, 8 years experience
+- Current project: E-commerce platform (Node.js, PostgreSQL, Redis)
+- Previous migration: Successful microservices transition last year
+- Team size: 6 developers, mixed GraphQL experience
+
+Claude Response: Given your successful microservices migration experience 
+and your current e-commerce platform architecture, I'd recommend a 
+gradual GraphQL adoption strategy. Since your team has mixed GraphQL 
+experience, start with a single service (perhaps product catalog) 
+to build expertise...
+```
+
+### Writing Partner
+
+Make Claude aware of your writing style and projects:
+
+**Setup:**
+- Add writing samples and style preferences
+- Include current projects and deadlines
+- Store character developments and plot points
+
+**Example Interaction:**
+```
+User: Help me improve this dialogue scene
+
+Context Injected:
+- Writing style: Contemporary fiction, dialogue-heavy
+- Current novel: Tech thriller set in Silicon Valley
+- Main character: Sarah Chen, cybersecurity expert
+- Previous feedback: Dialogue sometimes too technical
+
+Claude Response: Looking at this dialogue for Sarah Chen, I can see 
+your signature style coming through. However, remembering the feedback 
+about technical dialogue, let's balance Sarah's expertise with more 
+natural speech patterns. Here's how we might revise...
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<Accordion>
+  <AccordionItem title="Claude Not Receiving Context">
+    **Possible Causes:**
+    - Extension not properly configured
+    - API rate limits exceeded  
+    - Memory scope too restrictive
+    - Network connectivity issues
+    
+    **Solutions:**
+    - Refresh browser and re-authenticate
+    - Check API usage limits in dashboard
+    - Broaden memory scope settings
+    - Test connection with diagnostic tool
+  </AccordionItem>
+  
+  <AccordionItem title="Irrelevant Memories Being Injected">
+    **Possible Causes:**
+    - Relevance threshold too low
+    - Poorly categorized memories
+    - Insufficient conversation context
+    
+    **Solutions:**
+    - Increase relevance threshold to 0.7+
+    - Review and re-tag memories
+    - Provide more specific conversation context
+    - Use manual memory selection mode
+  </AccordionItem>
+  
+  <AccordionItem title="Slow Response Times">
+    **Possible Causes:**
+    - Too many memories being processed
+    - Large memory content size
+    - Network latency issues
+    
+    **Solutions:**
+    - Reduce max_memories_per_query setting
+    - Summarize long memories
+    - Enable local caching
+    - Use faster relevance algorithms
+  </AccordionItem>
+</Accordion>
+
+### Performance Optimization
+
+**Memory Organization:**
+- Use clear, descriptive memory titles
+- Add relevant tags and categories
+- Regular cleanup of outdated memories
+- Compress related memories when appropriate
+
+**Query Optimization:**
+- Set appropriate relevance thresholds
+- Limit memory count per query
+- Use memory type filters
+- Enable result caching
+
+**Network Optimization:**
+- Enable compression for API calls
+- Use connection pooling
+- Implement request batching
+- Configure retry policies
+
+## Integration Examples
+
+### Customer Support Agent
+
+<CodeGroup>
+```python Python
+def customer_support_claude(customer_query, customer_id):
+    # Get customer history
+    customer_memories = context_client.memories.search(
+        query=f"customer:{customer_id}",
+        filters={"category": "customer_support"},
+        limit=10
+    )
+    
+    # Get product knowledge
+    product_memories = context_client.memories.search(
+        query=customer_query,
+        filters={"category": "product_knowledge"},
+        limit=5
+    )
+    
+    # Combine context
+    context = "Customer History:\n"
+    for memory in customer_memories:
+        context += f"- {memory.content}\n"
+    
+    context += "\nRelevant Product Information:\n"
+    for memory in product_memories:
+        context += f"- {memory.content}\n"
+    
+    # Generate response with Claude
+    response = claude_client.messages.create(
+        model="claude-3-sonnet-20240229",
+        messages=[{
+            "role": "user",
+            "content": f"{context}\n\nCustomer Query: {customer_query}"
+        }]
+    )
+    
+    return response.content[0].text
+```
+</CodeGroup>
+
+### Code Review Assistant
+
+<CodeGroup>
+```python Python
+def code_review_claude(code_diff, project_context):
+    # Get coding standards
+    standards = context_client.memories.search(
+        query="coding standards best practices",
+        filters={"category": "development"},
+        limit=5
+    )
+    
+    # Get project-specific context
+    project_memories = context_client.memories.search(
+        query=project_context,
+        filters={"category": "project"},
+        limit=8
+    )
+    
+    # Build review context
+    context = "Coding Standards:\n"
+    for memory in standards:
+        context += f"- {memory.content}\n"
+    
+    context += "\nProject Context:\n" 
+    for memory in project_memories:
+        context += f"- {memory.content}\n"
+    
+    # Get Claude's review
+    review = claude_client.messages.create(
+        model="claude-3-sonnet-20240229",
+        messages=[{
+            "role": "user", 
+            "content": f"{context}\n\nCode to Review:\n```\n{code_diff}\n```"
+        }]
+    )
+    
+    return review.content[0].text
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="💬 Slack Integration"
+    href="/integrations/slack"
+  >
+    Add context to team communication
+  </Card>
+  <Card
+    title="🤖 Multi-Model Setup"
+    href="/integrations/overview"
+  >
+    Use multiple AI models with shared context
+  </Card>
+  <Card
+    title="🧠 Advanced Memory"
+    href="/concepts/graph-memory"
+  >
+    Leverage graph memory for complex reasoning
+  </Card>
+  <Card
+    title="📊 Usage Analytics"
+    href="/concepts/analytics"
+  >
+    Monitor Claude integration performance
+  </Card>
+</CardGroup>

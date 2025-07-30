@@ -1,0 +1,527 @@
+---
+title: 'Refresh Embeddings'
+description: 'Refresh embeddings for all memory nodes in the system'
+api: 'POST https://api.contextzero.ai/v1/admin/embedding/refresh'
+---
+
+## Overview
+
+The refresh embeddings endpoint triggers a system-wide refresh of all memory node embeddings. This is typically used when upgrading embedding models, fixing corrupted embeddings, or optimizing search performance across the entire system.
+
+<Warning>
+This is a resource-intensive operation that may temporarily affect system performance. It's recommended to run this during maintenance windows or low-usage periods.
+</Warning>
+
+## Request
+
+### Headers
+
+| Header | Value | Required |
+|--------|--------|----------|
+| `Authorization` | `Bearer {admin_api_key}` | Yes |
+| `Content-Type` | `application/json` | Yes |
+
+### Body Parameters
+
+<ParamField body="model" type="string">
+  Specific embedding model to use for refresh. If not specified, uses the current default model.
+  
+  **Options:** `default`, `multilingual`, `domain-specific`, `latest`
+</ParamField>
+
+<ParamField body="batch_size" type="integer">
+  Number of memories to process in each batch. Helps control system load.
+  
+  **Default:** 1000, **Range:** 100-5000
+</ParamField>
+
+<ParamField body="priority" type="string">
+  Processing priority for the refresh operation.
+  
+  **Options:** `low`, `normal`, `high`
+  **Default:** `normal`
+</ParamField>
+
+<ParamField body="filters" type="object">
+  Optional filters to limit which memories are refreshed.
+  
+  <Expandable title="Filter Options">
+    <ParamField body="filters.categories" type="array">
+      Only refresh memories in specific categories
+    </ParamField>
+    
+    <ParamField body="filters.date_range" type="object">
+      Refresh memories within a specific date range
+      
+      <ParamField body="filters.date_range.start" type="string">
+        Start date (ISO 8601 format)
+      </ParamField>
+      
+      <ParamField body="filters.date_range.end" type="string">
+        End date (ISO 8601 format)
+      </ParamField>
+    </ParamField>
+    
+    <ParamField body="filters.organizations" type="array">
+      Only refresh memories for specific organizations
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="notify" type="boolean">
+  Whether to send notifications when the refresh is complete.
+  
+  **Default:** `true`
+</ParamField>
+
+## Response
+
+### Success Response (202 Accepted)
+
+```json
+{
+  "status": "OK",
+  "message": "Embeddings refreshed for all memory nodes",
+  "data": {
+    "job_id": "emb_refresh_1234567890",
+    "total_memories": 150000,
+    "estimated_duration": "2h 30m",
+    "batch_size": 1000,
+    "model": "default",
+    "started_at": "2024-01-15T10:30:00Z",
+    "status": "processing"
+  }
+}
+```
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Operation status indicator. Returns "OK" when successfully initiated.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable message describing the operation.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Job Details">
+    <ResponseField name="job_id" type="string">
+      Unique identifier for tracking the refresh job
+    </ResponseField>
+    
+    <ResponseField name="total_memories" type="integer">
+      Total number of memories to be refreshed
+    </ResponseField>
+    
+    <ResponseField name="estimated_duration" type="string">
+      Estimated time to complete the operation
+    </ResponseField>
+    
+    <ResponseField name="batch_size" type="integer">
+      Number of memories processed per batch
+    </ResponseField>
+    
+    <ResponseField name="model" type="string">
+      Embedding model being used for the refresh
+    </ResponseField>
+    
+    <ResponseField name="started_at" type="string">
+      ISO 8601 timestamp when the job started
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Current job status: "queued", "processing", "completed", "failed"
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Examples
+
+### Basic Embedding Refresh
+
+<CodeGroup>
+```python Python
+from contextzero import ContextZeroAdmin
+
+admin_client = ContextZeroAdmin(api_key="admin_api_key")
+
+# Start embedding refresh
+refresh_job = admin_client.admin.refresh_embeddings()
+
+print(f"Job ID: {refresh_job.job_id}")
+print(f"Total memories: {refresh_job.total_memories}")
+print(f"Estimated duration: {refresh_job.estimated_duration}")
+
+# Monitor progress
+while refresh_job.status == "processing":
+    time.sleep(30)  # Wait 30 seconds
+    refresh_job = admin_client.admin.get_refresh_status(refresh_job.job_id)
+    print(f"Progress: {refresh_job.processed}/{refresh_job.total_memories}")
+```
+
+```javascript JavaScript
+import { ContextZeroAdmin } from '@contextzero/admin-sdk';
+
+const adminClient = new ContextZeroAdmin({ apiKey: 'admin_api_key' });
+
+// Start embedding refresh
+const refreshJob = await adminClient.admin.refreshEmbeddings();
+
+console.log(`Job ID: ${refreshJob.jobId}`);
+console.log(`Total memories: ${refreshJob.totalMemories}`);
+console.log(`Estimated duration: ${refreshJob.estimatedDuration}`);
+
+// Monitor progress
+let job = refreshJob;
+while (job.status === 'processing') {
+  await new Promise(resolve => setTimeout(resolve, 30000)); // Wait 30 seconds
+  job = await adminClient.admin.getRefreshStatus(job.jobId);
+  console.log(`Progress: ${job.processed}/${job.totalMemories}`);
+}
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/admin/embedding/refresh" \
+  -H "Authorization: Bearer admin_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# Monitor job progress (use job_id from response)
+curl -X GET "https://api.contextzero.ai/v1/admin/jobs/emb_refresh_1234567890" \
+  -H "Authorization: Bearer admin_api_key"
+```
+</CodeGroup>
+
+### Targeted Refresh with Filters
+
+<CodeGroup>
+```python Python
+# Refresh only work-related memories from the last month
+from datetime import datetime, timedelta
+
+last_month = datetime.now() - timedelta(days=30)
+
+refresh_job = admin_client.admin.refresh_embeddings(
+    model="latest",
+    batch_size=500,
+    priority="high",
+    filters={
+        "categories": ["work", "professional"],
+        "date_range": {
+            "start": last_month.isoformat(),
+            "end": datetime.now().isoformat()
+        }
+    },
+    notify=True
+)
+
+print(f"Targeted refresh started: {refresh_job.job_id}")
+```
+
+```javascript JavaScript
+// Refresh embeddings for specific organizations
+const refreshJob = await adminClient.admin.refreshEmbeddings({
+  model: 'multilingual',
+  batchSize: 800,
+  priority: 'normal',
+  filters: {
+    organizations: ['org_123', 'org_456', 'org_789'],
+    categories: ['customer_support', 'knowledge_base']
+  },
+  notify: true
+});
+
+console.log(`Organization-specific refresh started: ${refreshJob.jobId}`);
+```
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/v1/admin/embedding/refresh" \
+  -H "Authorization: Bearer admin_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "latest",
+    "batch_size": 500,
+    "priority": "high",
+    "filters": {
+      "categories": ["work", "professional"],
+      "date_range": {
+        "start": "2023-12-15T00:00:00Z",
+        "end": "2024-01-15T00:00:00Z"
+      }
+    },
+    "notify": true
+  }'
+```
+</CodeGroup>
+
+### Monitor Refresh Progress
+
+<CodeGroup>
+```python Progress Monitoring
+import time
+
+def monitor_embedding_refresh(admin_client, job_id):
+    """Monitor embedding refresh progress with detailed logging"""
+    
+    print(f"Monitoring embedding refresh job: {job_id}")
+    
+    while True:
+        try:
+            job = admin_client.admin.get_refresh_status(job_id)
+            
+            print(f"\n--- Refresh Status Update ---")
+            print(f"Status: {job.status}")
+            print(f"Progress: {job.processed:,} / {job.total_memories:,}")
+            print(f"Completion: {(job.processed / job.total_memories * 100):.1f}%")
+            print(f"Elapsed: {job.elapsed_time}")
+            
+            if job.status == "completed":
+                print("\n🎉 Embedding refresh completed successfully!")
+                print(f"Total processing time: {job.total_duration}")
+                print(f"Average processing rate: {job.processing_rate} memories/sec")
+                break
+            elif job.status == "failed":
+                print(f"\n❌ Embedding refresh failed: {job.error_message}")
+                break
+            
+            # Wait before next check
+            time.sleep(60)  # Check every minute
+            
+        except Exception as e:
+            print(f"Error checking refresh status: {e}")
+            time.sleep(30)  # Wait and retry
+
+# Usage
+job = admin_client.admin.refresh_embeddings()
+monitor_embedding_refresh(admin_client, job.job_id)
+```
+
+```javascript Progress Dashboard
+class EmbeddingRefreshMonitor {
+  constructor(adminClient) {
+    this.adminClient = adminClient;
+    this.intervalId = null;
+  }
+  
+  async startMonitoring(jobId) {
+    console.log(`🚀 Starting monitoring for job: ${jobId}`);
+    
+    this.intervalId = setInterval(async () => {
+      try {
+        const job = await this.adminClient.admin.getRefreshStatus(jobId);
+        
+        const progress = Math.round((job.processed / job.totalMemories) * 100);
+        
+        console.log(`📊 Progress: ${progress}% (${job.processed.toLocaleString()}/${job.totalMemories.toLocaleString()})`);
+        console.log(`⏱️  Elapsed: ${job.elapsedTime}`);
+        console.log(`🔄 Status: ${job.status}`);
+        
+        if (job.status === 'completed') {
+          console.log('✅ Embedding refresh completed!');
+          this.stopMonitoring();
+        } else if (job.status === 'failed') {
+          console.error('❌ Embedding refresh failed:', job.errorMessage);
+          this.stopMonitoring();
+        }
+        
+      } catch (error) {
+        console.error('Error monitoring refresh:', error.message);
+      }
+    }, 30000); // Check every 30 seconds
+  }
+  
+  stopMonitoring() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+}
+
+// Usage
+const monitor = new EmbeddingRefreshMonitor(adminClient);
+const job = await adminClient.admin.refreshEmbeddings();
+monitor.startMonitoring(job.jobId);
+```
+</CodeGroup>
+
+## Job Management
+
+### Check Job Status
+
+<CodeGroup>
+```python Python
+# Get detailed job status
+job_status = admin_client.admin.get_refresh_status("emb_refresh_1234567890")
+
+print(f"Status: {job_status.status}")
+print(f"Progress: {job_status.processed}/{job_status.total_memories}")
+print(f"Error count: {job_status.error_count}")
+print(f"Processing rate: {job_status.processing_rate} memories/sec")
+```
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/v1/admin/jobs/emb_refresh_1234567890" \
+  -H "Authorization: Bearer admin_api_key"
+```
+</CodeGroup>
+
+### Cancel Running Job
+
+<CodeGroup>
+```python Python
+# Cancel a running refresh job
+result = admin_client.admin.cancel_refresh_job("emb_refresh_1234567890")
+print(f"Cancellation result: {result.message}")
+```
+
+```bash cURL
+curl -X DELETE "https://api.contextzero.ai/v1/admin/jobs/emb_refresh_1234567890" \
+  -H "Authorization: Bearer admin_api_key"
+```
+</CodeGroup>
+
+## Performance Considerations
+
+### System Impact
+
+| Resource | Impact Level | Mitigation |
+|----------|--------------|------------|
+| CPU | High | Use lower batch sizes during peak hours |
+| Memory | Medium | Monitor memory usage and adjust batch size |
+| I/O | High | Schedule during low-traffic periods |
+| Search Performance | Medium | Temporary degradation during processing |
+
+### Optimization Tips
+
+<CodeGroup>
+```python Optimization Settings
+# For large systems (1M+ memories)
+large_system_config = {
+    "batch_size": 2000,
+    "priority": "low",
+    "schedule": "maintenance_window"  # Run during off-peak hours
+}
+
+# For real-time systems
+realtime_config = {
+    "batch_size": 200,
+    "priority": "low",
+    "throttle": True  # Add delays between batches
+}
+
+# For urgent updates
+urgent_config = {
+    "batch_size": 5000,
+    "priority": "high",
+    "parallel_workers": 4  # Use multiple workers
+}
+```
+</CodeGroup>
+
+## Error Handling
+
+### Common Errors
+
+<Accordion>
+  <AccordionItem title="EMBEDDING_SERVICE_UNAVAILABLE">
+    **Cause:** The embedding service is temporarily unavailable
+    
+    **Solution:** Wait and retry, or schedule for later
+    
+    ```json
+    {
+      "error": {
+        "code": "EMBEDDING_SERVICE_UNAVAILABLE",
+        "message": "Embedding service is temporarily unavailable",
+        "retry_after": 300
+      }
+    }
+    ```
+  </AccordionItem>
+  
+  <AccordionItem title="INSUFFICIENT_RESOURCES">
+    **Cause:** System doesn't have enough resources to process the request
+    
+    **Solution:** Reduce batch size or schedule during off-peak hours
+    
+    ```json
+    {
+      "error": {
+        "code": "INSUFFICIENT_RESOURCES",
+        "message": "Insufficient system resources for batch size",
+        "details": {
+          "requested_batch_size": 5000,
+          "max_allowed": 1000
+        }
+      }
+    }
+    ```
+  </AccordionItem>
+  
+  <AccordionItem title="REFRESH_ALREADY_RUNNING">
+    **Cause:** Another embedding refresh job is already running
+    
+    **Solution:** Wait for current job to complete or cancel it first
+    
+    ```json
+    {
+      "error": {
+        "code": "REFRESH_ALREADY_RUNNING",
+        "message": "Embedding refresh job already in progress",
+        "details": {
+          "active_job_id": "emb_refresh_0987654321",
+          "started_at": "2024-01-15T08:00:00Z"
+        }
+      }
+    }
+    ```
+  </AccordionItem>
+</Accordion>
+
+## Best Practices
+
+### Scheduling
+- **Off-Peak Hours**: Schedule large refresh operations during low-usage periods
+- **Incremental Refresh**: Use filters to refresh only specific subsets when possible
+- **Regular Maintenance**: Set up automated weekly or monthly refresh cycles
+
+### Monitoring
+- **Progress Tracking**: Always monitor job progress for large operations
+- **Error Logging**: Log and analyze any failures for pattern identification
+- **Performance Metrics**: Track processing rates and system impact
+
+### Resource Management
+- **Batch Size Tuning**: Adjust batch size based on system capacity
+- **Priority Setting**: Use appropriate priority levels for different scenarios
+- **Load Balancing**: Distribute refresh operations across multiple time windows
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card
+    title="📊 Job Status"
+    href="/api-reference/admin/jobs"
+  >
+    Monitor and manage background jobs
+  </Card>
+  <Card
+    title="🔍 Search Performance"
+    href="/api-reference/admin/performance"
+  >
+    Monitor search performance metrics
+  </Card>
+  <Card
+    title="🎛️ System Configuration"
+    href="/api-reference/admin/config"
+  >
+    Configure embedding and search settings
+  </Card>
+  <Card
+    title="📈 Usage Metrics"
+    href="/api-reference/admin/metrics"
+  >
+    View system usage and performance metrics
+  </Card>
+</CardGroup>

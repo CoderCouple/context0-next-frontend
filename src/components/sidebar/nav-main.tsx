@@ -1,23 +1,18 @@
-"use client"
-
-import { ChevronRight, type LucideIcon } from "lucide-react"
+"use client";
 
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+  Collapsible
+} from "@/components/ui/collapsible";
 import {
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem
+} from "@/components/ui/sidebar";
+import { type LucideIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { buttonVariants } from "../ui/button";
 
 export function NavMain({
   items,
@@ -27,12 +22,20 @@ export function NavMain({
     url: string
     icon: LucideIcon
     isActive?: boolean
+    isBeta?: boolean
     items?: {
       title: string
       url: string
+      isBeta?: boolean
     }[]
   }[]
 }) {
+  const pathname = usePathname();
+  const activeRoute =
+    items.find(
+      (item) => item.url.length > 0 && pathname.includes(item.url)
+    ) || items[0];
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -41,38 +44,47 @@ export function NavMain({
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+                {item.isBeta ? (
+                  <div
+                    className={buttonVariants({
+                      variant: "sidebarItem",
+                      className: "cursor-not-allowed opacity-60",
+                    })}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-2">
+                        <item.icon size={20} />
+                        <span>{item.title}</span>
+                      </div>
+                      <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        Beta
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <a
+                    key={item.url}
+                    href={item.url}
+                    className={buttonVariants({
+                      variant:
+                        item.url === activeRoute.url
+                          ? "activeSidebarItem"
+                          : "sidebarItem",
+                    })}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-2">
+                        <item.icon size={20} />
+                        <span>{item.title}</span>
+                      </div>
+                    </div>
+                  </a>
+                )}
               </SidebarMenuButton>
-              {item.items?.length ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
-                      <span className="sr-only">Toggle</span>
-                    </SidebarMenuAction>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </>
-              ) : null}
             </SidebarMenuItem>
           </Collapsible>
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

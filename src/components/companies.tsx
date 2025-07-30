@@ -71,8 +71,8 @@ export const Companies = () => {
   return (
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Trusted by the best companies</Heading>
-      <Subheading className="text-center">
-        Every AI is the choice of all the fortune 500 companies.
+      <Subheading className="text-center text-neutral-600 dark:text-neutral-300">
+        Context Zero AI is the choice of all the fortune 500 companies.
       </Subheading>
 
       <div className="relative mt-20 flex h-full w-full flex-wrap justify-center gap-10 md:gap-40">

@@ -45,8 +45,8 @@ export const Features = () => {
   return (
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Packed with thousands of features</Heading>
-      <Subheading className="text-center">
-        From Image generation to video generation, Everything AI has APIs for
+      <Subheading className="text-center text-neutral-600 dark:text-neutral-300">
+        From Image generation to video generation, Context Zero AI has APIs for
         literally everything. It can even create this website copy for you.
       </Subheading>
 
@@ -119,7 +119,7 @@ const FeatureTitle = ({ children }: { children?: React.ReactNode }) => {
 
 const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <Subheading className="mx-0 my-2 max-w-sm text-left md:text-sm">
+    <Subheading className="mx-0 my-2 max-w-sm text-left md:text-sm text-neutral-600 dark:text-neutral-300">
       {children}
     </Subheading>
   );

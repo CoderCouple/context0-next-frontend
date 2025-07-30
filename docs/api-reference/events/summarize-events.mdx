@@ -1,0 +1,219 @@
+---
+title: "Summarize Events"
+api: "POST /api/v1/event/summary"
+description: "Generate intelligent summaries of user events and activities"
+---
+
+## Overview
+
+This endpoint uses AI to generate intelligent summaries of user events, helping to understand patterns, extract insights, and create contextual narratives from event data.
+
+## Request Body
+
+<ParamField body="time_range" type="object" required>
+  Time range for event summarization
+  <Expandable title="Time Range Object">
+    <ParamField body="start_date" type="string" required>
+      Start date in ISO format
+    </ParamField>
+    <ParamField body="end_date" type="string" required>
+      End date in ISO format
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="event_types" type="array">
+  Specific event types to include in summary (optional - defaults to all)
+</ParamField>
+
+<ParamField body="summary_type" type="string" default="general">
+  Type of summary to generate: "general", "productivity", "learning", "interactions"
+</ParamField>
+
+<ParamField body="include_metrics" type="boolean" default="true">
+  Whether to include quantitative metrics in the summary
+</ParamField>
+
+## Response
+
+<ResponseField name="summary" type="object">
+  Generated summary of events
+  <Expandable title="Summary Object">
+    <ResponseField name="narrative" type="string">
+      Natural language summary of the user's activities
+    </ResponseField>
+    <ResponseField name="key_patterns" type="array">
+      Identified behavioral patterns and trends
+    </ResponseField>
+    <ResponseField name="insights" type="array">
+      AI-generated insights about user behavior
+    </ResponseField>
+    <ResponseField name="recommendations" type="array">
+      Suggested actions or optimizations
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metrics" type="object">
+  Quantitative analysis of the events
+  <Expandable title="Metrics Object">
+    <ResponseField name="total_events" type="integer">
+      Total number of events analyzed
+    </ResponseField>
+    <ResponseField name="event_type_breakdown" type="object">
+      Count of events by type
+    </ResponseField>
+    <ResponseField name="activity_timeline" type="array">
+      Timeline of significant activities
+    </ResponseField>
+    <ResponseField name="productivity_score" type="number">
+      Calculated productivity score (0.0 to 1.0)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="time_range" type="object">
+  Actual time range covered by the analysis
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/api/v1/event/summary" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "time_range": {
+      "start_date": "2024-01-10T00:00:00Z",
+      "end_date": "2024-01-15T23:59:59Z"
+    },
+    "summary_type": "productivity",
+    "include_metrics": true
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/event/summary', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    time_range: {
+      start_date: '2024-01-10T00:00:00Z',
+      end_date: '2024-01-15T23:59:59Z'
+    },
+    summary_type: 'productivity',
+    include_metrics: true
+  })
+});
+
+const summary = await response.json();
+```
+
+```python Python
+import requests
+from datetime import datetime, timedelta
+
+# Generate summary for the last week
+end_date = datetime.now()
+start_date = end_date - timedelta(days=7)
+
+response = requests.post(
+    "https://api.contextzero.ai/api/v1/event/summary",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    json={
+        "time_range": {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat()
+        },
+        "summary_type": "productivity",
+        "include_metrics": True
+    }
+)
+
+summary = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "summary": {
+    "narrative": "Over the past week, you've been highly active in memory creation and organization. You created 23 new memories, primarily focused on project planning and meeting notes. Your search activity indicates a strong focus on quarterly planning, with multiple searches for related content. You've maintained consistent daily engagement with peak activity between 9-11 AM.",
+    "key_patterns": [
+      "Daily memory creation peaks at 9-10 AM",
+      "Strong focus on project planning activities",
+      "Consistent use of search for knowledge retrieval",
+      "Preference for web interface over API usage"
+    ],
+    "insights": [
+      "Your memory creation follows a clear work schedule pattern",
+      "Project planning is a dominant theme in your recent activities",
+      "Search queries show increasing complexity over time",
+      "Integration usage is growing, particularly with Slack"
+    ],
+    "recommendations": [
+      "Consider setting up automated memory capture for meetings",
+      "Create a dedicated project planning memory space",
+      "Explore advanced search features for better knowledge discovery"
+    ]
+  },
+  "metrics": {
+    "total_events": 187,
+    "event_type_breakdown": {
+      "memory_created": 23,
+      "search_performed": 45,
+      "memory_updated": 12,
+      "context_retrieved": 67,
+      "integration_synced": 8
+    },
+    "activity_timeline": [
+      {
+        "date": "2024-01-10",
+        "events": 28,
+        "primary_activity": "memory_created"
+      },
+      {
+        "date": "2024-01-11",
+        "events": 35,
+        "primary_activity": "search_performed"
+      }
+    ],
+    "productivity_score": 0.82
+  },
+  "time_range": {
+    "start_date": "2024-01-10T00:00:00Z",
+    "end_date": "2024-01-15T23:59:59Z",
+    "actual_coverage": "95.2%"
+  }
+}
+```
+
+</ResponseExample>
+
+## Summary Types
+
+<AccordionGroup>
+  <Accordion title="General">
+    Provides a broad overview of all user activities and patterns across all event types.
+  </Accordion>
+
+  <Accordion title="Productivity">
+    Focuses on work-related activities, memory creation, organization, and task completion patterns.
+  </Accordion>
+
+  <Accordion title="Learning">
+    Analyzes knowledge acquisition patterns, search behaviors, and information consumption habits.
+  </Accordion>
+
+  <Accordion title="Interactions">
+    Emphasizes social interactions, collaboration patterns, and integration usage.
+  </Accordion>
+</AccordionGroup>

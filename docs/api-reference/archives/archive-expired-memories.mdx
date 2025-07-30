@@ -1,0 +1,207 @@
+---
+title: "Archive Expired Memories"
+api: "POST /api/v1/archive/memory"
+description: "Archive memories that have expired based on their retention policies"
+---
+
+## Overview
+
+This endpoint triggers the archival process for memories that have reached their expiration date based on their configured retention policies. Archived memories are moved to long-term storage and remain accessible but are excluded from active search and context operations.
+
+## Request Body
+
+<ParamField body="dry_run" type="boolean" default="false">
+  If true, returns what would be archived without actually performing the archival
+</ParamField>
+
+<ParamField body="force_archive" type="boolean" default="false">
+  If true, archives memories even if they're still within their retention period
+</ParamField>
+
+<ParamField body="memory_ids" type="array">
+  Specific memory IDs to archive (optional - if not provided, all expired memories are processed)
+</ParamField>
+
+<ParamField body="retention_policy" type="object">
+  Override default retention policy for this operation
+  <Expandable title="Retention Policy">
+    <ParamField body="max_age_days" type="integer">
+      Maximum age in days before archival
+    </ParamField>
+    <ParamField body="priority_threshold" type="string">
+      Minimum priority level to avoid archival ("low", "medium", "high")
+    </ParamField>
+    <ParamField body="access_threshold" type="integer">
+      Minimum access count in the last 30 days to avoid archival
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="archived_count" type="integer">
+  Number of memories successfully archived
+</ResponseField>
+
+<ResponseField name="skipped_count" type="integer">
+  Number of memories skipped due to retention policies or other conditions
+</ResponseField>
+
+<ResponseField name="errors" type="array">
+  Array of errors encountered during the archival process
+</ResponseField>
+
+<ResponseField name="archived_memories" type="array">
+  List of archived memory IDs and their archival details
+  <Expandable title="Archived Memory">
+    <ResponseField name="memory_id" type="string">
+      ID of the archived memory
+    </ResponseField>
+    <ResponseField name="original_size" type="integer">
+      Original size of the memory in bytes
+    </ResponseField>
+    <ResponseField name="archived_at" type="string">
+      Timestamp when the memory was archived
+    </ResponseField>
+    <ResponseField name="archive_location" type="string">
+      Storage location identifier for the archived memory
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="operation_summary" type="object">
+  Summary of the archival operation
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.contextzero.ai/api/v1/archive/memory" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dry_run": false,
+    "retention_policy": {
+      "max_age_days": 180,
+      "priority_threshold": "medium",
+      "access_threshold": 2
+    }
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/archive/memory', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    dry_run: false,
+    retention_policy: {
+      max_age_days: 180,
+      priority_threshold: 'medium',
+      access_threshold: 2
+    }
+  })
+});
+
+const result = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.contextzero.ai/api/v1/archive/memory",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    json={
+        "dry_run": False,
+        "retention_policy": {
+            "max_age_days": 180,
+            "priority_threshold": "medium",
+            "access_threshold": 2
+        }
+    }
+)
+
+result = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "archived_count": 147,
+  "skipped_count": 23,
+  "errors": [],
+  "archived_memories": [
+    {
+      "memory_id": "mem_67850",
+      "original_size": 2048,
+      "archived_at": "2024-01-15T10:30:00Z",
+      "archive_location": "archive://2024/01/mem_67850.gz"
+    },
+    {
+      "memory_id": "mem_67851",
+      "original_size": 1536,
+      "archived_at": "2024-01-15T10:30:01Z",
+      "archive_location": "archive://2024/01/mem_67851.gz"
+    }
+  ],
+  "operation_summary": {
+    "total_processed": 170,
+    "space_freed_mb": 24.7,
+    "processing_time_seconds": 12.4,
+    "archive_policy_applied": {
+      "max_age_days": 180,
+      "priority_threshold": "medium",
+      "access_threshold": 2
+    }
+  }
+}
+```
+
+</ResponseExample>
+
+## Archival Process
+
+<Steps>
+  <Step title="Memory Evaluation">
+    Each memory is evaluated against the retention policy criteria including age, priority, access frequency, and custom rules.
+  </Step>
+  <Step title="Dependency Check">
+    Memories with active relationships or recent interactions are flagged for review before archival.
+  </Step>
+  <Step title="Compression & Storage">
+    Archived memories are compressed and moved to long-term storage with maintained metadata for future retrieval.
+  </Step>
+  <Step title="Index Update">
+    Search indexes are updated to exclude archived memories from active queries while maintaining accessibility.
+  </Step>
+</Steps>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Dry Run First">
+    Always perform a dry run to review what would be archived before executing the actual archival process.
+  </Accordion>
+
+  <Accordion title="Gradual Archival">
+    Archive memories in batches rather than all at once to minimize system impact and allow for recovery if needed.
+  </Accordion>
+
+  <Accordion title="Monitor Dependencies">
+    Check for memory relationships and active references before archiving to avoid breaking contextual connections.
+  </Accordion>
+
+  <Accordion title="Regular Maintenance">
+    Set up automated archival processes to run regularly (weekly or monthly) to maintain optimal system performance.
+  </Accordion>
+</AccordionGroup>

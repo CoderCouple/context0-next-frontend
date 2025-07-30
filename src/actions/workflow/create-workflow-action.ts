@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createWorkflowApi } from "@/api/workflow-api";
 import {
   CreateWorkflowInput,
-  createWorkflowSchema,
+  CreateWorkflowSchema,
 } from "@/schema/workflow-schema";
 import { ActionResponse } from "@/types";
 import { Workflow } from "@/types/workflow-type";
@@ -27,7 +27,7 @@ export async function CreateWorkflowAction(
     };
   }
 
-  const { success, data, error } = createWorkflowSchema.safeParse(form);
+  const { success, data, error } = CreateWorkflowSchema.safeParse(form);
   if (!success) {
     return {
       success: false,

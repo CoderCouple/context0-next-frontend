@@ -1,0 +1,594 @@
+---
+title: 'Slack Integration'
+description: 'Add contextual memory to team communication in Slack'
+---
+
+## Overview
+
+The Context Zero AI Slack integration brings intelligent memory and context to your team communications. Team members can access shared knowledge, maintain project context, and get relevant information automatically injected into conversations.
+
+## Installation
+
+### Slack App Installation
+
+<Steps>
+  <Step title="Install from Slack App Directory">
+    1. Visit the [Slack App Directory](https://slack.com/apps)
+    2. Search for "Context Zero AI"
+    3. Click "Add to Slack"
+    4. Select your workspace
+    5. Authorize the required permissions
+  </Step>
+  
+  <Step title="Configure Workspace Settings">
+    1. Type `/context-zero setup` in any channel
+    2. Follow the configuration wizard
+    3. Connect to your Context Zero AI account
+    4. Set up team memory spaces
+    5. Configure privacy and access controls
+  </Step>
+  
+  <Step title="Test Integration">
+    1. Try `/context-zero help` to see available commands
+    2. Create your first team memory with `/context-zero add`
+    3. Search memories with `/context-zero search`
+    4. Verify automatic context injection is working
+  </Step>
+</Steps>
+
+### Direct Installation (Enterprise)
+
+For enterprise customers with custom requirements:
+
+<CodeGroup>
+```bash Custom Installation
+# Clone the Slack bot repository
+git clone https://github.com/contextzero/slack-integration.git
+
+# Configure environment variables
+export CONTEXT_ZERO_API_KEY="your_api_key"
+export SLACK_BOT_TOKEN="xoxb-your-bot-token"
+export SLACK_SIGNING_SECRET="your_signing_secret"
+
+# Deploy to your infrastructure
+./deploy.sh --environment production
+```
+
+```yaml Docker Compose
+version: '3.8'
+services:
+  context-zero-slack:
+    image: contextzero/slack-integration:latest
+    environment:
+      - CONTEXT_ZERO_API_KEY=${CONTEXT_ZERO_API_KEY}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/app/config
+```
+</CodeGroup>
+
+## Key Features
+
+### Team Memory Spaces
+
+Create shared knowledge bases for different teams and projects:
+
+<CardGroup cols={2}>
+  <Card
+    title="🚀 Project Memories"
+    icon="rocket"
+  >
+    Store project decisions, requirements, and progress updates
+  </Card>
+  <Card
+    title="👥 Team Knowledge"
+    icon="users"
+  >
+    Share expertise, best practices, and institutional knowledge
+  </Card>
+  <Card
+    title="🎯 Client Context"
+    icon="target"
+  >
+    Maintain comprehensive client profiles and interaction history
+  </Card>
+  <Card
+    title="📚 Documentation"
+    icon="book"
+  >
+    Link and organize important documents and resources
+  </Card>
+</CardGroup>
+
+### Intelligent Context Injection
+
+Context Zero AI automatically provides relevant information:
+
+- **Channel Analysis**: Understands ongoing conversations
+- **Participant Context**: Knows who's involved and their expertise
+- **Historical Awareness**: References past decisions and discussions
+- **Project Continuity**: Maintains context across multiple conversations
+
+### Slash Commands
+
+Powerful commands for memory management:
+
+<Tabs>
+  <Tab title="Memory Management">
+    ```bash
+    # Add a new memory
+    /context-zero add "We decided to use React for the frontend"
+    
+    # Search existing memories  
+    /context-zero search "react frontend decision"
+    
+    # Update a memory
+    /context-zero update mem_123 "Updated: Using React 18 with Next.js"
+    
+    # Delete a memory
+    /context-zero delete mem_123
+    ```
+  </Tab>
+  
+  <Tab title="Context Control">
+    ```bash
+    # Get context for current conversation
+    /context-zero context
+    
+    # Disable context injection temporarily
+    /context-zero pause
+    
+    # Re-enable context injection
+    /context-zero resume
+    
+    # Set context scope for channel
+    /context-zero scope --category work --project alpha
+    ```
+  </Tab>
+  
+  <Tab title="Team Features">
+    ```bash
+    # Share memory with specific team members
+    /context-zero share mem_123 @john @sarah
+    
+    # Create team knowledge space
+    /context-zero create-space "Mobile Development Team"
+    
+    # Generate team summary
+    /context-zero summary --timeframe "last week"
+    
+    # Export team memories
+    /context-zero export --format json --channel #mobile-dev
+    ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Memory Spaces
+
+Organize memories by team and project:
+
+```json
+{
+  "spaces": [
+    {
+      "name": "Engineering Team",
+      "description": "Technical discussions and decisions",
+      "channels": ["#engineering", "#tech-discussions"],
+      "categories": ["technical", "architecture", "tools"],
+      "permissions": {
+        "read": ["@engineering-team"],
+        "write": ["@senior-engineers", "@tech-leads"],
+        "admin": ["@engineering-managers"]
+      }
+    },
+    {
+      "name": "Project Alpha",
+      "description": "Mobile app development project", 
+      "channels": ["#project-alpha", "#alpha-standup"],
+      "categories": ["project", "mobile", "requirements"],
+      "permissions": {
+        "read": ["@alpha-team", "@stakeholders"], 
+        "write": ["@alpha-team"],
+        "admin": ["@project-manager"]
+      }
+    }
+  ]
+}
+```
+
+### Privacy Controls
+
+Fine-grained privacy and access management:
+
+<Accordion>
+  <AccordionItem title="Channel-Level Privacy">
+    - **Public Channels**: Shared team knowledge accessible to all members
+    - **Private Channels**: Restricted access based on channel membership
+    - **DMs**: Personal memories only accessible to participants
+    - **Cross-Channel**: Control memory sharing between channels
+  </AccordionItem>
+  
+  <AccordionItem title="User Permissions">
+    - **Read Access**: View memories and receive context injection
+    - **Write Access**: Create and edit memories
+    - **Share Access**: Share memories with other team members  
+    - **Admin Access**: Manage memory spaces and permissions
+  </AccordionItem>
+  
+  <AccordionItem title="Content Filtering">
+    - **Sensitive Information**: Automatically detect and exclude sensitive data
+    - **Category Filters**: Control which memory categories are accessible
+    - **Time Filters**: Limit access to memories from specific time periods
+    - **User Filters**: Exclude memories from specific users if needed
+  </AccordionItem>
+</Accordion>
+
+### Notification Settings
+
+Control when and how Context Zero AI interacts:
+
+```json
+{
+  "notifications": {
+    "context_injection": {
+      "enabled": true,
+      "threshold": 0.7,
+      "max_memories": 5,
+      "frequency": "when_relevant"
+    },
+    "memory_suggestions": {
+      "enabled": true,
+      "channels": ["#general", "#project-*"],
+      "trigger_keywords": ["decision", "important", "remember"]
+    },
+    "weekly_summaries": {
+      "enabled": true,
+      "channels": ["#team-updates"],
+      "schedule": "friday 5pm",
+      "include_metrics": true
+    }
+  }
+}
+```
+
+## Use Cases
+
+### Project Management
+
+Keep your team aligned with shared project context:
+
+**Setup:**
+```bash
+# Create project memory space
+/context-zero create-space "Website Redesign" 
+  --channels #web-redesign #design-reviews
+  --categories project,design,requirements
+
+# Add project requirements
+/context-zero add "User research shows need for mobile-first design" 
+  --category requirements --project website-redesign
+
+# Add technical decisions
+/context-zero add "Using Tailwind CSS for styling consistency"
+  --category technical --project website-redesign
+```
+
+**Automatic Context:**
+When team members discuss the project, Context Zero AI automatically provides:
+- Previous design decisions and rationale
+- User research insights and feedback
+- Technical constraints and requirements
+- Timeline and milestone information
+
+### Engineering Team Knowledge
+
+Build and maintain team expertise:
+
+**Knowledge Capture:**
+```bash
+# Document best practices
+/context-zero add "Always run migration tests in staging before production"
+  --category best-practices --team engineering
+
+# Share debugging insights
+/context-zero add "React hydration errors often caused by server/client mismatch"
+  --category debugging --technology react
+
+# Record architecture decisions
+/context-zero add "Chose PostgreSQL over MongoDB for better consistency guarantees"
+  --category architecture --decision database
+```
+
+**Knowledge Discovery:**
+Team members can easily find relevant expertise:
+- Search for solutions to similar problems
+- Get context on past architectural decisions
+- Access debugging guides and best practices
+- Learn from other team members' experiences
+
+### Client Relationship Management
+
+Maintain comprehensive client context:
+
+**Client Memory Building:**
+```bash
+# Client preferences
+/context-zero add "TechCorp prefers technical details in presentations"
+  --category client --client techcorp
+
+# Meeting outcomes
+/context-zero add "TechCorp approved the API design, concerned about rate limits"
+  --category meeting --client techcorp --date 2024-01-15
+
+# Relationship notes
+/context-zero add "Sarah (CTO) is the technical decision maker, Mike (PM) handles timeline"
+  --category contacts --client techcorp
+```
+
+**Contextual Client Interactions:**
+Before client meetings, team members automatically receive:
+- Previous meeting notes and outcomes
+- Client preferences and communication style
+- Project history and current status
+- Key contact information and roles
+
+## Advanced Features
+
+### Workflow Automation
+
+Integrate with Slack workflows and external tools:
+
+<CodeGroup>
+```python Workflow Integration
+from contextzero import ContextZero
+from slack_sdk import WebClient
+
+def handle_project_update(event):
+    """Automatically create memories from project updates"""
+    
+    # Extract key information
+    project = extract_project(event['text'])
+    decision = extract_decision(event['text'])
+    
+    if decision:
+        # Create memory for the decision
+        context_client.memories.add(
+            content=f"Project {project}: {decision}",
+            metadata={
+                "category": "decision",
+                "project": project,
+                "channel": event['channel'],
+                "user": event['user'],
+                "timestamp": event['ts']
+            }
+        )
+        
+        # Notify team members
+        slack_client.chat_postMessage(
+            channel=event['channel'],
+            text=f"📝 Decision recorded: {decision}",
+            thread_ts=event['ts']
+        )
+```
+
+```javascript Automated Tagging
+// Automatically tag memories based on content
+async function autoTagMemory(memory) {
+    const tags = [];
+    
+    // Technology detection
+    const techKeywords = ['react', 'python', 'docker', 'kubernetes'];
+    techKeywords.forEach(tech => {
+        if (memory.content.toLowerCase().includes(tech)) {
+            tags.push(tech);
+        }
+    });
+    
+    // Project detection
+    const projectPattern = /project[\s-](\w+)/gi;
+    const projects = memory.content.match(projectPattern);
+    if (projects) {
+        tags.push(...projects.map(p => p.replace(/project[\s-]/i, '')));
+    }
+    
+    // Priority detection
+    const urgentKeywords = ['urgent', 'critical', 'blocker', 'asap'];
+    if (urgentKeywords.some(keyword => 
+        memory.content.toLowerCase().includes(keyword))) {
+        tags.push('high-priority');
+    }
+    
+    // Apply tags
+    if (tags.length > 0) {
+        await contextClient.memories.update(memory.id, {
+            tags: [...memory.tags, ...tags]
+        });
+    }
+}
+```
+</CodeGroup>
+
+### Analytics and Insights
+
+Track team knowledge and communication patterns:
+
+- **Memory Usage**: See which memories are accessed most frequently
+- **Knowledge Gaps**: Identify topics that lack sufficient documentation
+- **Team Expertise**: Map who knows what across your organization
+- **Decision Tracking**: Monitor how decisions are made and communicated
+
+### Integration with External Tools
+
+Connect Slack memories with other tools:
+
+<Tabs>
+  <Tab title="Jira Integration">
+    ```bash
+    # Link memories to Jira tickets
+    /context-zero add "API rate limiting solution implemented" 
+      --link jira:PROJ-123
+    
+    # Auto-sync from Jira updates
+    /context-zero sync jira --project PROJ
+    ```
+  </Tab>
+  
+  <Tab title="GitHub Integration">
+    ```bash
+    # Link to GitHub issues and PRs
+    /context-zero add "Code review revealed performance issues"
+      --link github:contextzero/api#456
+    
+    # Auto-create memories from PR descriptions  
+    /context-zero sync github --repo contextzero/api
+    ```
+  </Tab>
+  
+  <Tab title="Notion Integration">
+    ```bash
+    # Sync with Notion pages
+    /context-zero add "Requirements documented in Notion"
+      --link notion:project-alpha/requirements
+    
+    # Export memories to Notion
+    /context-zero export notion --database team-knowledge
+    ```
+  </Tab>
+</Tabs>
+
+## Security and Compliance
+
+### Data Protection
+
+Context Zero AI Slack integration includes enterprise-grade security:
+
+- **End-to-End Encryption**: All memories encrypted in transit and at rest
+- **Access Controls**: Granular permissions based on Slack roles
+- **Audit Logs**: Complete tracking of all memory access and modifications
+- **Data Residency**: Choose where your team's memories are stored
+
+### Compliance Features
+
+Built for enterprise compliance requirements:
+
+<CardGroup cols={2}>
+  <Card
+    title="🛡️ SOC 2 Type II"
+    icon="shield-check"
+  >
+    Full compliance with enterprise security standards
+  </Card>
+  <Card
+    title="🔒 GDPR Ready"
+    icon="lock"
+  >
+    European data protection compliance built-in
+  </Card>
+  <Card
+    title="🏥 HIPAA Available"
+    icon="hospital"
+  >
+    Healthcare-grade security for sensitive environments
+  </Card>
+  <Card
+    title="📋 Custom Compliance"
+    icon="clipboard-check"
+  >
+    Meet specific regulatory requirements
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Common Setup Issues
+
+<Accordion>
+  <AccordionItem title="Bot Not Responding to Commands">
+    **Check:**
+    - Bot is added to the channel (`/invite @contextZero`)
+    - Correct permissions granted during installation
+    - API keys properly configured
+    - Slack workspace allows custom apps
+    
+    **Fix:**
+    - Reinstall the app with proper permissions
+    - Check bot token in workspace settings
+    - Contact admin to enable custom apps
+  </AccordionItem>
+  
+  <AccordionItem title="Context Not Being Injected">
+    **Check:**
+    - Context injection enabled for the channel
+    - Relevant memories exist for the conversation topic  
+    - Memory space permissions configured correctly
+    - Relevance threshold not set too high
+    
+    **Fix:**
+    - Enable with `/context-zero resume`
+    - Add relevant memories with `/context-zero add`
+    - Review and adjust memory space settings
+    - Lower relevance threshold in settings
+  </AccordionItem>
+  
+  <AccordionItem title="Memory Search Returns No Results">
+    **Check:**
+    - Memories exist in the current memory space
+    - Search terms match memory content or tags
+    - User has read access to relevant memories
+    - Memory categories included in search scope
+    
+    **Fix:**
+    - Verify memory space configuration
+    - Try broader search terms
+    - Check user permissions
+    - Expand search categories
+  </AccordionItem>
+</Accordion>
+
+### Performance Optimization
+
+**Reduce Response Times:**
+- Enable local caching for frequently accessed memories
+- Use memory spaces to limit search scope
+- Set appropriate relevance thresholds
+- Configure batch processing for bulk operations
+
+**Manage Memory Volume:**
+- Regular cleanup of outdated memories
+- Merge similar or duplicate memories
+- Use memory compression for large content
+- Archive old project memories
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="🎮 Discord Integration"
+    href="/integrations/discord"
+  >
+    Set up Context Zero AI for Discord communities
+  </Card>
+  <Card
+    title="📝 Notion Integration"  
+    href="/integrations/notion"
+  >
+    Sync team knowledge with Notion
+  </Card>
+  <Card
+    title="🧠 Team Memory Best Practices"
+    href="/concepts/memory-types"
+  >
+    Learn to optimize team memory organization
+  </Card>
+  <Card
+    title="📊 Team Analytics"
+    href="/concepts/analytics"
+  >
+    Monitor team knowledge and collaboration patterns
+  </Card>
+</CardGroup>

@@ -13,11 +13,11 @@ export const SkeletonThree = () => {
 
       <div className="flex h-full w-full flex-1 flex-col space-y-2">
         <div className="flex justify-between border-b p-4 pb-2 dark:border-neutral-700">
-          <p className="dark:text-muted-dark text-sm font-bold text-muted">
+          <p className="dark:text-neutral-300 text-sm font-bold text-neutral-600">
             Add LLM
           </p>
-          <p className="shadow-derek dark:text-muted-dark flex flex-shrink-0 items-center space-x-1 rounded-md px-2 py-1 text-sm text-muted dark:bg-neutral-700">
-            <IconPlus className="dark:text-muted-dark h-4 w-4 text-muted" />{" "}
+          <p className="shadow-derek dark:text-neutral-300 flex flex-shrink-0 items-center space-x-1 rounded-md px-2 py-1 text-sm text-neutral-600 dark:bg-neutral-700">
+            <IconPlus className="dark:text-neutral-300 h-4 w-4 text-neutral-600" />{" "}
             <span>Add</span>
           </p>
         </div>
@@ -46,14 +46,14 @@ export const Row = ({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
-        <p className="dark:text-muted-dark shadow-aceternity rounded-md px-1 py-0.5 text-xs text-muted dark:bg-neutral-700">
+        <p className="dark:text-neutral-300 shadow-aceternity rounded-md px-1 py-0.5 text-xs text-neutral-600 dark:bg-neutral-700">
           {title}
         </p>
-        <p className="dark:text-muted-dark text-xs text-muted">{updatedAt}</p>
+        <p className="dark:text-neutral-300 text-xs text-neutral-600">{updatedAt}</p>
       </div>
       <div className="flex items-center space-x-1">
         <Switch checked={checked} setChecked={setChecked} />
-        <IconDots className="dark:text-muted-dark h-4 w-4 text-muted" />
+        <IconDots className="dark:text-neutral-300 h-4 w-4 text-neutral-600" />
       </div>
     </div>
   );

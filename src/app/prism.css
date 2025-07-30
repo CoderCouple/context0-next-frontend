@@ -1,5 +1,5 @@
 pre[class*="language-"] {
-  color: theme("colors.zinc.100");
+  color: theme("colors.zinc.900");
 }
 
 .token.tag,

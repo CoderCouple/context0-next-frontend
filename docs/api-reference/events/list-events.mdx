@@ -1,0 +1,162 @@
+---
+title: "List Events"
+api: "GET /api/v1/event/"
+description: "Retrieve events with optional filtering by user, event type, and pagination"
+---
+
+## Overview
+
+This endpoint retrieves events from the system with support for filtering and pagination. Useful for analytics, debugging, and user behavior analysis.
+
+## Query Parameters
+
+<ParamField query="user_id" type="string">
+  Filter events by specific user ID
+</ParamField>
+
+<ParamField query="event_type" type="string">
+  Filter events by specific event type
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50">
+  Maximum number of events to return (max: 100)
+</ParamField>
+
+<ParamField query="offset" type="integer" default="0">
+  Number of events to skip for pagination
+</ParamField>
+
+<ParamField query="start_date" type="string">
+  Filter events from this date (ISO format)
+</ParamField>
+
+<ParamField query="end_date" type="string">
+  Filter events until this date (ISO format)
+</ParamField>
+
+## Response
+
+<ResponseField name="events" type="array">
+  Array of event objects
+  <Expandable title="Event Object">
+    <ResponseField name="event_id" type="string">
+      Unique identifier for the event
+    </ResponseField>
+    <ResponseField name="event_type" type="string">
+      Type of the event
+    </ResponseField>
+    <ResponseField name="user_id" type="string">
+      ID of the user associated with the event
+    </ResponseField>
+    <ResponseField name="metadata" type="object">
+      Additional event data
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      When the event occurred (ISO format)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination information
+  <Expandable title="Pagination Object">
+    <ResponseField name="total" type="integer">
+      Total number of events matching the filter
+    </ResponseField>
+    <ResponseField name="limit" type="integer">
+      Number of events returned in this response
+    </ResponseField>
+    <ResponseField name="offset" type="integer">
+      Number of events skipped
+    </ResponseField>
+    <ResponseField name="has_more" type="boolean">
+      Whether there are more events available
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.contextzero.ai/api/v1/event/?user_id=user_12345&event_type=memory_created&limit=25" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.contextzero.ai/api/v1/event/?user_id=user_12345&event_type=memory_created&limit=25', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json',
+  },
+});
+
+const events = await response.json();
+```
+
+```python Python
+import requests
+
+params = {
+    'user_id': 'user_12345',
+    'event_type': 'memory_created',
+    'limit': 25
+}
+
+response = requests.get(
+    "https://api.contextzero.ai/api/v1/event/",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    params=params
+)
+
+events = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "events": [
+    {
+      "event_id": "evt_98765",
+      "event_type": "memory_created",
+      "user_id": "user_12345",
+      "metadata": {
+        "source": "web",
+        "memory_id": "mem_67890",
+        "context": {
+          "page": "/dashboard",
+          "feature": "quick_add"
+        },
+        "session_id": "sess_abc123"
+      },
+      "timestamp": "2024-01-15T10:30:00Z"
+    },
+    {
+      "event_id": "evt_98764",
+      "event_type": "search_performed",
+      "user_id": "user_12345",
+      "metadata": {
+        "query": "project meeting notes",
+        "results_count": 5,
+        "response_time_ms": 120
+      },
+      "timestamp": "2024-01-15T09:15:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 142,
+    "limit": 25,
+    "offset": 0,
+    "has_more": true
+  }
+}
+```
+
+</ResponseExample>

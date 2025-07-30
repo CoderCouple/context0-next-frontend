@@ -147,16 +147,16 @@ export function PricingTable({ pricing }: any) {
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-white sm:pl-0">
                       {feature.title}
                     </td>
-                    <td className="dark:text-muted-dark whitespace-nowrap px-3 py-4 text-center text-sm text-muted">
+                    <td className="text-neutral-700 dark:text-neutral-200 whitespace-nowrap px-3 py-4 text-center text-sm">
                       {feature.hobby}
                     </td>
-                    <td className="dark:text-muted-dark whitespace-nowrap px-3 py-4 text-center text-sm text-muted">
+                    <td className="text-neutral-700 dark:text-neutral-200 whitespace-nowrap px-3 py-4 text-center text-sm">
                       {feature.starter}
                     </td>
-                    <td className="dark:text-muted-dark whitespace-nowrap px-3 py-4 text-center text-sm text-muted">
+                    <td className="text-neutral-700 dark:text-neutral-200 whitespace-nowrap px-3 py-4 text-center text-sm">
                       {feature.professional}
                     </td>
-                    <td className="dark:text-muted-dark whitespace-nowrap px-3 py-4 text-center text-sm text-muted">
+                    <td className="text-neutral-700 dark:text-neutral-200 whitespace-nowrap px-3 py-4 text-center text-sm">
                       {feature.enterprise}
                     </td>
                   </tr>

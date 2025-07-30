@@ -1,138 +1,121 @@
-"use client"
+"use client";
 
-import {
-    AudioWaveform,
-    BookOpen,
-    Bot,
-    Command,
-    Frame,
-    GalleryVerticalEnd,
-    LifeBuoy,
-    Map,
-    PieChart,
-    Send,
-    Settings2,
-    SquareTerminal,
-} from "lucide-react"
-import * as React from "react"
+import * as React from "react";
 
 
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader
-} from "@/components/ui/sidebar"
-import { NavMain } from "./nav-main"
-import { NavSecondary } from "./nav-secondary"
-import { NavUser } from "./nav-user"
-import { TeamSwitcher } from "./team-switcher"
-
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail
+} from "@/components/ui/sidebar";
+import { ArrowUpCircleIcon, BrainIcon, CameraIcon, ClipboardListIcon, CoinsIcon, DatabaseIcon, FileCodeIcon, FileIcon, FileTextIcon, HelpCircleIcon, LayoutDashboardIcon, SearchIcon, ServerIcon, SettingsIcon, ShieldCheckIcon, Workflow, Rocket, Gamepad2 } from "lucide-react";
+import { NavMain } from "./nav-main";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
+      title: "Dashboard",
+      url: "dashboard",
+      icon: LayoutDashboardIcon,
+      isBeta: false,
+    },
+    {
+      title: "Workflow",
+      url: "workflow",
+      icon: Workflow,
+      isBeta: false,
+    },
+    {
+      title: "Credential",
+      url: "credential",
+      icon: ShieldCheckIcon,
+       isBeta: false,
+    },
+    {
+      title: "Billing",
+      url: "billing",
+      icon: CoinsIcon,
+      isBeta: false,
+    },
+     {
+      title: "MCP",
+      url: "mcp",
+      icon: ServerIcon,
+      isBeta: false,
+    },
+    {
+      title: "Memory",
+      url: "memory",
+      icon: BrainIcon,
+      isBeta: false,
+    },
+    {
       title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      url: "playground",
+      icon: Gamepad2,
+      isBeta: false,
+    },
+    {
+      title: "Onboarding",
+      url: "onboarding",
+      icon: Rocket,
+      isBeta: false,
+    }
+  ],
+  navClouds: [
+    {
+      title: "Capture",
+      icon: CameraIcon,
       isActive: true,
+      url: "#",
       items: [
         {
-          title: "History",
+          title: "Active Proposals",
           url: "#",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
+          title: "Archived",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Proposal",
+      icon: FileTextIcon,
       url: "#",
-      icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Active Proposals",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Archived",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Prompts",
+      icon: FileCodeIcon,
       url: "#",
-      icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Active Proposals",
           url: "#",
         },
         {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
+          title: "Archived",
           url: "#",
         },
       ],
@@ -140,49 +123,65 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Support",
+      title: "Settings",
       url: "#",
-      icon: LifeBuoy,
+      icon: SettingsIcon,
     },
     {
-      title: "Feedback",
+      title: "Get Help",
       url: "#",
-      icon: Send,
+      icon: HelpCircleIcon,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: SearchIcon,
     },
   ],
-  projects: [
+  documents: [
     {
-      name: "Design Engineering",
+      name: "Data Library",
       url: "#",
-      icon: Frame,
+      icon: DatabaseIcon,
     },
     {
-      name: "Sales & Marketing",
+      name: "Reports",
       url: "#",
-      icon: PieChart,
+      icon: ClipboardListIcon,
     },
     {
-      name: "Travel",
+      name: "Word Assistant",
       url: "#",
-      icon: Map,
+      icon: FileIcon,
     },
   ],
-}
-
+};
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <ArrowUpCircleIcon className="h-5 w-5" />
+                <span className="text-base font-semibold">Acme Inc.</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-       
+        <NavMain items={data.navMain} />   
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
-  )
+  );
 }
