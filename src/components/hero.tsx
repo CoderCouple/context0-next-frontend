@@ -62,9 +62,9 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-6xl text-center text-4xl font-semibold md:text-5xl lg:text-8xl"
       >
         <Balancer> 
-          <span className="bg-gradient-to-r from-orange-500 to-violet-600 text-transparentinline-block text-transparent bg-clip-text"> Strore </span> <span className="text-neutral-200 dark:text-neutral-800" >| </span>
+          <span className="bg-gradient-to-r from-orange-500 to-violet-600 text-transparentinline-block text-transparent bg-clip-text"> Store </span> <span className="text-neutral-200 dark:text-neutral-800" >| </span>
           <span className="bg-gradient-to-r from-orange-500 to-violet-600 text-transparentinline-block text-transparent bg-clip-text"> Sync </span> <span className="text-neutral-200 dark:text-neutral-800">| </span>
-          <span className="bg-gradient-to-r from-orange-500 to-violet-600 text-transparentinline-block text-transparent bg-clip-text"> Retrive </span> 
+          <span className="bg-gradient-to-r from-orange-500 to-violet-600 text-transparentinline-block text-transparent bg-clip-text"> Retrieve </span> 
           </Balancer>
         <div className="text-xl md:text-3xl lg:text-6xl mt-6 md:mt-8 lg:mt-10 overflow-visible whitespace-nowrap">
           {subtitle}
