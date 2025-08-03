@@ -1,5 +1,3 @@
-"use client";
-
 // lib/axios.ts
 import axios, { AxiosError } from "axios";
 import axiosRetry from "axios-retry";
@@ -33,7 +31,6 @@ axiosClient.interceptors.request.use((config) => {
     config.params = snakecaseKeys(config.params, { deep: true });
   }
 
-  //console.log("[REQUEST]", config); // 🛠 dem
   return config;
 });
 
@@ -44,8 +41,6 @@ axiosClient.interceptors.response.use(
     const camelData = camelcaseKeys(response.data, { deep: true });
 
     const data: BaseResponse<any> = camelData;
-    console.log("[RESPONSE data]", data); // 🛠 dem
-    console.log("[RESPONSE camelData]", camelData); // 🛠 dem
 
     if (!data.success) {
       const error = new AxiosError(

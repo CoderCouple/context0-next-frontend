@@ -29,7 +29,6 @@ export async function DeleteCredentialAction(
     });
 
     const credential = baseResponse.result;
-    console.log("[DELETE CREDENTIAL]", credential);
 
     revalidatePath("/credentials");
 

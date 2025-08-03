@@ -14,81 +14,107 @@ import { cn } from "@/lib/utils";
 
 const onboardingSteps = [
   {
-    id: "create-workflow",
-    title: "Create Workflow",
-    description: "Get started by creating your first workflow automation",
+    id: "get-started",
+    title: "Get Started",
+    description: "Understand how Context0's memory API works",
   },
   {
-    id: "connect-services",
-    title: "Connect Services",
-    description: "Connect your favorite apps and services",
+    id: "authentication",
+    title: "Authentication",
+    description: "Learn how authentication works with your account",
   },
   {
-    id: "add-nodes",
-    title: "Add Nodes",
-    description: "Build your workflow with drag-and-drop nodes",
+    id: "create-memory",
+    title: "Create Memory",
+    description: "Store your first memory with Context0",
   },
   {
-    id: "test-workflow",
-    title: "Test Workflow",
-    description: "Run and test your workflow automation",
+    id: "enhance-context",
+    title: "Enhance with Context",
+    description: "Add categories, emotions, and tags to your memories",
   },
   {
-    id: "go-live",
-    title: "Go Live",
-    description: "Publish your workflow and start automating",
+    id: "search-retrieve",
+    title: "Search & Retrieve",
+    description: "Find and access your memories instantly",
   },
 ];
 
 const codeExamples = {
-  "create-workflow": {
+  "get-started": {
     language: "javascript",
-    code: `// Create your first workflow
-const workflow = await context0.workflows.create({
-  name: "My First Workflow",
-  description: "Automate daily tasks",
-  trigger: "schedule"
-});`,
+    code: `// Using Context0's memory API
+const response = await fetch('/api/memories', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN'
   },
-  "connect-services": {
-    language: "javascript",
-    code: `// Connect to external services
-await context0.connections.add({
-  service: "slack",
-  credentials: {
-    token: process.env.SLACK_TOKEN
-  }
-});`,
-  },
-  "add-nodes": {
-    language: "javascript",
-    code: `// Add nodes to your workflow
-workflow.addNode({
-  type: "action",
-  service: "slack",
-  action: "send_message",
-  params: {
-    channel: "#general",
-    message: "Hello from Context0!"
-  }
-});`,
-  },
-  "test-workflow": {
-    language: "javascript",
-    code: `// Test your workflow
-const result = await workflow.test({
-  input: { message: "Test message" }
+  body: JSON.stringify({
+    text: "Your memory content here",
+    category: "personal",
+    emotion: "neutral"
+  })
 });
 
-console.log("Test result:", result);`,
+const memory = await response.json();`,
   },
-  "go-live": {
+  "authentication": {
     language: "javascript",
-    code: `// Publish and activate your workflow
-await workflow.publish();
-await workflow.activate();
+    code: `// Context0 uses Clerk for authentication
+// Your API calls are automatically authenticated
+import { useAuth } from '@clerk/nextjs';
 
-console.log("Workflow is now live!");`,
+const { userId, getToken } = useAuth();
+const token = await getToken();
+
+// Token is automatically included in server actions`,
+  },
+  "create-memory": {
+    language: "javascript",
+    code: `// Create your first memory
+const memory = {
+  text: "I love Italian food, especially pizza",
+  category: "preferences",
+  emotion: "joy",
+  emotion_intensity: "high",
+  tags: ["food", "italian", "favorites"]
+};
+
+// Using the Context0 UI
+// Click "Create Memory" button and fill the form`,
+  },
+  "enhance-context": {
+    language: "javascript",
+    code: `// Add rich context to memories
+const contextualMemory = {
+  text: "Meeting with Sarah about the new AI project",
+  category: "work",
+  tags: ["meetings", "project-alpha", "ai"],
+  emotion: "excited",
+  emotion_intensity: "medium",
+  scope: "professional"
+};
+
+// Categories: work, personal, learning, ideas
+// Emotions: joy, sadness, anger, fear, surprise, disgust, neutral`,
+  },
+  "search-retrieve": {
+    language: "javascript",
+    code: `// Search through your memories
+const searchResults = await fetch('/api/memories/search', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: "What did I discuss with Sarah?",
+    filters: { 
+      category: "work",
+      emotion: "excited" 
+    }
+  })
+});
+
+// Natural language search understands context`,
   },
 };
 
@@ -119,9 +145,9 @@ export default function OnboardingPage() {
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Onboarding complete, redirect to dashboard
-      toast.success("Onboarding complete! Welcome to Context0.");
-      router.push("/dashboard");
+      // Onboarding complete, redirect to memory page
+      toast.success("Memory system setup complete! Start creating memories.");
+      router.push("/memory");
     }
   };
 
@@ -140,9 +166,9 @@ export default function OnboardingPage() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">Let's set things up</h1>
+          <h1 className="text-3xl font-bold mb-2">Set up your Memory System</h1>
           <p className="text-muted-foreground">
-            Follow these steps to get started with Context0
+            Follow these steps to start building your personal knowledge base with Context0
           </p>
         </div>
 
@@ -239,37 +265,37 @@ export default function OnboardingPage() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {currentStep === 0 && (
                   <>
-                    <li>• Navigate to the Workflow page</li>
-                    <li>• Click "Create Workflow" button</li>
-                    <li>• Give your workflow a name and description</li>
+                    <li>• Context0 provides a powerful memory API</li>
+                    <li>• Store any text-based information</li>
+                    <li>• Memories are automatically indexed for search</li>
                   </>
                 )}
                 {currentStep === 1 && (
                   <>
-                    <li>• Go to the Credentials page</li>
-                    <li>• Add your service API keys</li>
-                    <li>• Test the connection to ensure it works</li>
+                    <li>• Your account is secured with Clerk authentication</li>
+                    <li>• All API calls are automatically authenticated</li>
+                    <li>• Your memories are private and secure</li>
                   </>
                 )}
                 {currentStep === 2 && (
                   <>
-                    <li>• Open the workflow editor</li>
-                    <li>• Drag nodes from the sidebar</li>
-                    <li>• Connect nodes to create your flow</li>
+                    <li>• Navigate to the Memory page</li>
+                    <li>• Click the "Create Memory" button</li>
+                    <li>• Enter your memory content in the dialog</li>
                   </>
                 )}
                 {currentStep === 3 && (
                   <>
-                    <li>• Click the "Test" button in the editor</li>
-                    <li>• Review the execution logs</li>
-                    <li>• Fix any errors if needed</li>
+                    <li>• Add categories like "work", "personal", "learning"</li>
+                    <li>• Select emotions to capture your feelings</li>
+                    <li>• Use tags for flexible organization</li>
                   </>
                 )}
                 {currentStep === 4 && (
                   <>
-                    <li>• Click "Publish" to make your workflow live</li>
-                    <li>• Monitor executions in the dashboard</li>
-                    <li>• Set up notifications for failures</li>
+                    <li>• Use natural language to search memories</li>
+                    <li>• Filter by category, emotion, or tags</li>
+                    <li>• View your memory timeline and connections</li>
                   </>
                 )}
               </ul>
@@ -281,7 +307,7 @@ export default function OnboardingPage() {
         <div className="flex justify-between items-center">
           <Button
             variant="outline"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/memory")}
           >
             Skip Onboarding
           </Button>

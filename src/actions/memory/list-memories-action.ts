@@ -12,16 +12,11 @@ export async function ListMemoriesAction() {
     return [];
   }
 
-  // For testing purposes, use the test user ID that has data
-  const testUserId = "test-user-123";
-  console.log("ListMemoriesAction: Using user ID", testUserId, "(Original Clerk ID:", userId, ")");
-
   try {
-    const response = await listMemoriesApi(testUserId, token);
-    console.log("ListMemoriesAction: API response", response);
+    const response = await listMemoriesApi(userId, token);
     
-    // The API returns AxiosResponse<{ result: MemoryResponse[] }>
-    const memories = response.data?.result || [];
+    // The axios interceptor returns the data directly
+    const memories = response.result || [];
     return Array.isArray(memories) ? memories : [];
   } catch (error) {
     console.error("ListMemoriesAction: API call failed", error);

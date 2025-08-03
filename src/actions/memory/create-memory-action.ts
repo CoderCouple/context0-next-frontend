@@ -29,7 +29,7 @@ export async function CreateMemoryAction(data: Omit<CreateMemoryRequest, "user_i
     
     return {
       success: true,
-      data: response.data?.result,
+      data: response.result,
     };
   } catch (error: any) {
     console.error("CreateMemoryAction: API call failed", error);

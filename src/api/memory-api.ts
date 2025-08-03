@@ -16,6 +16,9 @@ export interface MemoryResponse {
   accessCount: number;
   isDeleted: boolean;
   meta: Record<string, any>;
+  category?: string;
+  emotion?: string;
+  emotionIntensity?: string;
 }
 
 export interface CreateMemoryRequest {
@@ -26,6 +29,9 @@ export interface CreateMemoryRequest {
   tags?: string[];
   metadata?: Record<string, any>;
   scope?: string;
+  category?: string;
+  emotion?: string;
+  emotion_intensity?: string;
 }
 
 export interface UpdateMemoryRequest {
@@ -38,9 +44,9 @@ export interface UpdateMemoryRequest {
 /**
  * Get all memories for the authenticated user
  */
-export async function listMemoriesApi(userId: string, token: string) {
+export async function listMemoriesApi(userId: string, token: string): Promise<{ result: MemoryResponse[], success: boolean, message?: string }> {
   try {
-    const response = await axiosClient.get<{ result: MemoryResponse[] }>(
+    const response = await axiosClient.get<any, { result: MemoryResponse[], success: boolean, message?: string }>(
       "/memories",
       {
         params: { user_id: userId },
@@ -104,9 +110,10 @@ export async function getMemoryApi(memoryId: string, userId: string, token: stri
 /**
  * Create a new memory
  */
-export async function createMemoryApi(data: CreateMemoryRequest, token: string) {
+export async function createMemoryApi(data: CreateMemoryRequest, token: string): Promise<{ result: any, success: boolean, message?: string }> {
   try {
-    const response = await axiosClient.post<{ result: any }>(
+    
+    const response = await axiosClient.post<any, { result: any, success: boolean, message?: string }>(
       "/memories",
       data,
       {
@@ -174,9 +181,9 @@ export async function updateMemoryApi(
 /**
  * Delete a memory
  */
-export async function deleteMemoryApi(memoryId: string, userId: string, token: string) {
+export async function deleteMemoryApi(memoryId: string, userId: string, token: string): Promise<{ success: boolean, message?: string }> {
   try {
-    const response = await axiosClient.delete(`/memories/${memoryId}`, {
+    const response = await axiosClient.delete<any, { success: boolean, message?: string }>(`/memories/${memoryId}`, {
       params: { user_id: userId },
       headers: {
         Authorization: `Bearer ${token}`,

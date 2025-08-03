@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { MoreHorizontal, Calendar, Tag, Eye, Brain } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -14,8 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DeleteMemoryAction } from "@/actions/memory/delete-memory-action";
-import { toast } from "sonner";
+import { useDeleteMemory } from "@/hooks/use-memories";
 
 interface MemoryListProps {
   memories: MemoryResponse[];
@@ -23,30 +21,11 @@ interface MemoryListProps {
 }
 
 export default function MemoryList({ memories, onMemoryClick }: MemoryListProps) {
-  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const deleteMemory = useDeleteMemory();
   
-  console.log("MemoryList received memories:", memories);
 
-  const handleDelete = async (memoryId: string) => {
-    setDeletingIds(prev => new Set(prev).add(memoryId));
-    
-    try {
-      const result = await DeleteMemoryAction(memoryId);
-      if (result.success) {
-        toast.success("Memory deleted successfully");
-      } else {
-        toast.error(result.message || "Failed to delete memory");
-      }
-    } catch (error) {
-      toast.error("Failed to delete memory");
-      console.error("Delete memory error:", error);
-    } finally {
-      setDeletingIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(memoryId);
-        return newSet;
-      });
-    }
+  const handleDelete = (memoryId: string) => {
+    deleteMemory.mutate(memoryId);
   };
 
   if (memories.length === 0) {
@@ -100,7 +79,6 @@ export default function MemoryList({ memories, onMemoryClick }: MemoryListProps)
                     variant="ghost" 
                     size="sm" 
                     className="h-8 w-8 p-0"
-                    disabled={deletingIds.has(memory.id)}
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -109,9 +87,9 @@ export default function MemoryList({ memories, onMemoryClick }: MemoryListProps)
                   <DropdownMenuItem 
                     className="text-destructive focus:text-destructive"
                     onClick={() => handleDelete(memory.id)}
-                    disabled={deletingIds.has(memory.id)}
+                    disabled={deleteMemory.isPending}
                   >
-                    {deletingIds.has(memory.id) ? "Deleting..." : "Delete"}
+                    {deleteMemory.isPending ? "Deleting..." : "Delete"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

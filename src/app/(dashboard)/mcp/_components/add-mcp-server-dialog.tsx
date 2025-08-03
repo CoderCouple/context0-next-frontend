@@ -45,7 +45,6 @@ export default function AddMCPServersDialog() {
   const onSubmit = (data: AddMCPServer) => {
     setIsPending(true);
     setTimeout(() => {
-      console.log("Submitted:", data);
       setIsPending(false);
       form.reset();
       setOpen(false);

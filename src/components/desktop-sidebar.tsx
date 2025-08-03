@@ -44,7 +44,6 @@ function DesktopSidebar() {
       (route) => route.href.length > 0 && pathname.includes(route.href)
     ) || routes[0];
 
-  //console.log(activeRoute);
   return (
     //  DesktopSidebar
     <div className="relative hidden h-screen w-full min-w-[280px] max-w-[280px] border-separate overflow-hidden border-r-2 bg-primary/5 text-muted-foreground dark:bg-secondary/30 dark:text-foreground md:block">

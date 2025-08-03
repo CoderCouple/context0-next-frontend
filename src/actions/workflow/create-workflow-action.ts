@@ -38,7 +38,6 @@ export async function CreateWorkflowAction(
   try {
     const baseResponse = await createWorkflowApi(token, data);
     const workflow = baseResponse.result;
-    console.log("[CREATE WORKFLOW]", workflow); // 🛠 dem
     revalidatePath("/workflow");
     return {
       success: true,

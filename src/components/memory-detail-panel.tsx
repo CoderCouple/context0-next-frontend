@@ -60,7 +60,7 @@ const getMemoryTypeIcon = (type: string) => {
     case "emotional_memory":
       return <Heart className="h-4 w-4" />;
     default:
-      return <Folder className="h-4 w-4" />;
+      return <Folder className="h-3 w-3" />;
   }
 };
 
@@ -90,8 +90,6 @@ export default function MemoryDetailPanel({ memory, open, onClose }: MemoryDetai
     }
   }, [open, memory?.id, memory]);
 
-  console.log("MemoryDetailPanel - memory:", memory);
-  console.log("MemoryDetailPanel - open:", open);
 
   if (!memory) return null;
 
@@ -166,8 +164,8 @@ export default function MemoryDetailPanel({ memory, open, onClose }: MemoryDetai
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {memory.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary">
+                      {memory.tags.map((tag, index) => (
+                        <Badge key={`${tag}-${index}`} variant="secondary">
                           <Tag className="mr-1 h-3 w-3" />
                           {tag}
                         </Badge>
@@ -205,7 +203,7 @@ export default function MemoryDetailPanel({ memory, open, onClose }: MemoryDetai
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">Category</span>
                         <Badge variant="outline">
-                          <Folder className="mr-1 h-3 w-3" />
+                          <Folder className="mr-1 h-2.5 w-2.5" />
                           {memory.category}
                         </Badge>
                       </div>

@@ -65,7 +65,6 @@ export async function deleteCredentialApi(
       },
     });
 
-    console.log("[AXIOS DELETE CREDENTIAL RESPONSE]:", response);
     return response;
   } catch (err: any) {
     const url = err.config?.baseURL + err.config?.url;
@@ -97,7 +96,6 @@ export async function getCredentialsApi(
       }
     );
 
-    //console.log("[AXIOS GET CREDENTIALS RESPONSE]:", response.result);
     return response;
   } catch (err: any) {
     const url = err.config?.baseURL + err.config?.url;

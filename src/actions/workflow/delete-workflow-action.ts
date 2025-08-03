@@ -23,7 +23,6 @@ export async function DeleteWorkflowAction(
   try {
     const baseResponse = await deleteWorkflowApi(token, deleteWorkflowRequest);
     const workflow = baseResponse.result;
-    console.log("[DELETE WORKFLOW]", workflow); // 🛠 dem
     revalidatePath("/workflow");
     return {
       success: true,

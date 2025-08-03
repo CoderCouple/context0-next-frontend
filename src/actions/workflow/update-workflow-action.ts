@@ -22,10 +22,8 @@ export async function UpdateWorkflowAction(
   }
 
   try {
-    console.log("[UPDATE WORKFLOW REQUEST]", updateWorkflowRequest); // 🛠 dem
     const baseResponse = await updateWorkflowApi(token, updateWorkflowRequest);
     const workflow = baseResponse.result;
-    console.log("[UPDATE WORKFLOW]", workflow); // 🛠 dem
     revalidatePath("/workflow");
     return {
       success: true,

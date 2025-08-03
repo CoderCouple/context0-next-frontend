@@ -26,6 +26,9 @@ export interface Memory {
   is_deleted: boolean;
   meta: Record<string, any>;
   graph?: Graph;
+  category?: string;
+  emotion?: string;
+  emotion_intensity?: string;
 }
 
 export interface GraphNode {

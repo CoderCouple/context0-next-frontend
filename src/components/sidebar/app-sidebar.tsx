@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { ArrowUpCircleIcon, BrainIcon, CameraIcon, ClipboardListIcon, CoinsIcon, DatabaseIcon, FileCodeIcon, FileIcon, FileTextIcon, HelpCircleIcon, LayoutDashboardIcon, SearchIcon, ServerIcon, SettingsIcon, ShieldCheckIcon, Workflow, Rocket, Gamepad2 } from "lucide-react";
+import { ArrowUpCircleIcon, BrainIcon, CameraIcon, ClipboardListIcon, CoinsIcon, DatabaseIcon, FileCodeIcon, FileIcon, FileTextIcon, HelpCircleIcon, LayoutDashboardIcon, SearchIcon, ServerIcon, SettingsIcon, ShieldCheckIcon, Workflow, Rocket, Gamepad2, Network } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
@@ -25,15 +25,33 @@ const data = {
   },
   navMain: [
     {
+      title: "Onboarding",
+      url: "onboarding",
+      icon: Rocket,
+      isBeta: false,
+    },
+    {
+      title: "Playground",
+      url: "playground",
+      icon: Gamepad2,
+      isBeta: false,
+    },
+    {
       title: "Dashboard",
       url: "dashboard",
       icon: LayoutDashboardIcon,
       isBeta: false,
     },
     {
-      title: "Workflow",
-      url: "workflow",
-      icon: Workflow,
+      title: "Memory",
+      url: "memory",
+      icon: BrainIcon,
+      isBeta: false,
+    },
+    {
+      title: "Graph",
+      url: "graph",
+      icon: Network,
       isBeta: false,
     },
     {
@@ -48,28 +66,16 @@ const data = {
       icon: CoinsIcon,
       isBeta: false,
     },
+    {
+      title: "Workflow",
+      url: "workflow",
+      icon: Workflow,
+      isBeta: false,
+    },
      {
       title: "MCP",
       url: "mcp",
       icon: ServerIcon,
-      isBeta: false,
-    },
-    {
-      title: "Memory",
-      url: "memory",
-      icon: BrainIcon,
-      isBeta: false,
-    },
-    {
-      title: "Playground",
-      url: "playground",
-      icon: Gamepad2,
-      isBeta: false,
-    },
-    {
-      title: "Onboarding",
-      url: "onboarding",
-      icon: Rocket,
       isBeta: false,
     }
   ],
@@ -168,7 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Context Zero AI</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -5,7 +5,6 @@ import { IconCheck } from "@tabler/icons-react";
 import { tiers } from "@/constants/tier";
 
 export function PricingTable({ pricing }: any) {
-  console.log(pricing);
   const CheckIcon = () => {
     return <IconCheck className="mx-auto h-4 w-4 flex-shrink-0 text-primary" />;
   };

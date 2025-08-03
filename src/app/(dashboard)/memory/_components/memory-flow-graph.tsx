@@ -181,8 +181,9 @@ export default function MemoryFlowGraph({ memories, onMemoryClick }: MemoryFlowG
         data: { memory, label: memory.summary || memory.input },
       });
       
-      // Create tag nodes
-      memory.tags?.forEach((tag) => {
+      // Create tag nodes (filter out duplicates)
+      const uniqueTags = Array.from(new Set(memory.tags || []));
+      uniqueTags.forEach((tag, tagIndex) => {
         const tagNodeId = `tag_${tag}`;
         
         if (!tagNodeMap.has(tagNodeId)) {
@@ -199,9 +200,9 @@ export default function MemoryFlowGraph({ memories, onMemoryClick }: MemoryFlowG
           tagNodeMap.set(tagNodeId, tagNode);
         }
         
-        // Link memory to tag
+        // Link memory to tag with unique ID
         newEdges.push({
-          id: `${memory.id}-${tagNodeId}`,
+          id: `${memory.id}-${tagNodeId}-${tagIndex}`,
           source: memory.id,
           target: tagNodeId,
           type: "custom",

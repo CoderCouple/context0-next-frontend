@@ -18,7 +18,6 @@ export async function ConversationAction(data: Omit<ConversationRequest, "user_i
   try {
     // For testing purposes, use the test user ID that has data
     const testUserId = "test-user-123";
-    console.log("ConversationAction: Using user ID", testUserId, "(Original Clerk ID:", userId, ")");
     
     const requestData: ConversationRequest = {
       ...data,
@@ -29,7 +28,7 @@ export async function ConversationAction(data: Omit<ConversationRequest, "user_i
     
     return {
       success: true,
-      data: response.data?.result,
+      data: response.result,
     };
   } catch (error: any) {
     console.error("ConversationAction: API call failed", error);

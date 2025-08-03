@@ -30,8 +30,6 @@ export async function getWorkflowsApi(
       }
     );
 
-    // console.log("[AXIOS URL]:", response.config.baseURL, response.config.url);
-    // console.log("[AXIOS DATA]:", response.data);
 
     return response;
   } catch (err: any) {
@@ -68,7 +66,6 @@ export async function getWorkflowByIdApi(
       }
     );
 
-    console.log("[AXIOS GET WORKFLOW RESPONSE]:", response);
     return response;
   } catch (err: any) {
     const url = err.config?.baseURL + err.config?.url;
@@ -100,7 +97,6 @@ export async function createWorkflowApi(
         },
       }
     );
-    console.log("[AXIOS RESPONSE]:", response);
     return response;
   } catch (err: any) {
     console.error("[AXIOS ERROR]:", err);
@@ -135,7 +131,6 @@ export async function deleteWorkflowApi(
       }
     );
 
-    console.log("[AXIOS DELETE RESPONSE]:", response);
     return response;
   } catch (err: any) {
     const url = err.config?.baseURL + err.config?.url;
@@ -170,7 +165,6 @@ export async function updateWorkflowApi(
         },
       }
     );
-    console.log("[AXIOS RESPONSE]:", response);
     return response;
   } catch (err: any) {
     console.error("[AXIOS ERROR]:", err);

@@ -196,7 +196,6 @@ export default function MemoryGraph({ memories }: MemoryGraphProps) {
           onNodeClick={(node: any) => {
             if (node.memory) {
               // Show memory details in console for now - could open modal/sidebar later
-              console.log("Memory clicked:", {
                 id: node.memory.id,
                 content: node.memory.input,
                 summary: node.memory.summary,
@@ -205,7 +204,6 @@ export default function MemoryGraph({ memories }: MemoryGraphProps) {
                 created: node.memory.createdAt,
               });
             } else {
-              console.log("Node clicked:", node);
             }
           }}
           backgroundColor={backgroundColor}

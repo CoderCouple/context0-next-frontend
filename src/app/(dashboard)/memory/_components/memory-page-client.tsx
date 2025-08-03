@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, Grid, List, Clock } from "lucide-react";
+import { Plus, Search, Grid, List, Clock, AlertCircle } from "lucide-react";
 
 import { MemoryResponse } from "@/api/memory-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 import MemoryDetailPanel from "@/components/memory-detail-panel";
+import { useMemories } from "@/hooks/use-memories";
 
 import MemoryList from "./memory-list";
 import MemoryFlowGraph from "./memory-flow-graph";
@@ -59,27 +62,21 @@ function mapMemoryResponseToMemory(response: MemoryResponse): Memory {
 }
 
 interface MemoryPageClientProps {
-  initialMemories: MemoryResponse[];
   view: string;
   searchQuery: string;
 }
 
 export default function MemoryPageClient({ 
-  initialMemories, 
   view, 
   searchQuery: initialSearchQuery 
 }: MemoryPageClientProps) {
-  console.log("MemoryPageClient: Rendering with", initialMemories.length, "memories");
-  
-  const [memories] = useState(initialMemories);
+  const { data: memories = [], isLoading, isError } = useMemories();
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [detailPanelOpen, setDetailPanelOpen] = useState(false);
 
   const handleMemoryClick = (memory: MemoryResponse) => {
-    console.log("Memory clicked:", memory);
     const mappedMemory = mapMemoryResponseToMemory(memory);
-    console.log("Mapped memory:", mappedMemory);
     setSelectedMemory(mappedMemory);
     setDetailPanelOpen(true);
   };
@@ -94,6 +91,36 @@ export default function MemoryPageClient({
         )
       )
     : memories;
+
+  if (isLoading) {
+    return (
+      <div className="h-[calc(100vh-6rem)] p-6">
+        <div className="space-y-4">
+          <Skeleton className="h-12 w-48" />
+          <Skeleton className="h-10 w-full" />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="h-32 w-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="h-[calc(100vh-6rem)] p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Failed to load memories. Please try again later.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-6rem)] p-6">

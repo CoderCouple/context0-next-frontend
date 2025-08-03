@@ -18,7 +18,6 @@ export async function AskQuestionAction(data: Omit<QuestionRequest, "user_id">) 
   try {
     // For testing purposes, use the test user ID that has data
     const testUserId = "test-user-123";
-    console.log("AskQuestionAction: Using user ID", testUserId, "(Original Clerk ID:", userId, ")");
     
     const requestData: QuestionRequest = {
       ...data,
@@ -29,7 +28,7 @@ export async function AskQuestionAction(data: Omit<QuestionRequest, "user_id">) 
     
     return {
       success: true,
-      data: response.data?.result,
+      data: response.result,
     };
   } catch (error: any) {
     console.error("AskQuestionAction: API call failed", error);

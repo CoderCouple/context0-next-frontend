@@ -59,9 +59,7 @@ export function ContactForm() {
 
   async function onSubmit(values: LoginUser) {
     try {
-      console.log("submitted form", values);
     } catch (e) {
-      console.log(e);
     }
   }
 

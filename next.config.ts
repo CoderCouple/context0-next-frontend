@@ -31,6 +31,8 @@ const nextConfig: NextConfig = {
       "images.unsplash.com",
       "ai-saas-template-aceternity.vercel.app",
       "i.pravatar.cc",
+      "img.clerk.com",
+      "images.clerk.dev",
     ],
   },
 };

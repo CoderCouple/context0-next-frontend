@@ -24,10 +24,8 @@ export async function ExecuteWorkflowAction({
   }
 
   try {
-    console.log("[EXECUTE WORKFLOW REQUEST]", workflowId); // 🛠 dem
     const baseResponse = await executeWorkflowApi(workflowId, userId, token);
     const execution = baseResponse.result;
-    console.log("[EXECUTE WORKFLOW]", execution); // 🛠 dem
 
     redirect(`/workflow/runs/${workflowId}/${execution.id}`);
   } catch (err: any) {
