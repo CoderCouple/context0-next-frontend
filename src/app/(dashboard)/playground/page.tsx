@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
 // import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from "lucide-react";
 // import { format, isToday } from "date-fns";
 import ChatInterface from "./_components/chat-interface";
@@ -10,11 +9,9 @@ import LLMPresetSettings from "./_components/llm-preset-settings";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 // import { Slider } from "@/components/ui/slider";
 import { useChatStore } from "@/store/chat-store";
-import { LLMPreset } from "@/types/llm-preset";
 
 export default function PlaygroundPage() {
   const { currentSessionId, setCurrentSessionId, extractedMemories } = useChatStore();
-  const [selectedPreset, setSelectedPreset] = useState<LLMPreset | null>(null);
   
   // Debug available via window.debugChatSession()
 
@@ -31,7 +28,7 @@ export default function PlaygroundPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <LLMPresetSettings onPresetChange={setSelectedPreset} />
+          <LLMPresetSettings onPresetChange={() => {}} />
         </div>
       </div>
 

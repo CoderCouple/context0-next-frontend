@@ -50,7 +50,7 @@ export default function ChatInterface() {
   // Show error toast if session loading fails
   useEffect(() => {
     if (sessionError) {
-      toast.error('Failed to load chat session. Please try again.');
+      toast.error("Failed to load chat session. Please try again.");
     }
   }, [sessionError]);
   
@@ -66,27 +66,27 @@ export default function ChatInterface() {
   useEffect(() => {
     // Add a global function for debugging
     (window as any).debugChatSession = () => {
-      console.log('=== DEBUG CHAT SESSION ===');
-      console.log('Current session ID:', currentSessionId);
-      console.log('Session data:', sessionData);
-      console.log('Total messages:', messages.length);
+      console.log("=== DEBUG CHAT SESSION ===");
+      console.log("Current session ID:", currentSessionId);
+      console.log("Session data:", sessionData);
+      console.log("Total messages:", messages.length);
       
       // Show each message with its type and memories
       messages.forEach((msg, index) => {
         console.log(`\n--- Message ${index + 1} ---`);
-        console.log('Role:', msg.role);
-        console.log('Content:', msg.content.substring(0, 50) + '...');
-        console.log('Has memoriesExtracted:', !!(msg as any).memoriesExtracted);
-        console.log('Has contextUsed:', !!(msg as any).contextUsed);
+        console.log("Role:", msg.role);
+        console.log("Content:", `${msg.content.substring(0, 50)  }...`);
+        console.log("Has memoriesExtracted:", !!(msg as any).memoriesExtracted);
+        console.log("Has contextUsed:", !!(msg as any).contextUsed);
         
-        if (msg.role === 'assistant') {
-          console.log('Full assistant message:');
+        if (msg.role === "assistant") {
+          console.log("Full assistant message:");
           console.log(JSON.stringify(msg, null, 2));
         }
       });
       
-      console.log('\n--- Store State ---');
-      console.log('Extracted memories in store:', useChatStore.getState().extractedMemories);
+      console.log("\n--- Store State ---");
+      console.log("Extracted memories in store:", useChatStore.getState().extractedMemories);
     };
   }, [currentSessionId, sessionData, messages]);
   
@@ -140,17 +140,15 @@ export default function ChatInterface() {
         for (let i = 0; i < sessionMemoriesExtracted; i++) {
           addExtractedMemory({
             id: `placeholder-${sessionData.data.session.id}-${i}`,
-            input: 'Memory extracted (details not available in message data)',
+            input: "Memory extracted (details not available in message data)",
             createdAt: new Date().toISOString(),
             confidence: 1.0,
-            tags: ['extracted'],
-            memoryType: 'unknown'
+            tags: ["extracted"],
+            memoryType: "unknown"
           });
         }
       }
       
-      // Check the store state after adding memories
-      const storeState = useChatStore.getState();
       // Updated store with extracted memories
     }
   }, [currentSessionId, sessionData, setMessages, addExtractedMemory, clearExtractedMemories]);
@@ -187,7 +185,7 @@ export default function ChatInterface() {
     // Create user message
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      role: 'user',
+      role: "user",
       content: userInput,
       timestamp: new Date().toISOString(),
     };
@@ -200,8 +198,8 @@ export default function ChatInterface() {
     // Initialize streaming message
     const assistantMessage: ChatMessage = {
       id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: '',
+      role: "assistant",
+      content: "",
       timestamp: new Date().toISOString(),
       metadata: {},
     };
@@ -220,32 +218,32 @@ export default function ChatInterface() {
         userInput,
         token,
         (response: StreamingChatResponse) => {
-          console.log('Streaming response:', response);
+          console.log("Streaming response:", response);
           
           // Check if this response contains extracted memories in summary field
           if (response.summary?.memories_extracted && response.summary.memories_extracted.length > 0) {
-            console.log('Found memories in summary:', response.summary.memories_extracted);
+            console.log("Found memories in summary:", response.summary.memories_extracted);
             response.summary.memories_extracted.forEach((memoryData: any) => {
               addExtractedMemory({
                 id: memoryData.id || `extracted-${Date.now()}-${Math.random()}`,
-                input: memoryData.summary || memoryData.content || 'Unknown memory',
+                input: memoryData.summary || memoryData.content || "Unknown memory",
                 createdAt: memoryData.created_at || new Date().toISOString(),
                 confidence: memoryData.confidence || 1.0,
                 tags: memoryData.tags || [],
-                memoryType: memoryData.memory_type || 'EPISODIC'
+                memoryType: memoryData.memory_type || "EPISODIC"
               });
             });
           }
           
           switch (response.type) {
-            case 'start':
+            case "start":
               // Stream started
               break;
               
-            case 'user_message':
+            case "user_message":
               // Handle user message with context memories
               if ((response as any).message?.context_used) {
-                console.log('Context memories used:', (response as any).message.context_used);
+                console.log("Context memories used:", (response as any).message.context_used);
                 // Store context memories to be added to the assistant message
                 assistantMessage.metadata = {
                   ...assistantMessage.metadata,
@@ -254,24 +252,24 @@ export default function ChatInterface() {
               }
               break;
               
-            case 'content':
+            case "content":
               setStreamingMessage((prev) => 
                 prev ? { 
                   ...prev, 
-                  content: prev.content + (response.content || ''),
+                  content: prev.content + (response.content || ""),
                   metadata: assistantMessage.metadata // Preserve metadata
                 } : assistantMessage
               );
               break;
             
-            case 'assistant_message':
-              console.log('Assistant message event:', response);
+            case "assistant_message":
+              console.log("Assistant message event:", response);
               if ((response as any).message && currentSessionId) {
                 const assistantMsg = (response as any).message;
                 // Create final message with proper structure
                 const finalMessage: ChatMessage = {
                   id: assistantMsg.id || Date.now().toString(),
-                  role: 'assistant',
+                  role: "assistant",
                   content: assistantMsg.content,
                   timestamp: assistantMsg.timestamp || new Date().toISOString(),
                   memories_extracted: assistantMsg.memories_extracted || assistantMsg.memoriesExtracted || null,
@@ -282,14 +280,14 @@ export default function ChatInterface() {
                   contextUsed: assistantMsg.contextUsed || assistantMsg.context_used || null
                 } as any;
                 
-                console.log('Final assistant message:', finalMessage);
+                console.log("Final assistant message:", finalMessage);
                 addMessage(currentSessionId, finalMessage);
                 setStreamingMessage(null);
                 setIsStreaming(false);
                 
                 // Process extracted memories
                 if (assistantMsg.memories_extracted && assistantMsg.memories_extracted.length > 0) {
-                  console.log('Processing extracted memories:', assistantMsg.memories_extracted);
+                  console.log("Processing extracted memories:", assistantMsg.memories_extracted);
                   assistantMsg.memories_extracted.forEach((memoryData: any) => {
                     addExtractedMemory({
                       id: memoryData.id,
@@ -304,34 +302,34 @@ export default function ChatInterface() {
               }
               break;
               
-            case 'message_complete':
-              console.log('Message complete event:', response);
+            case "message_complete":
+              console.log("Message complete event:", response);
               if (response.message && currentSessionId) {
-                console.log('Message metadata:', response.message.metadata);
+                console.log("Message metadata:", response.message.metadata);
                 addMessage(currentSessionId, response.message);
                 setStreamingMessage(null);
                 
                 // Check if message includes extracted memories (try both field names)
                 const extractedMemories = response.message.metadata?.memories_extracted || response.message.metadata?.memoriesExtracted;
                 if (extractedMemories && extractedMemories.length > 0) {
-                  console.log('Memories extracted from message_complete:', extractedMemories);
+                  console.log("Memories extracted from message_complete:", extractedMemories);
                   // Add each extracted memory
                   extractedMemories.forEach((memoryData: any) => {
-                    console.log('Memory data from message_complete:', memoryData);
+                    console.log("Memory data from message_complete:", memoryData);
                     addExtractedMemory({
                       id: memoryData.id || `extracted-${Date.now()}-${Math.random()}`,
-                      input: memoryData.content || memoryData.input || memoryData.text || memoryData.summary || 'Unknown memory',
+                      input: memoryData.content || memoryData.input || memoryData.text || memoryData.summary || "Unknown memory",
                       createdAt: memoryData.created_at || memoryData.createdAt || new Date().toISOString(),
                       confidence: memoryData.confidence || 1.0,
                       tags: memoryData.tags || [],
-                      memoryType: memoryData.memory_type || memoryData.memoryType || 'EPISODIC'
+                      memoryType: memoryData.memory_type || memoryData.memoryType || "EPISODIC"
                     });
                   });
                 }
               }
               break;
               
-            case 'done':
+            case "done":
               // Stream completed
               // Only add streaming message if it has content and wasn't already handled by message_complete
               const currentStreamingMessage = useChatStore.getState().streamingMessage;
@@ -351,21 +349,21 @@ export default function ChatInterface() {
               setIsStreaming(false);
               break;
             
-            case 'memory_extracted':
-              console.log('Memory extracted event:', response);
+            case "memory_extracted":
+              console.log("Memory extracted event:", response);
               if (response.memoryId || (response as any).memory) {
-                toast.success('Memory extracted from conversation');
+                toast.success("Memory extracted from conversation");
                 // Check if response includes full memory data
                 if ((response as any).memory) {
                   const memoryData = (response as any).memory;
-                  console.log('Memory data from event:', memoryData);
+                  console.log("Memory data from event:", memoryData);
                   addExtractedMemory({
                     id: memoryData.id || response.memoryId || `extracted-${Date.now()}`,
-                    input: memoryData.content || memoryData.input || memoryData.text || 'Unknown content',
+                    input: memoryData.content || memoryData.input || memoryData.text || "Unknown content",
                     createdAt: memoryData.createdAt || new Date().toISOString(),
                     confidence: memoryData.confidence || 1.0,
-                    tags: memoryData.tags || ['extracted'],
-                    memoryType: memoryData.memory_type || memoryData.memoryType || 'EPISODIC'
+                    tags: memoryData.tags || ["extracted"],
+                    memoryType: memoryData.memory_type || memoryData.memoryType || "EPISODIC"
                   });
                 } else if (response.memoryId) {
                   // Only have memoryId, add placeholder
@@ -374,20 +372,20 @@ export default function ChatInterface() {
                     input: `Memory extracted (ID: ${response.memoryId})`,
                     createdAt: new Date().toISOString(),
                     confidence: 1.0,
-                    tags: ['extracted'],
-                    memoryType: 'EPISODIC'
+                    tags: ["extracted"],
+                    memoryType: "EPISODIC"
                   });
                 }
               }
               break;
             
-            case 'error':
-              const errorMessage = response.error || 'An error occurred';
+            case "error":
+              const errorMessage = response.error || "An error occurred";
               
               // Backend bug workaround: ignore memory types sent as errors
-              const memoryTypes = ['EPISODIC', 'SEMANTIC', 'PROCEDURAL', 'WORKING', 'DECLARATIVE'];
-              if (typeof errorMessage === 'string' && memoryTypes.includes(errorMessage.toUpperCase())) {
-                console.warn('Backend bug: memory type sent as error event, ignoring:', errorMessage);
+              const memoryTypes = ["EPISODIC", "SEMANTIC", "PROCEDURAL", "WORKING", "DECLARATIVE"];
+              if (typeof errorMessage === "string" && memoryTypes.includes(errorMessage.toUpperCase())) {
+                console.warn("Backend bug: memory type sent as error event, ignoring:", errorMessage);
                 // Continue processing, don't treat as error
                 // But check if we need to finalize the message
                 const currentStream = useChatStore.getState().streamingMessage;
@@ -399,7 +397,7 @@ export default function ChatInterface() {
                 break;
               }
               
-              console.error('Streaming error event:', errorMessage);
+              console.error("Streaming error event:", errorMessage);
               toast.error(errorMessage);
               // Save any partial message without the error suffix
               const errorStreamingMessage = useChatStore.getState().streamingMessage;
@@ -412,8 +410,8 @@ export default function ChatInterface() {
           }
         },
         (error) => {
-          console.error('Streaming error:', error);
-          toast.error('Failed to send message');
+          console.error("Streaming error:", error);
+          toast.error("Failed to send message");
           // Save any partial message without error suffix
           const streamingMsg = useChatStore.getState().streamingMessage;
           if (streamingMsg && streamingMsg.content && currentSessionId) {
@@ -428,21 +426,21 @@ export default function ChatInterface() {
       setTimeout(() => {
         const remainingStreamingMessage = useChatStore.getState().streamingMessage;
         if (remainingStreamingMessage && remainingStreamingMessage.content && currentSessionId) {
-          console.warn('Streaming ended without assistant_message event, using fallback');
+          console.warn("Streaming ended without assistant_message event, using fallback");
           addMessage(currentSessionId, remainingStreamingMessage);
           setStreamingMessage(null);
           setIsStreaming(false);
         }
       }, 1000);
     } catch (error) {
-      console.error('Chat error:', error);
-      toast.error('Failed to send message');
+      console.error("Chat error:", error);
+      toast.error("Failed to send message");
       setStreamingMessage(null);
       setIsStreaming(false);
     } finally {
       // Ensure streaming is stopped
       if (useChatStore.getState().isStreaming) {
-        console.log('Ensuring streaming state is cleared');
+        console.log("Ensuring streaming state is cleared");
         setIsStreaming(false);
         setStreamingMessage(null);
       }
@@ -493,7 +491,7 @@ export default function ChatInterface() {
               </p>
             </div>
           </div>
-        ) : (messages.length === 0 || (messages.length === 1 && messages[0].id?.startsWith('welcome-'))) && !isLoadingSession ? (
+        ) : (messages.length === 0 || (messages.length === 1 && messages[0].id?.startsWith("welcome-"))) && !isLoadingSession ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <h3 className="text-lg font-semibold">Start a conversation</h3>
@@ -577,20 +575,20 @@ export default function ChatInterface() {
                   const contextMemories = (message as any).contextUsed || message.context_used || [];
                   if (!contextMemories || contextMemories.length === 0) return null;
                   
-                  console.log('Displaying context memories:', contextMemories);
+                  console.log("Displaying context memories:", contextMemories);
                   
                   return (
                     <div className="ml-11 mt-2">
                       <div className="flex flex-wrap gap-2">
                         {contextMemories.map((memory: ContextMemory) => {
-                        const content = memory.content || memory.summary || 'Memory';
+                        const content = memory.content || memory.summary || "Memory";
                         const score = memory.score;
                         
                         return (
                           <div
                             key={memory.id}
                             className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-full text-xs cursor-pointer hover:bg-muted/70 transition-colors"
-                            title={`Type: ${(memory.memory_type || 'unknown').replace(/_/g, ' ')}\nRelevance: ${(score * 100).toFixed(0)}%`}
+                            title={`Type: ${(memory.memory_type || "unknown").replace(/_/g, " ")}\nRelevance: ${(score * 100).toFixed(0)}%`}
                             onClick={() => {
                               setSelectedMemory(memory);
                               setDetailPanelOpen(true);
@@ -617,7 +615,7 @@ export default function ChatInterface() {
                       <div className="ml-11 mt-2">
                         <div className="text-xs text-muted-foreground flex items-center gap-2">
                           <Sparkles className="h-3 w-3" />
-                          <span>{memoriesExtracted.length} {memoriesExtracted.length === 1 ? 'memory' : 'memories'} extracted</span>
+                          <span>{memoriesExtracted.length} {memoriesExtracted.length === 1 ? "memory" : "memories"} extracted</span>
                         </div>
                       </div>
                     );

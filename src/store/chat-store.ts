@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { ChatMessage, ChatSession } from '@/types/chat';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { ChatMessage, ChatSession } from "@/types/chat";
 
 interface ChatState {
   // Sessions
@@ -46,7 +46,7 @@ interface ChatState {
 
 const createWelcomeMessage = (sessionId: string): ChatMessage => ({
   id: `welcome-${sessionId}`,
-  role: 'assistant',
+  role: "assistant",
   content: `Hello! I'm your AI assistant powered by Context0 memories. 
 I can help you with questions while utilizing your stored memories for more personalized and contextual responses.
 
@@ -94,7 +94,7 @@ export const useChatStore = create<ChatState>()(
         // Setting messages for session
         
         // Filter out any existing welcome messages from server to avoid duplicates
-        const filteredMessages = messages.filter(m => !m.id?.startsWith('welcome-'));
+        const filteredMessages = messages.filter(m => !m.id?.startsWith("welcome-"));
         
         // If no messages from server, add a welcome message
         const allMessages = filteredMessages.length === 0
@@ -148,8 +148,8 @@ export const useChatStore = create<ChatState>()(
             
             return {
               ...session,
-              messageCount: newMessages.filter(m => !m.id?.startsWith('welcome-')).length,
-              lastMessage: message.role === 'assistant' ? message.content : session.lastMessage,
+              messageCount: newMessages.filter(m => !m.id?.startsWith("welcome-")).length,
+              lastMessage: message.role === "assistant" ? message.content : session.lastMessage,
               total_memories_extracted: totalMemoriesExtracted
             };
           }
@@ -180,7 +180,7 @@ export const useChatStore = create<ChatState>()(
       },
       
       setStreamingMessage: (message) => {
-        if (typeof message === 'function') {
+        if (typeof message === "function") {
           set((state) => ({ streamingMessage: message(state.streamingMessage) }));
         } else {
           set({ streamingMessage: message });
@@ -251,7 +251,7 @@ export const useChatStore = create<ChatState>()(
       }
     }),
     {
-      name: 'chat-store',
+      name: "chat-store",
     }
   )
 );

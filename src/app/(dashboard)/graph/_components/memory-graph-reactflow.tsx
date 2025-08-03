@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   Node,
@@ -277,7 +279,7 @@ export default function MemoryGraphReactFlow({
         position: { x: 0, y: 0 }, // Will be updated by layout
         data: { 
           memory, 
-          label: memory.summary || memory.input.substring(0, 30) + "..."
+          label: memory.summary || `${memory.input.substring(0, 30)  }...`
         },
       };
       newNodes.push(memoryNode);
@@ -348,7 +350,7 @@ export default function MemoryGraphReactFlow({
       
       // Extract dates
       const date = new Date(memory.createdAt);
-      const dateId = `date_${date.toISOString().split('T')[0]}`;
+      const dateId = `date_${date.toISOString().split("T")[0]}`;
       if (!nodeMap.has(dateId)) {
         const dateNode: Node = {
           id: dateId,

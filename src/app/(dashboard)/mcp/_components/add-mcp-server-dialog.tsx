@@ -42,7 +42,7 @@ export default function AddMCPServersDialog() {
     },
   });
 
-  const onSubmit = (data: AddMCPServer) => {
+  const onSubmit = () => {
     setIsPending(true);
     setTimeout(() => {
       setIsPending(false);

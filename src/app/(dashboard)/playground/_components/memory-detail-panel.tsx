@@ -1,8 +1,7 @@
 "use client";
 
-import { X, Brain, Clock, Tag, Hash, BarChart3, Calendar, RefreshCw } from "lucide-react";
+import { Brain, Clock, Tag, Hash, BarChart3, Calendar, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -31,7 +30,7 @@ export default function MemoryDetailPanel({ memory, open, onClose }: MemoryDetai
           <div>
             <h3 className="text-sm font-medium mb-2">Content</h3>
             <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
-              {memory.content || memory.input || memory.summary || 'No content available'}
+              {memory.content || memory.input || memory.summary || "No content available"}
             </p>
           </div>
 
@@ -56,7 +55,7 @@ export default function MemoryDetailPanel({ memory, open, onClose }: MemoryDetai
               <Hash className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Type:</span>
               <Badge variant="outline">
-                {(memory.memory_type || memory.memoryType || 'unknown').replace(/_/g, ' ')}
+                {(memory.memory_type || memory.memoryType || "unknown").replace(/_/g, " ")}
               </Badge>
             </div>
 

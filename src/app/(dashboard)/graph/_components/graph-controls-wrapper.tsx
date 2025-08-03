@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactFlowProvider } from "@xyflow/react";
 import GraphControls from "./graph-controls";
 

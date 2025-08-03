@@ -2,7 +2,7 @@ import { env } from "@/env/client";
 import { ChatMessage } from "@/types/chat";
 
 export interface StreamingChatResponse {
-  type: 'start' | 'content' | 'message_complete' | 'done' | 'error' | 'memory_extracted' | 'user_message' | 'assistant_message';
+  type: "start" | "content" | "message_complete" | "done" | "error" | "memory_extracted" | "user_message" | "assistant_message";
   content?: string;
   message?: ChatMessage;
   error?: string;
@@ -24,11 +24,11 @@ export async function sendChatMessageStreaming(
 
   try {
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'text/event-stream',
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        "Accept": "text/event-stream",
       },
       body: JSON.stringify({
         content: message,
@@ -46,7 +46,7 @@ export async function sendChatMessageStreaming(
     const decoder = new TextDecoder();
 
     if (!reader) {
-      throw new Error('No response body');
+      throw new Error("No response body");
     }
 
     while (true) {
@@ -55,13 +55,13 @@ export async function sendChatMessageStreaming(
       if (done) break;
 
       const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
+      const lines = chunk.split("\n");
 
       for (const line of lines) {
-        if (line.startsWith('data: ')) {
+        if (line.startsWith("data: ")) {
           const data = line.slice(6);
           
-          if (data === '[DONE]' || data === '') {
+          if (data === "[DONE]" || data === "") {
             continue;
           }
 
@@ -69,13 +69,13 @@ export async function sendChatMessageStreaming(
             const parsed = JSON.parse(data) as StreamingChatResponse;
             onMessage(parsed);
           } catch (e) {
-            console.error('Failed to parse SSE data:', e);
+            console.error("Failed to parse SSE data:", e);
           }
         }
       }
     }
   } catch (error) {
-    console.error('Streaming error:', error);
+    console.error("Streaming error:", error);
     onError?.(error as Error);
     throw error;
   }

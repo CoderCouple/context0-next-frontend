@@ -32,8 +32,8 @@ export async function createSessionAction(data: CreateSessionRequest) {
     const sessionData = response.result || response;
     
     // Transform sessionId to id if needed
-    if (sessionData && !sessionData.id && sessionData.sessionId) {
-      sessionData.id = sessionData.sessionId;
+    if (sessionData && !sessionData.id && (sessionData as any).sessionId) {
+      sessionData.id = (sessionData as any).sessionId;
     }
     
     return {

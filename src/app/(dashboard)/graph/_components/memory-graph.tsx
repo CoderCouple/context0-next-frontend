@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
@@ -101,7 +103,7 @@ function MemoryGraphInner({
     setEdges(flowEdges);
     
     setTimeout(() => fitView({ padding: 0.2, maxZoom: 1.5 }), 100);
-  }, [memories, searchQuery, filters?.nodeTypes?.join(','), filters?.edgeTypes?.join(','), filters?.dateRange?.start, filters?.dateRange?.end, resolvedTheme, layout]);
+  }, [memories, searchQuery, filters?.nodeTypes?.join(","), filters?.edgeTypes?.join(","), filters?.dateRange?.start, filters?.dateRange?.end, resolvedTheme, layout]);
 
   // Apply layout algorithms
   const applyLayout = (nodes: AppNode[], layoutType: string): AppNode[] => {

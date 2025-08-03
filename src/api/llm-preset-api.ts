@@ -1,5 +1,5 @@
-import { axiosClient } from "./axios";
-import { BaseResponse } from "@/types/api";
+import axiosClient from "./axios";
+import { BaseResponse } from "@/types";
 import { LLMPreset, LLMPresetResponse } from "@/types/llm-preset";
 
 export async function getLLMPresetsApi(token: string): Promise<BaseResponse<LLMPresetResponse>> {
@@ -29,7 +29,7 @@ export async function setDefaultLLMPresetApi(
 ): Promise<BaseResponse<{ preset_id: string }>> {
   try {
     const response = await axiosClient.post<BaseResponse<{ preset_id: string }>>(
-      `/llm/presets/default`,
+      "/llm/presets/default",
       { preset_id: presetId },
       {
         headers: {

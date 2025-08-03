@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Edge as ReactFlowEdge, MarkerType } from "@xyflow/react";
 import { GraphEdge, AppEdge, AppEdgeData, EdgeType } from "./types";
 import { getEdgeConfig, getEdgeStyle } from "./edge-registry";

@@ -30,7 +30,7 @@ export function transformMemoriesToNeo4jData(memories: MemoryResponse[]): Neo4jG
       id: memory.id,
       labels: ["Memory"],
       properties: {
-        label: memory.summary || memory.input.substring(0, 50) + "...",
+        label: memory.summary || `${memory.input.substring(0, 50)  }...`,
         summary: memory.summary,
         input: memory.input,
         confidence: memory.confidence,
@@ -124,7 +124,7 @@ export function transformMemoriesToNeo4jData(memories: MemoryResponse[]): Neo4jG
     
     // Extract dates
     const date = new Date(memory.createdAt);
-    const dateId = `date_${date.toISOString().split('T')[0]}`;
+    const dateId = `date_${date.toISOString().split("T")[0]}`;
     if (!nodeMap.has(dateId)) {
       const dateNode: Neo4jNode = {
         id: dateId,

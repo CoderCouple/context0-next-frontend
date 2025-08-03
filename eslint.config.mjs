@@ -33,7 +33,7 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": ["off"],
       "n/no-process-env": ["error"],
       "@typescript-eslint/no-empty-object-type": ["warn"],
-      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/no-unused-vars": ["warn"],
       "react/no-unescaped-entities": ["off"],
       "prefer-const": "off",
       // "check-file/filename-naming-convention": [

@@ -29,7 +29,7 @@ export interface ContextMemory {
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: string;
   memories_extracted?: MemoryExtracted[] | null;

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Settings, Plus, Check, Loader2, Brain, Sparkles, Zap } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Settings, Plus, Loader2, Brain, Sparkles, Zap } from "lucide-react";
 import { toast } from "sonner";
 import PresetConfigurationDialog from "./preset-configuration-dialog";
 
@@ -48,11 +48,7 @@ export default function LLMPresetSettings({ onPresetChange }: LLMPresetSettingsP
   const [configDialogOpen, setConfigDialogOpen] = useState(false);
   const [selectedPresetForEdit, setSelectedPresetForEdit] = useState<LLMPreset | null>(null);
 
-  useEffect(() => {
-    fetchPresets();
-  }, []);
-
-  const fetchPresets = async () => {
+  const fetchPresets = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getLLMPresetsAction();
@@ -74,7 +70,11 @@ export default function LLMPresetSettings({ onPresetChange }: LLMPresetSettingsP
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPresets();
+  }, [fetchPresets]);
 
   const handlePresetChange = async (presetId: string) => {
     try {
@@ -89,7 +89,7 @@ export default function LLMPresetSettings({ onPresetChange }: LLMPresetSettingsP
       } else {
         toast.error(result.error || "Failed to update preset");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to update preset");
     }
   };

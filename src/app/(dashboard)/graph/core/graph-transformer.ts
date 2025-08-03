@@ -30,7 +30,7 @@ export class GraphTransformer {
       const memoryNode: GraphNode = {
         id: memory.id,
         type: NodeType.MEMORY,
-        label: memory.summary || memory.input.substring(0, 50) + "...",
+        label: memory.summary || `${memory.input.substring(0, 50)  }...`,
         properties: {
           input: memory.input,
           summary: memory.summary,
@@ -141,7 +141,7 @@ export class GraphTransformer {
       
       // Extract temporal information
       const date = new Date(memory.createdAt);
-      const dateId = `date_${date.toISOString().split('T')[0]}`;
+      const dateId = `date_${date.toISOString().split("T")[0]}`;
       if (!nodeMap.has(dateId)) {
         const dateNode: GraphNode = {
           id: dateId,

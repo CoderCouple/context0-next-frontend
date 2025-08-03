@@ -381,7 +381,7 @@ export async function extractMemoriesFromChatApi(data: ExtractMemoriesRequest, t
 export async function deleteAllChatSessionsApi(token: string, hardDelete: boolean = false) {
   try {
     const response = await axiosClient.delete<BaseResponse<{ deletedCount: number; deletedMessages?: number }>>(
-      `/chat/sessions`,
+      "/chat/sessions",
       {
         params: hardDelete ? { hard_delete: true } : undefined,
         headers: {

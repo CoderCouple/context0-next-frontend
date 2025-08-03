@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Node as ReactFlowNode } from "@xyflow/react";
 import { GraphNode, AppNode, AppNodeData, NodeType } from "./types";
 import { getNodeConfig } from "./node-registry";

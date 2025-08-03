@@ -196,6 +196,7 @@ export default function MemoryGraph({ memories }: MemoryGraphProps) {
           onNodeClick={(node: any) => {
             if (node.memory) {
               // Show memory details in console for now - could open modal/sidebar later
+              console.log({
                 id: node.memory.id,
                 content: node.memory.input,
                 summary: node.memory.summary,

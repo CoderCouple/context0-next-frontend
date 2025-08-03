@@ -117,7 +117,6 @@ export default function ChatHistory({ onSessionSelect, selectedSessionId }: Chat
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     
     // Within 5 minutes
     if (minutes < 5) return "now";
@@ -138,11 +137,11 @@ export default function ChatHistory({ onSessionSelect, selectedSessionId }: Chat
     
     // For dates within this year, show month and day
     if (date.getFullYear() === now.getFullYear()) {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     }
     
     // For older dates, show full date
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
   };
 
   return (
@@ -218,7 +217,7 @@ export default function ChatHistory({ onSessionSelect, selectedSessionId }: Chat
                     {session.lastMessage && (
                       <p className="text-xs text-muted-foreground">
                         {session.lastMessage.length > 20 
-                          ? session.lastMessage.substring(0, 20) + "..." 
+                          ? `${session.lastMessage.substring(0, 20)  }...` 
                           : session.lastMessage}
                       </p>
                     )}

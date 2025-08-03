@@ -192,7 +192,7 @@ export default function PresetConfigurationDialog({
       } else {
         toast.error(result.error || "Failed to save preset");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to save preset");
     } finally {
       setLoading(false);
